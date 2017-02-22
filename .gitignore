@@ -1,0 +1,7 @@
+build/
+_build/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcworkspace/contents.xcworkspacedata
+UserInterfaceState.xcuserstate
+.DS_Store
