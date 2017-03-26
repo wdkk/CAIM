@@ -5,3 +5,4 @@ _build/
 !*.xcworkspace/contents.xcworkspacedata
 UserInterfaceState.xcuserstate
 .DS_Store
+xcuserdata/
