@@ -21,8 +21,8 @@ struct VertexOut {
 
 // 頂点シェーダー(2Dピクセル座標系へ変換)
 vertex VertexOut vert2d(device VertexIn *vin [[ buffer(ID_VERTEX) ]],
-                            constant float4x4 &proj_matrix [[ buffer(ID_PROJECTION) ]],
-                            uint vid [[vertex_id]])
+                        constant float4x4 &proj_matrix [[ buffer(ID_PROJECTION) ]],
+                        uint vid [[vertex_id]])
 {
     VertexOut vout;
     vout.pos = proj_matrix * float4(vin[vid].pos);

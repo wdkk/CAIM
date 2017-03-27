@@ -67,7 +67,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
     // 指定した頂点プールの内容とサイズで確保＆初期化
     init<T>(vertice:CAIMAlignMemory<T>) {
         super.init()
-        _length = vertice.length
+        _length = vertice.allocated_length
         _mtlbuf = self.allocate(vertice.pointer, length:_length)
     }
     
@@ -85,7 +85,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
     }
     
     override func update<T>(vertice:CAIMAlignMemory<T>) {
-        memcpy( _mtlbuf!.contents(), vertice.pointer, vertice.length )
+        memcpy( _mtlbuf!.contents(), vertice.pointer, vertice.allocated_length )
     }
     
     //// メモリ確保
@@ -103,7 +103,7 @@ class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     // 指定したオブジェクト全体を共有して確保・初期化
     init<T>(vertice:CAIMAlignMemory<T>) {
         super.init()
-        _length = vertice.capacity
+        _length = vertice.allocated_length
         _mtlbuf = self.nocopy(vertice.pointer, length:_length)
     }
     

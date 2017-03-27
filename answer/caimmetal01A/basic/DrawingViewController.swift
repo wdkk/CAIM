@@ -32,7 +32,7 @@ class DrawingViewController : CAIMMetalViewController
     private var tris_buf:CAIMMetalBuffer?       // 頂点バッファ
     
     // CPU:形状メモリ
-    private var tris  = CAIMTriangles<VertexInfo>(count: 1)
+    private var tris  = CAIMTriangles<VertexInfo>(count: 100)
     
     // 準備関数
     override func setup() {
@@ -50,17 +50,22 @@ class DrawingViewController : CAIMMetalViewController
     override func update(renderer:CAIMMetalRenderer) {
         // 頂点メモリの先頭ポインタを取得
         let p_tris = tris.pointer
-  
-        // 三角形頂点v0
-        p_tris[0].v0.pos  = Vec4(150, 0, 0, 1)
-        p_tris[0].v0.rgba = CAIMColor(R: 1.0, G: 0.0, B: 0.0, A: 1.0)
-        // 三角形頂点v1
-        p_tris[0].v1.pos  = Vec4(300, 300, 0, 1)
-        p_tris[0].v1.rgba = CAIMColor(R: 1.0, G: 0.0, B: 0.0, A: 1.0)
-        // 三角形頂点v2
-        p_tris[0].v2.pos  = Vec4(0, 300, 0, 1)
-        p_tris[0].v2.rgba = CAIMColor(R: 1.0, G: 0.0, B: 0.0, A: 1.0)
-
+        
+        for i:Int in 0 ..< tris.count {
+            let x:Float32 = Float32(60 * (i % 10))
+            let y:Float32 = Float32(60 * (i / 10))
+            
+            // 三角形頂点v0
+            p_tris[i].v0.pos  = Vec4(x + 30.0, y, 0, 1)
+            p_tris[i].v0.rgba = CAIMColor(R: 1.0, G: 0.0, B: 0.0, A: 1.0)
+            // 三角形頂点v1
+            p_tris[i].v1.pos  = Vec4(x + 60.0, y + 60.0, 0, 1)
+            p_tris[i].v1.rgba = CAIMColor(R: 1.0, G: 0.0, B: 0.0, A: 1.0)
+            // 三角形頂点v2
+            p_tris[i].v2.pos  = Vec4(x, y + 60.0, 0, 1)
+            p_tris[i].v2.rgba = CAIMColor(R: 1.0, G: 0.0, B: 0.0, A: 1.0)
+        }
+        
         // GPUバッファの内容を更新(tris -> tris_buf)
         tris_buf?.update(vertice: tris)
         

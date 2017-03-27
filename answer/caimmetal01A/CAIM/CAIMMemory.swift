@@ -45,6 +45,8 @@ class CAIMMemory {
 
 class CAIMAlignMemory<T> {
     fileprivate var _mem:CAIMMemoryCPtr?
+    fileprivate var _available_length:Int = 0
+    fileprivate var _available_count:Int = 0
     
     init() { _mem = CAIMMemoryCNew() }
     
@@ -68,57 +70,45 @@ class CAIMAlignMemory<T> {
         _pointer = UnsafeMutablePointer<T>(opaqueptr!)
     }
     
-    var count:Int { return CAIMMemoryCLength(_mem) / MemoryLayout<T>.size }
-
+    var count:Int { return _available_count }
+    
+    var length:Int { return _available_length }
+    
     var capacity:Int { return CAIMMemoryCCapacity(_mem) }
     
-    var length:Int { return CAIMMemoryCLength(_mem) }
+    var allocated_length:Int { return CAIMMemoryCLength(_mem) }
   
     func clear() {
-        CAIMMemoryCResize(_mem, 0)
-        CAIMMemoryCReserve(_mem, 0)
-        self.updatePointer()
-    }
-    
-    func resizeBytes(_ length:Int) {
-        CAIMMemoryCResize(_mem, length)
-        self.updatePointer()
-    }
-    
-    func reserveBytes(_ length:Int) {
-        CAIMMemoryCReserve(_mem, length)
-        self.updatePointer()
+        self.resize(count: 0)
     }
     
     func resize(count:Int) {
-        CAIMMemoryCResize(_mem, count * MemoryLayout<T>.size)
-        self.updatePointer()
-    }
-    
-    func reserve(count:Int) {
-        CAIMMemoryCReserve(_mem, count * MemoryLayout<T>.size)
+        _available_count  = count
+        _available_length = count * MemoryLayout<T>.size
+        CAIMMemoryCResize(_mem, _available_length)
+        CAIMMemoryCReserve(_mem, _available_length)
         self.updatePointer()
     }
     
     func append(_ src:CAIMAlignMemory<T>) {
+        _available_count  += src.count
+        _available_length += src.length
         CAIMMemoryCAppend(_mem, src._mem)
         self.updatePointer()
     }
     
     func append(_ element:T) {
+        _available_count  += 1
+        _available_length += MemoryLayout<T>.size
         CAIMMemoryCAppendC(_mem, UnsafeMutablePointer<T>(mutating:[element]), MemoryLayout<T>.size)
         self.updatePointer()
     }
     
     func append(_ elements:[T]) {
+        _available_count  += 1
+        _available_length += MemoryLayout<T>.size * elements.count
         CAIMMemoryCAppendC(_mem, UnsafeMutablePointer<T>(mutating:elements), MemoryLayout<T>.size * elements.count)
         self.updatePointer()
     }
-    
-    // subscript [n] accessor
-//    subscript(idx:Int) -> T {
-//        get { return _pointer![idx] }
-//        set(new_value) { _pointer![idx] = new_value }
-//    }
 }
 

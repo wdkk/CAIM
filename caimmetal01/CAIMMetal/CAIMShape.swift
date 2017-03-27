@@ -30,7 +30,7 @@ class CAIMTriangles<T:Initializable> : CAIMShape<CAIMTriangle<T>>
     
     override func draw(_ renderer:CAIMMetalRenderer) {
         let enc = renderer.encoder
-        enc?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: count)
+        enc?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: length)
     }
 }
 
