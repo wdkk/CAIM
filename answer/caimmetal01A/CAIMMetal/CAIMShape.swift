@@ -14,7 +14,7 @@ import Foundation
 import Metal
 
 // Metal向け形状メモリクラス
-class CAIMShape<T> : CAIMAlignMemory<T>
+class CAIMShape<T> : CAIMAlignedMemory<T>
 {
     func draw(_ renderer:CAIMMetalRenderer) {}
 }
@@ -30,7 +30,7 @@ class CAIMTriangles<T:Initializable> : CAIMShape<CAIMTriangle<T>>
     
     override func draw(_ renderer:CAIMMetalRenderer) {
         let enc = renderer.encoder
-        enc?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: length)
+        enc?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: count * 3)
     }
 }
 

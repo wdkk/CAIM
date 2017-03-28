@@ -34,7 +34,7 @@ class CAIMMetalBufferBase
     
     func update(_ buf:UnsafeRawPointer, length:Int) {}
     
-    func update<T>(vertice:CAIMAlignMemory<T>) {}
+    func update<T>(vertice:CAIMAlignedMemory<T>) {}
 }
 
 class CAIMMetalBuffer : CAIMMetalBufferBase
@@ -65,7 +65,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
         _mtlbuf = self.allocate(buf, length: _length)
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化
-    init<T>(vertice:CAIMAlignMemory<T>) {
+    init<T>(vertice:CAIMAlignedMemory<T>) {
         super.init()
         _length = vertice.allocated_length
         _mtlbuf = self.allocate(vertice.pointer, length:_length)
@@ -84,7 +84,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
         memcpy( _mtlbuf!.contents(), buf, length )
     }
     
-    override func update<T>(vertice:CAIMAlignMemory<T>) {
+    override func update<T>(vertice:CAIMAlignedMemory<T>) {
         memcpy( _mtlbuf!.contents(), vertice.pointer, vertice.allocated_length )
     }
     
@@ -101,7 +101,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
 class CAIMMetalSharedBuffer : CAIMMetalBufferBase
 {
     // 指定したオブジェクト全体を共有して確保・初期化
-    init<T>(vertice:CAIMAlignMemory<T>) {
+    init<T>(vertice:CAIMAlignedMemory<T>) {
         super.init()
         _length = vertice.allocated_length
         _mtlbuf = self.nocopy(vertice.pointer, length:_length)
@@ -114,7 +114,7 @@ class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     
     override func update(_ buf:UnsafeRawPointer, length:Int) {}
     
-    override func update<T>(vertice:CAIMAlignMemory<T>) {}
+    override func update<T>(vertice:CAIMAlignedMemory<T>) {}
     
     private func nocopy(_ buf:UnsafeMutableRawPointer, length:Int) -> MTLBuffer {
         return CAIMMetal.device.makeBuffer(bytesNoCopy: buf, length: length, options: .storageModeShared, deallocator: nil)

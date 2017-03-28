@@ -52,8 +52,8 @@ class CAIMMetalRenderPipeline
     }
     
     var blend_type:CAIMMetalBlendType = .none {
-        didSet(new_type) {
-            setBlendMode(new_type)
+        didSet {
+            setBlendMode(blend_type)
             remake()
         }
     }
