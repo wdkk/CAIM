@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FD1E8C241966407A0031E727"
-               BuildableName = "caimmetal01A.app"
+               BuildableName = "caimmetal01.app"
                BlueprintName = "caimmetal01"
                ReferencedContainer = "container:caimmetal01.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FD1E8C241966407A0031E727"
-            BuildableName = "caimmetal01A.app"
+            BuildableName = "caimmetal01.app"
             BlueprintName = "caimmetal01"
             ReferencedContainer = "container:caimmetal01.xcodeproj">
          </BuildableReference>
@@ -56,7 +56,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FD1E8C241966407A0031E727"
-            BuildableName = "caimmetal01A.app"
+            BuildableName = "caimmetal01.app"
             BlueprintName = "caimmetal01"
             ReferencedContainer = "container:caimmetal01.xcodeproj">
          </BuildableReference>
@@ -75,7 +75,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FD1E8C241966407A0031E727"
-            BuildableName = "caimmetal01A.app"
+            BuildableName = "caimmetal01.app"
             BlueprintName = "caimmetal01"
             ReferencedContainer = "container:caimmetal01.xcodeproj">
          </BuildableReference>

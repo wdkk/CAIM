@@ -22,10 +22,10 @@ class CAIMMetalComputer
         let hgt:Int32 = thread_size.h
         var th_wid:Int32 = 1
         var th_hgt:Int32 = 1
-        for w:Int in 0 ..< 16 {
+        for w:Int32 in 0 ..< 16 {
             if(wid % (16-w) == 0) { th_wid = (16-w); break }
         }
-        for h:Int in 0 ..< 16 {
+        for h:Int32 in 0 ..< 16 {
             if(hgt % (16-h) == 0) { th_hgt = (16-h); break }
         }
         

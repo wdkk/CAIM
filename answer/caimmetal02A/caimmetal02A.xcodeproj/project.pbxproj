@@ -194,9 +194,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FD1E8C241966407A0031E727 /* caimmetal01A */ = {
+		FD1E8C241966407A0031E727 /* caimmetal02A */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal01A" */;
+			buildConfigurationList = FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal02A" */;
 			buildPhases = (
 				FD1E8C211966407A0031E727 /* Sources */,
 				FD1E8C221966407A0031E727 /* Frameworks */,
@@ -206,7 +206,7 @@
 			);
 			dependencies = (
 			);
-			name = caimmetal01A;
+			name = caimmetal02A;
 			productName = ios02_views_swift;
 			productReference = FD1E8C251966407A0031E727 /* ios_caimmetal01.app */;
 			productType = "com.apple.product-type.application";
@@ -229,7 +229,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal01A" */;
+			buildConfigurationList = FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal02A" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -241,7 +241,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FD1E8C241966407A0031E727 /* caimmetal01A */,
+				FD1E8C241966407A0031E727 /* caimmetal02A */,
 			);
 		};
 /* End PBXProject section */
@@ -385,7 +385,7 @@
 				INFOPLIST_FILE = config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = caimmetal01A;
+				PRODUCT_NAME = caimmetal02A;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CAIM/CAIMBridging.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -404,7 +404,7 @@
 				INFOPLIST_FILE = config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = caimmetal01A;
+				PRODUCT_NAME = caimmetal02A;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CAIM/CAIMBridging.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 3.0;
@@ -415,7 +415,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal01A" */ = {
+		FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal02A" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FD1E8C3A1966407A0031E727 /* Debug */,
@@ -424,7 +424,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal01A" */ = {
+		FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal02A" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FD1E8C3D1966407A0031E727 /* Debug */,
