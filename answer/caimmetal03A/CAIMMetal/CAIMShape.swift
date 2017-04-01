@@ -19,6 +19,36 @@ class CAIMShape<T> : CAIMAlignedMemory<T>
     func draw(_ renderer:CAIMMetalRenderer) {}
 }
 
+// 点メモリクラス
+class CAIMPoints<T:Initializable> : CAIMShape<CAIMPoint<T>>
+{
+    func update(_ points:[CAIMPoint<T>]) {
+        self.resize(count:points.count)
+        let pointer = UnsafeMutableRawPointer(mutating: points)
+        memcpy(self.pointer, pointer, points.count * MemoryLayout<CAIMPoint<T>>.size)
+    }
+    
+    override func draw(_ renderer:CAIMMetalRenderer) {
+        let enc = renderer.encoder
+        enc?.drawPrimitives(type: .point, vertexStart: 0, vertexCount: count)
+    }
+}
+
+// ライン形状メモリクラス
+class CAIMLines<T:Initializable> : CAIMShape<CAIMLine<T>>
+{
+    func update(_ lines:[CAIMLine<T>]) {
+        self.resize(count:lines.count)
+        let pointer = UnsafeMutableRawPointer(mutating: lines)
+        memcpy(self.pointer, pointer, lines.count * MemoryLayout<CAIMLine<T>>.size)
+    }
+    
+    override func draw(_ renderer:CAIMMetalRenderer) {
+        let enc = renderer.encoder
+        enc?.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * 2)
+    }
+}
+
 // 三角形メッシュ形状メモリクラス
 class CAIMTriangles<T:Initializable> : CAIMShape<CAIMTriangle<T>>
 {

@@ -75,3 +75,4 @@ fragment float4 fragRing(VertexOut vout [[ stage_in ]]) {
     rgba[3] = vout.rgba[3] * (1.0 + cos(M_PI_F * k)) / 2.0;
     return rgba;
 }
+

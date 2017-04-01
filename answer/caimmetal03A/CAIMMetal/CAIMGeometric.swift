@@ -153,6 +153,16 @@ func * (left: Matrix4x4, right:Matrix4x4) -> Matrix4x4 {
     return mat
 }
 
+struct CAIMPoint<T:Initializable>
+{
+    var v0:T = T()
+}
+
+struct CAIMLine<T:Initializable>
+{
+    var v0:T = T(), v1:T = T()
+}
+
 struct CAIMTriangle<T:Initializable>
 {
     var v0:T = T(), v1:T = T(), v2:T = T()
