@@ -11,3 +11,4 @@
 //
 
 #import "CAIMImageC.h"
+#import "CAIMMemoryC.h"

@@ -88,7 +88,7 @@ class ImageToolBox
         for y in 0 ..< hgt {
             for x in 0 ..< wid {
                 // 2色を混ぜる係数: x座標をsinカーブ角度に用いて計算
-                let sinv  = sin(k * Float(x)/Float(wid) * Float(2*M_PI))   // sin = -1.0 ~ 1.0
+                let sinv  = sin(k * Float(x)/Float(wid) * Float(2*Double.pi))   // sin = -1.0 ~ 1.0
                 let alpha = (sinv + 1.0) / 2.0                             // α = 0.0 ~ 1.0
                 
                 // C = A(1.0-α) + Bα
@@ -117,7 +117,7 @@ class ImageToolBox
                 let dx = Float(x-cx)
                 let dy = Float(y-cy)
                 let dist = sqrt(dx * dx + dy * dy)  // 中心との距離(単位はピクセル)
-                let sinv  = sin(k * dist/Float(wid) * Float(2*M_PI))   // 中心から波が広がるようにするため、距離distを用いてsin値を計算
+                let sinv  = sin(k * dist/Float(wid) * Float(2*Double.pi))   // 中心から波が広がるようにするため、距離distを用いてsin値を計算
                 let alpha = (sinv + 1.0) / 2.0                         // α = 0.0 ~ 1.0
                 
                 // C = A(1.0-α) + Bα
@@ -146,7 +146,7 @@ class ImageToolBox
                 let dx = Float(x-cx)
                 let dy = Float(y-cy)
                 let dist = sqrt(dx * dx + dy * dy)  // 中心との距離(単位はピクセル)
-                let cosv  = cos(dist/Float(wid/2) * Float(M_PI*0.5)) // 画面の端でcos(0.5π)になるようにする
+                let cosv  = cos(dist/Float(wid/2) * Float(Double.pi*0.5)) // 画面の端でcos(0.5π)になるようにする
                 let alpha = min(1.0-cosv, 1.0)          // α = 1.0(cos0) ~ 0.0(cos0.5π)
                 
                 // C = A(1.0-α) + Bα

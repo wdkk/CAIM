@@ -100,7 +100,7 @@ class ImageToolBox
                 // 中心点(cx, cy)からの距離が半径radius以内なら塗る
                 if( dist <= Float(radius) ) {
                     // 中心からの距離でcosを計算してαとして用いる
-                    var alpha = Float(cos(Double(dist) / Double(radius) * M_PI / 2.0))
+                    var alpha = Float(cos(Double(dist) / Double(radius) * Double.pi / 2.0))
                     // αに不透明度opacityを掛ける
                     alpha *= opacity
                     
@@ -128,7 +128,7 @@ class ImageToolBox
         
         // ■効率化1: 同じ計算はループ前にしておき、変数に入れておく
         let r2:Int = radius * radius
-        let k:Float = 1.0 / Float(r2) * Float(M_PI) / 2.0
+        let k:Float = 1.0 / Float(r2) * Float.pi / 2.0
         
         // min_x~max_x, min_y~max_yまでの範囲を塗る
         for y in min_y ... max_y {

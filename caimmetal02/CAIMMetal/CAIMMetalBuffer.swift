@@ -50,42 +50,66 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
     init<T>(elements:[T]) {
         super.init()
         _length = MemoryLayout<T>.size * elements.count
+        if(_length == 0) {
+            _mtlbuf = nil
+            return
+        }
         _mtlbuf = self.allocate(UnsafeMutablePointer(mutating: elements), length:_length)
     }
     // 指定したバイト数を確保（初期化はなし）
     init(length:Int) {
         super.init()
         _length = length
+        if(_length == 0) {
+            _mtlbuf = nil
+            return
+        }
         _mtlbuf = self.allocate(_length)
     }
     // 指定したバイト数で確保＆ポインタ先からコピーして初期化
     init(_ buf:UnsafeRawPointer, length:Int) {
         super.init()
         _length = length
+        if(_length == 0) {
+            _mtlbuf = nil
+            return
+        }
         _mtlbuf = self.allocate(buf, length: _length)
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化
     init<T>(vertice:CAIMAlignedMemory<T>) {
         super.init()
         _length = vertice.allocated_length
+        if(_length == 0) {
+            _mtlbuf = nil
+            return
+        }
         _mtlbuf = self.allocate(vertice.pointer, length:_length)
     }
     
     //// 更新
     override func update<T>(_ obj:T) {
-        memcpy( _mtlbuf!.contents(), [obj], MemoryLayout<T>.size )
+        let sz:Int = MemoryLayout<T>.size
+        if(_length != sz) { _mtlbuf = self.allocate(sz) }
+        memcpy( _mtlbuf!.contents(), [obj], sz )
     }
     
     override func update<T>(elements:[T]) {
-        memcpy( _mtlbuf!.contents(), UnsafeMutablePointer(mutating: elements), MemoryLayout<T>.size * elements.count )
+        let sz:Int = MemoryLayout<T>.size * elements.count
+        if(_length != sz) { _mtlbuf = self.allocate(sz) }
+        memcpy( _mtlbuf!.contents(), UnsafeMutablePointer(mutating: elements), sz)
     }
     
     override func update(_ buf:UnsafeRawPointer, length:Int) {
-        memcpy( _mtlbuf!.contents(), buf, length )
+        let sz:Int = length
+        if(_length != sz) { _mtlbuf = self.allocate(sz) }
+        memcpy( _mtlbuf!.contents(), buf, sz )
     }
     
     override func update<T>(vertice:CAIMAlignedMemory<T>) {
-        memcpy( _mtlbuf!.contents(), vertice.pointer, vertice.allocated_length )
+        let sz:Int = vertice.allocated_length
+        if(_length != sz) { _mtlbuf = self.allocate(sz) }
+        memcpy( _mtlbuf!.contents(), vertice.pointer, sz )
     }
     
     //// メモリ確保

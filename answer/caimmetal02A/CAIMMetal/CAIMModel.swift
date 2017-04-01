@@ -18,12 +18,15 @@ class CAIMModel
 {
     fileprivate var _parent:CAIMModel?
     
-    var matrix:Matrix4x4 = Matrix4x4()
-    var modelview_matrix:Matrix4x4 {
-        return _parent != nil ? _parent!.matrix * self.matrix : self.matrix
+    var shape:CAIMShape<Any>?
+    
+    var _matrix:Matrix4x4 = Matrix4x4()
+    var matrix:Matrix4x4 {
+        return _parent != nil ? _parent!.matrix * _matrix : _matrix
     }
     
     init(_ parent:CAIMModel? = nil) {
         _parent = parent
     }
+    
 }

@@ -125,7 +125,7 @@ void CAIMImageResize( CAIMImageCPtr img_, long wid_, long hgt_ ) {
     CAIMImageInternalCreateData( img_, wid_, hgt_, img_->depth );
 }
 
-CAIMMemory CAIMImageMemory( CAIMImageCPtr img_ ) { return img_->memory; }
+CAIMCharPtr CAIMImageMemory( CAIMImageCPtr img_ ) { return img_->memory; }
 
 CAIMColorMatrix CAIMImageMatrix( CAIMImageCPtr img_ ) { return (CAIMColorMatrix)img_->matrix; }
 
