@@ -1,0 +1,439 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5D02B67A1E5AFA10002869D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D02B6791E5AFA10002869D2 /* AppDelegate.swift */; };
+		5D224A8E1C5FD6FD00AD55B3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */; };
+		5D27F4EE1E5D7F1200199E32 /* CAIMMetal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E21E5D7F1200199E32 /* CAIMMetal.swift */; };
+		5D27F4EF1E5D7F1200199E32 /* CAIMMetalBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E31E5D7F1200199E32 /* CAIMMetalBuffer.swift */; };
+		5D27F4F01E5D7F1200199E32 /* CAIMMetalComputePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E41E5D7F1200199E32 /* CAIMMetalComputePipeline.swift */; };
+		5D27F4F11E5D7F1200199E32 /* CAIMMetalComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E51E5D7F1200199E32 /* CAIMMetalComputer.swift */; };
+		5D27F4F21E5D7F1200199E32 /* CAIMGeometric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E61E5D7F1200199E32 /* CAIMGeometric.swift */; };
+		5D27F4F41E5D7F1200199E32 /* CAIMMetalRenderPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E81E5D7F1200199E32 /* CAIMMetalRenderPipeline.swift */; };
+		5D27F4F51E5D7F1200199E32 /* CAIMMetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4E91E5D7F1200199E32 /* CAIMMetalRenderer.swift */; };
+		5D27F4F61E5D7F1200199E32 /* CAIMMetalShader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4EA1E5D7F1200199E32 /* CAIMMetalShader.swift */; };
+		5D27F4F71E5D7F1200199E32 /* CAIMMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4EB1E5D7F1200199E32 /* CAIMMetalView.swift */; };
+		5D27F4FA1E5D7F4300199E32 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 5D27F4F91E5D7F4300199E32 /* Shaders.metal */; };
+		5D27F4FF1E5D7FD200199E32 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FC1E5D7FD200199E32 /* Metal.framework */; };
+		5D27F5001E5D7FD200199E32 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */; };
+		5D27F5011E5D7FD200199E32 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */; };
+		5D67731D1E8148D700470496 /* CAIMModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D67731C1E8148D700470496 /* CAIMModel.swift */; };
+		5D67731F1E8152BB00470496 /* CAIMShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D67731E1E8152BB00470496 /* CAIMShape.swift */; };
+		5D8249541E6BF7A400156E38 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8249531E6BF7A400156E38 /* libstdc++.tbd */; };
+		5D984E9E1E5BE74F000CA4E3 /* CAIMImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E981E5BE74F000CA4E3 /* CAIMImage.swift */; };
+		5D984E9F1E5BE74F000CA4E3 /* CAIMImageC.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E9A1E5BE74F000CA4E3 /* CAIMImageC.m */; };
+		5D984EA01E5BE74F000CA4E3 /* CAIMUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E9B1E5BE74F000CA4E3 /* CAIMUtil.swift */; };
+		5D984EA11E5BE74F000CA4E3 /* CAIMView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E9C1E5BE74F000CA4E3 /* CAIMView.swift */; };
+		5D984EA21E5BE74F000CA4E3 /* CAIMViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E9D1E5BE74F000CA4E3 /* CAIMViewController.swift */; };
+		5DBF83221BBB7E7A00CDD689 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5DBF83211BBB7E7A00CDD689 /* Default-568h@2x.png */; };
+		5DD58FF41B8B47A80055600D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DD58FF21B8B47A80055600D /* Images.xcassets */; };
+		5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5DDEABE91E6FDB5F00E34118 /* CAIMMemoryC.mm */; };
+		5DDEABED1E6FE18100E34118 /* CAIMMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDEABEC1E6FE18100E34118 /* CAIMMemory.swift */; };
+		5DEE083A1E5E72DC0013C7D8 /* CAIMMetalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DEE08391E5E72DC0013C7D8 /* CAIMMetalViewController.swift */; };
+		5DF9D3631C5BC6550056E506 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF9D3621C5BC6550056E506 /* DrawingViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		5D02B6791E5AFA10002869D2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		5D27F4E21E5D7F1200199E32 /* CAIMMetal.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetal.swift; sourceTree = "<group>"; };
+		5D27F4E31E5D7F1200199E32 /* CAIMMetalBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalBuffer.swift; sourceTree = "<group>"; };
+		5D27F4E41E5D7F1200199E32 /* CAIMMetalComputePipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputePipeline.swift; sourceTree = "<group>"; };
+		5D27F4E51E5D7F1200199E32 /* CAIMMetalComputer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputer.swift; sourceTree = "<group>"; };
+		5D27F4E61E5D7F1200199E32 /* CAIMGeometric.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMGeometric.swift; sourceTree = "<group>"; };
+		5D27F4E81E5D7F1200199E32 /* CAIMMetalRenderPipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalRenderPipeline.swift; sourceTree = "<group>"; };
+		5D27F4E91E5D7F1200199E32 /* CAIMMetalRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalRenderer.swift; sourceTree = "<group>"; };
+		5D27F4EA1E5D7F1200199E32 /* CAIMMetalShader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalShader.swift; sourceTree = "<group>"; };
+		5D27F4EB1E5D7F1200199E32 /* CAIMMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalView.swift; sourceTree = "<group>"; };
+		5D27F4F91E5D7F4300199E32 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		5D27F4FC1E5D7FD200199E32 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
+		5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
+		5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		5D67731C1E8148D700470496 /* CAIMModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMModel.swift; sourceTree = "<group>"; };
+		5D67731E1E8152BB00470496 /* CAIMShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMShape.swift; sourceTree = "<group>"; };
+		5D8249531E6BF7A400156E38 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
+		5D984E971E5BE74F000CA4E3 /* CAIMBridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMBridging.h; sourceTree = "<group>"; };
+		5D984E981E5BE74F000CA4E3 /* CAIMImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMImage.swift; sourceTree = "<group>"; };
+		5D984E991E5BE74F000CA4E3 /* CAIMImageC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMImageC.h; sourceTree = "<group>"; };
+		5D984E9A1E5BE74F000CA4E3 /* CAIMImageC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CAIMImageC.m; sourceTree = "<group>"; };
+		5D984E9B1E5BE74F000CA4E3 /* CAIMUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMUtil.swift; sourceTree = "<group>"; };
+		5D984E9C1E5BE74F000CA4E3 /* CAIMView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMView.swift; sourceTree = "<group>"; };
+		5D984E9D1E5BE74F000CA4E3 /* CAIMViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMViewController.swift; sourceTree = "<group>"; };
+		5DB3AF2D1B8AD81C00239B78 /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		5DBF83211BBB7E7A00CDD689 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		5DD58FF21B8B47A80055600D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		5DD58FF31B8B47A80055600D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5DDEABE91E6FDB5F00E34118 /* CAIMMemoryC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAIMMemoryC.mm; sourceTree = "<group>"; };
+		5DDEABEA1E6FDB5F00E34118 /* CAIMMemoryC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMMemoryC.h; sourceTree = "<group>"; };
+		5DDEABEC1E6FE18100E34118 /* CAIMMemory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMemory.swift; sourceTree = "<group>"; };
+		5DEE08391E5E72DC0013C7D8 /* CAIMMetalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalViewController.swift; sourceTree = "<group>"; };
+		5DF9D3621C5BC6550056E506 /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
+		FD1E8C251966407A0031E727 /* ios_caimmetal01.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ios_caimmetal01.app; path = caimmetal04A.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD3E807D19739A39007553FB /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FD1E8C221966407A0031E727 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D8249541E6BF7A400156E38 /* libstdc++.tbd in Frameworks */,
+				5D27F4FF1E5D7FD200199E32 /* Metal.framework in Frameworks */,
+				5D27F5001E5D7FD200199E32 /* MetalKit.framework in Frameworks */,
+				5D27F5011E5D7FD200199E32 /* QuartzCore.framework in Frameworks */,
+				5D224A8E1C5FD6FD00AD55B3 /* Accelerate.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5D27F4E01E5D7F1200199E32 /* CAIMMetal */ = {
+			isa = PBXGroup;
+			children = (
+				5D27F4E21E5D7F1200199E32 /* CAIMMetal.swift */,
+				5D27F4E31E5D7F1200199E32 /* CAIMMetalBuffer.swift */,
+				5D27F4E91E5D7F1200199E32 /* CAIMMetalRenderer.swift */,
+				5D27F4E81E5D7F1200199E32 /* CAIMMetalRenderPipeline.swift */,
+				5D27F4E51E5D7F1200199E32 /* CAIMMetalComputer.swift */,
+				5D27F4E41E5D7F1200199E32 /* CAIMMetalComputePipeline.swift */,
+				5D27F4EA1E5D7F1200199E32 /* CAIMMetalShader.swift */,
+				5D27F4EB1E5D7F1200199E32 /* CAIMMetalView.swift */,
+				5DEE08391E5E72DC0013C7D8 /* CAIMMetalViewController.swift */,
+				5D27F4E61E5D7F1200199E32 /* CAIMGeometric.swift */,
+				5D67731C1E8148D700470496 /* CAIMModel.swift */,
+				5D67731E1E8152BB00470496 /* CAIMShape.swift */,
+			);
+			path = CAIMMetal;
+			sourceTree = "<group>";
+		};
+		5D27F4FB1E5D7FD200199E32 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5D8249531E6BF7A400156E38 /* libstdc++.tbd */,
+				5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */,
+				5D27F4FC1E5D7FD200199E32 /* Metal.framework */,
+				5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */,
+				5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5D984E961E5BE74F000CA4E3 /* CAIM */ = {
+			isa = PBXGroup;
+			children = (
+				5D984E971E5BE74F000CA4E3 /* CAIMBridging.h */,
+				5D984E981E5BE74F000CA4E3 /* CAIMImage.swift */,
+				5D984E991E5BE74F000CA4E3 /* CAIMImageC.h */,
+				5D984E9A1E5BE74F000CA4E3 /* CAIMImageC.m */,
+				5D984E9B1E5BE74F000CA4E3 /* CAIMUtil.swift */,
+				5D984E9C1E5BE74F000CA4E3 /* CAIMView.swift */,
+				5D984E9D1E5BE74F000CA4E3 /* CAIMViewController.swift */,
+				5DDEABEC1E6FE18100E34118 /* CAIMMemory.swift */,
+				5DDEABEA1E6FDB5F00E34118 /* CAIMMemoryC.h */,
+				5DDEABE91E6FDB5F00E34118 /* CAIMMemoryC.mm */,
+			);
+			path = CAIM;
+			sourceTree = "<group>";
+		};
+		5DD58FF11B8B47A80055600D /* config */ = {
+			isa = PBXGroup;
+			children = (
+				5DD58FF21B8B47A80055600D /* Images.xcassets */,
+				5DD58FF31B8B47A80055600D /* Info.plist */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+		5DF9D3531C5BBCEB0056E506 /* basic */ = {
+			isa = PBXGroup;
+			children = (
+				5DF9D3621C5BC6550056E506 /* DrawingViewController.swift */,
+				5D27F4F91E5D7F4300199E32 /* Shaders.metal */,
+			);
+			path = basic;
+			sourceTree = "<group>";
+		};
+		FD1E8C1C1966407A0031E727 = {
+			isa = PBXGroup;
+			children = (
+				5DF9D3531C5BBCEB0056E506 /* basic */,
+				5D984E961E5BE74F000CA4E3 /* CAIM */,
+				5D27F4E01E5D7F1200199E32 /* CAIMMetal */,
+				FD1E8C44196646690031E727 /* image */,
+				5DD58FF11B8B47A80055600D /* config */,
+				FD1E8C261966407A0031E727 /* Products */,
+				5D27F4FB1E5D7FD200199E32 /* Frameworks */,
+				5D02B6791E5AFA10002869D2 /* AppDelegate.swift */,
+				FD3E807D19739A39007553FB /* README.txt */,
+				5DB3AF2D1B8AD81C00239B78 /* LICENSE.txt */,
+			);
+			sourceTree = "<group>";
+		};
+		FD1E8C261966407A0031E727 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FD1E8C251966407A0031E727 /* ios_caimmetal01.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FD1E8C44196646690031E727 /* image */ = {
+			isa = PBXGroup;
+			children = (
+				5DBF83211BBB7E7A00CDD689 /* Default-568h@2x.png */,
+			);
+			path = image;
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FD1E8C241966407A0031E727 /* caimmetal04 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal04" */;
+			buildPhases = (
+				FD1E8C211966407A0031E727 /* Sources */,
+				FD1E8C221966407A0031E727 /* Frameworks */,
+				FD1E8C231966407A0031E727 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = caimmetal04;
+			productName = ios02_views_swift;
+			productReference = FD1E8C251966407A0031E727 /* ios_caimmetal01.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FD1E8C1D1966407A0031E727 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftMigration = 0700;
+				LastSwiftUpdateCheck = 0700;
+				LastUpgradeCheck = 0810;
+				ORGANIZATIONNAME = "TUT Creative Application";
+				TargetAttributes = {
+					FD1E8C241966407A0031E727 = {
+						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = YC4UJA55P2;
+						LastSwiftMigration = 0810;
+					};
+				};
+			};
+			buildConfigurationList = FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal04" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FD1E8C1C1966407A0031E727;
+			productRefGroup = FD1E8C261966407A0031E727 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FD1E8C241966407A0031E727 /* caimmetal04 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FD1E8C231966407A0031E727 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5DD58FF41B8B47A80055600D /* Images.xcassets in Resources */,
+				5DBF83221BBB7E7A00CDD689 /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FD1E8C211966407A0031E727 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5D27F4F61E5D7F1200199E32 /* CAIMMetalShader.swift in Sources */,
+				5D984EA11E5BE74F000CA4E3 /* CAIMView.swift in Sources */,
+				5D984E9F1E5BE74F000CA4E3 /* CAIMImageC.m in Sources */,
+				5D67731D1E8148D700470496 /* CAIMModel.swift in Sources */,
+				5D27F4F21E5D7F1200199E32 /* CAIMGeometric.swift in Sources */,
+				5DEE083A1E5E72DC0013C7D8 /* CAIMMetalViewController.swift in Sources */,
+				5D27F4F41E5D7F1200199E32 /* CAIMMetalRenderPipeline.swift in Sources */,
+				5D02B67A1E5AFA10002869D2 /* AppDelegate.swift in Sources */,
+				5D984EA21E5BE74F000CA4E3 /* CAIMViewController.swift in Sources */,
+				5DF9D3631C5BC6550056E506 /* DrawingViewController.swift in Sources */,
+				5D27F4F11E5D7F1200199E32 /* CAIMMetalComputer.swift in Sources */,
+				5D984E9E1E5BE74F000CA4E3 /* CAIMImage.swift in Sources */,
+				5D27F4EF1E5D7F1200199E32 /* CAIMMetalBuffer.swift in Sources */,
+				5D27F4FA1E5D7F4300199E32 /* Shaders.metal in Sources */,
+				5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */,
+				5D27F4F51E5D7F1200199E32 /* CAIMMetalRenderer.swift in Sources */,
+				5D27F4F01E5D7F1200199E32 /* CAIMMetalComputePipeline.swift in Sources */,
+				5D27F4F71E5D7F1200199E32 /* CAIMMetalView.swift in Sources */,
+				5D984EA01E5BE74F000CA4E3 /* CAIMUtil.swift in Sources */,
+				5D67731F1E8152BB00470496 /* CAIMShape.swift in Sources */,
+				5DDEABED1E6FE18100E34118 /* CAIMMemory.swift in Sources */,
+				5D27F4EE1E5D7F1200199E32 /* CAIMMetal.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FD1E8C3A1966407A0031E727 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				METAL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SYMROOT = ../_build;
+			};
+			name = Debug;
+		};
+		FD1E8C3B1966407A0031E727 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				METAL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SYMROOT = ../_build;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		FD1E8C3D1966407A0031E727 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YC4UJA55P2;
+				INFOPLIST_FILE = config/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = caimmetal04;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CAIM/CAIMBridging.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		FD1E8C3E1966407A0031E727 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = YC4UJA55P2;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				INFOPLIST_FILE = config/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_NAME = caimmetal04;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CAIM/CAIMBridging.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal04" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD1E8C3A1966407A0031E727 /* Debug */,
+				FD1E8C3B1966407A0031E727 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal04" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FD1E8C3D1966407A0031E727 /* Debug */,
+				FD1E8C3E1966407A0031E727 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FD1E8C1D1966407A0031E727 /* Project object */;
+}

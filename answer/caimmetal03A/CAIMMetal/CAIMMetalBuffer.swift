@@ -128,17 +128,26 @@ class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     init<T>(vertice:CAIMAlignedMemory<T>) {
         super.init()
         _length = vertice.allocated_length
+        if(_length == 0) {
+            _mtlbuf = nil
+            return
+        }
         _mtlbuf = self.nocopy(vertice.pointer, length:_length)
     }
     
     // 更新関数は何もしない
-    override func update<T>(_ obj:T) {}
+    override internal func update<T>(_ obj:T) {
+    }
     
-    override func update<T>(elements:[T]) {}
+    override internal func update<T>(elements:[T]) {
+    }
     
-    override func update(_ buf:UnsafeRawPointer, length:Int) {}
+    override internal func update(_ buf:UnsafeRawPointer, length:Int) {
+    }
     
-    override func update<T>(vertice:CAIMAlignedMemory<T>) {}
+    override func update<T>(vertice:CAIMAlignedMemory<T>) {
+        _mtlbuf = self.nocopy(vertice.pointer, length: vertice.allocated_length)
+    }
     
     private func nocopy(_ buf:UnsafeMutableRawPointer, length:Int) -> MTLBuffer {
         return CAIMMetal.device.makeBuffer(bytesNoCopy: buf, length: length, options: .storageModeShared, deallocator: nil)
