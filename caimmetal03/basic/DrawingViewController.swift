@@ -23,58 +23,57 @@ struct VertexInfo : Initializable {
     var rgba:CAIMColor = CAIMColor()
 }
 
-// パーティクル構造体
-// ...
+// パーティクル情報
+struct Particle {
+    var pos:Vec2 = Vec2()               // xy座標
+    var radius:Float = 0.0              // 半径
+    var rgba:CAIMColor = CAIMColor()    // パーティクル色
+}
 
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMMetalViewController
 {
-    private var pl:CAIMMetalRenderPipeline?
+    private var pl_circle:CAIMMetalRenderPipeline?
     
     // GPU:バッファ
-    private var mat_buf:CAIMMetalBuffer?        // 行列バッファ
-    private var quads_buf:CAIMMetalBuffer?      // 頂点バッファ(四角形)
+    private var mat_buf:CAIMMetalBuffer?            // 行列バッファ
+    private var circle_quads_buf:CAIMMetalBuffer?   // 頂点バッファ(円を描く四角形)
     
     // CPU:形状メモリ
-    private var quads = CAIMQuadrangles<VertexInfo>()
+    private var circle_quads = CAIMQuadrangles<VertexInfo>()    // 円用メモリ
     
-    // パーティクル情報配列 ...
+    // パーティクル情報配列
+    private var circle_parts = [Particle]()     // 円用パーティクル情報
+    
+    // 演習資料にある各種関数を作成
+    // ...
+    
+    
     
     // 準備関数
     override func setup() {
-        // シェーダを指定してパイプラインの作成
-        pl = CAIMMetalRenderPipeline(vertname:"vert2d", fragname:"fragCircleCosCurve")
-        pl?.blend_type = .alpha_blend
-        
         // (GPUバッファ)ピクセルプロジェクション行列バッファの作成(画面サイズに合わせる)
         mat_buf = CAIMMetalBuffer(Matrix4x4.pixelProjection(CAIMScreenPixel))
-        
-        // (GPUバッファ)頂点バッファ(四角形)の作成
-        quads_buf = CAIMMetalBuffer(vertice:quads)
-        
-        // パーティクル情報を作成
-        // ...
+        // 円描画の準備
+
+        // リング描画の準備
+
     }
     
     // 繰り返し処理関数
     override func update(renderer:CAIMMetalRenderer) {
-        // パーティクル情報の更新
-        // ...
+        // 円情報の更新
+
+        // 円情報からGPUバッファを生成
+
+        // 円の描画
+
         
-        
-        // パーティクル情報から頂点情報を作る(parts -> quads)
-        // ...
-        
-        
-        // GPUバッファの内容を更新(quads -> quads_buf)
-        quads_buf?.update(vertice: quads)
-        
-        // パイプライン(シェーダ)の切り替え
-        renderer.use(pl)
-        // 使用するバッファと番号をリンクする
-        renderer.link(quads_buf!, to:.vertex, at:ID_VERTEX)
-        renderer.link(mat_buf!, to:.vertex, at:ID_PROJECTION)
-        // GPU描画実行(quadsを渡すと四角形を描く)
-        renderer.draw(quads)
+        // リング情報の更新
+
+        // リング情報からGPUバッファを生成
+
+        // リングの描画
+
     }
 }
