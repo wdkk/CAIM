@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -68,7 +68,7 @@ class CAIMMetalViewController: UIViewController
     }
     
     // CADisplayLinkで60fpsで呼ばれる関数
-    func polling(_ display_link :CADisplayLink) {
+    @objc func polling(_ display_link :CADisplayLink) {
         // レンダラとビューの紐付け、および準備
         _renderer?.ready(view: _caim_metal_view!)
         

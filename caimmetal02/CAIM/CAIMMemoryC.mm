@@ -1,9 +1,13 @@
 //
-//  CAIMMemory.cpp
-//  ios_caimmetal01
+// CAIMMemoryC.mm
+// CAIM Project
+//   http://kengolab.net/CreApp/wiki/
 //
-//  Created by kengo on 2017/03/08.
-//  Copyright © 2017年 TUT Creative Application. All rights reserved.
+// Copyright (c) Watanabe-DENKI Inc.
+//   http://wdkk.co.jp/
+//
+// This software is released under the MIT License.
+//   http://opensource.org/licenses/mit-license.php
 //
 
 #include "CAIMMemoryC.h"

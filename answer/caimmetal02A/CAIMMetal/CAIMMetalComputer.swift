@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -33,8 +33,8 @@ class CAIMMetalComputer
         let thread_groups:MTLSize = MTLSize(width: Int(wid / th_wid), height: Int(hgt / th_hgt), depth: 1)  // スレッドグループ数
         
         // コマンドバッファの作成 → コンピュートコマンドエンコーダの生成(※コマンドバッファは再利用をサポートしてないので、この関数内で作成)
-        let command_buffer:MTLCommandBuffer = CAIMMetal.command_queue.makeCommandBuffer()
-        let comp_enc:MTLComputeCommandEncoder = command_buffer.makeComputeCommandEncoder()
+        let command_buffer:MTLCommandBuffer = CAIMMetal.command_queue.makeCommandBuffer()!
+        let comp_enc:MTLComputeCommandEncoder = command_buffer.makeComputeCommandEncoder()!
         
         comp_enc.setComputePipelineState(pl.pipeline!)
 

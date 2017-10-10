@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -73,7 +73,7 @@ class DrawingViewController : CAIMMetalViewController
             // パーティクルのライフを減らす(60FPSで1.5秒間保つようにする)
             particles[i].life -= 1.0 / (1.5 * 60.0)
             // ライフが0は下回らないようにする
-            particles[i].life = max(0.0, circle_parts[i].life)
+            particles[i].life = max(0.0, particles[i].life) //
         }
     }
     

@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -32,7 +32,7 @@ class CAIMMetalShader
     
     init(_ sh:String) {
         _shader_name = sh
-        let library:MTLLibrary? = CAIMMetal.device.newDefaultLibrary()
+        let library:MTLLibrary? = CAIMMetal.device.makeDefaultLibrary()
         _function = library!.makeFunction(name: self.name!)
     }
 }

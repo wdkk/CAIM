@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -114,11 +114,11 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
     
     //// メモリ確保
     private func allocate(_ buf:UnsafeRawPointer, length:Int) -> MTLBuffer {
-        return CAIMMetal.device.makeBuffer(bytes: buf, length: length, options: .storageModeShared )
+        return CAIMMetal.device.makeBuffer(bytes: buf, length: length, options: .storageModeShared )!
     }
     
     private func allocate(_ length:Int) -> MTLBuffer {
-        return CAIMMetal.device.makeBuffer(length: length, options: .storageModeShared )
+        return CAIMMetal.device.makeBuffer(length: length, options: .storageModeShared )!
     }
 }
 
@@ -150,7 +150,7 @@ class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     }
     
     private func nocopy(_ buf:UnsafeMutableRawPointer, length:Int) -> MTLBuffer {
-        return CAIMMetal.device.makeBuffer(bytesNoCopy: buf, length: length, options: .storageModeShared, deallocator: nil)
+        return CAIMMetal.device.makeBuffer(bytesNoCopy: buf, length: length, options: .storageModeShared, deallocator: nil)!
     }
 }
 

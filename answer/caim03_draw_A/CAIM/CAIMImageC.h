@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -11,8 +11,8 @@
 //
 
 // [include guard]
-#ifndef __CAIM_IMAGEC_H__
-#define __CAIM_IMAGEC_H__
+#ifndef __CAIM_IMAGE_H__
+#define __CAIM_IMAGE_H__
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
@@ -44,7 +44,7 @@ typedef NS_ENUM(unsigned char, CAIMDepth)
     CAIMDepth_float= 32
 };
 
-typedef unsigned char* _Nonnull CAIMCharPtr;
+typedef unsigned char* _Nonnull CAIMMemory;
 
 //// shared method ////
 
@@ -62,7 +62,7 @@ int               CAIMImageLoadFile(CAIMImageCPtr img, NSString* _Nonnull file_p
 // load & save image file to Album.
 int               CAIMImageSaveFileToAlbum(CAIMImageCPtr img);
 // get matrix
-CAIMCharPtr       CAIMImageMemory(CAIMImageCPtr img);
+CAIMMemory        CAIMImageMemory(CAIMImageCPtr img);
 CAIMColorMatrix   CAIMImageMatrix(CAIMImageCPtr img);
 CAIMColor8Matrix  CAIMImageMatrix8(CAIMImageCPtr img);
 // get width/height

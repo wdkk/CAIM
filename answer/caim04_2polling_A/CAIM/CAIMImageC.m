@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -125,7 +125,7 @@ void CAIMImageResize( CAIMImageCPtr img_, long wid_, long hgt_ ) {
     CAIMImageInternalCreateData( img_, wid_, hgt_, img_->depth );
 }
 
-CAIMCharPtr CAIMImageMemory( CAIMImageCPtr img_ ) { return img_->memory; }
+CAIMMemory CAIMImageMemory( CAIMImageCPtr img_ ) { return img_->memory; }
 
 CAIMColorMatrix CAIMImageMatrix( CAIMImageCPtr img_ ) { return (CAIMColorMatrix)img_->matrix; }
 

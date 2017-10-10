@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -94,20 +94,20 @@ class CAIMMetalRenderer
     func link(_ buffer:CAIMMetalBufferBase, to type:CAIMMetalShaderType, at idx:Int) {
         switch(type) {
         case .vertex:
-            self.encoder?.setVertexBuffer(buffer.mtlbuf, offset: 0, at: idx)
+            self.encoder?.setVertexBuffer(buffer.mtlbuf, offset: 0, index: idx)
         case .fragment:
-            self.encoder?.setFragmentBuffer(buffer.mtlbuf, offset: 0, at: idx)
+            self.encoder?.setFragmentBuffer(buffer.mtlbuf, offset: 0, index: idx)
         default:
             break
         }
     }
     
     func linkVertexBuffer(_ idx:Int, _ buffer:CAIMMetalBufferBase) {
-        self.encoder?.setVertexBuffer(buffer.mtlbuf, offset: 0, at: idx)
+        self.encoder?.setVertexBuffer(buffer.mtlbuf, offset: 0, index: idx)
     }
     
     func linkFragmentBuffer(_ idx:Int, _ buffer:CAIMMetalBufferBase) {
-        self.encoder?.setFragmentBuffer(buffer.mtlbuf, offset: 0, at: idx)
+        self.encoder?.setFragmentBuffer(buffer.mtlbuf, offset: 0, index: idx)
     }
     
     func draw<T>(_ shape:CAIMShape<T>) {

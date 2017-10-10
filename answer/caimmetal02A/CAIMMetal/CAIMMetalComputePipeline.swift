@@ -3,7 +3,7 @@
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
-// Copyright (c) 2016 Watanabe-DENKI Inc.
+// Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
 //
 // This software is released under the MIT License.
@@ -24,7 +24,7 @@ class CAIMMetalComputePipeline
         self._csh = csh
         
         let device:MTLDevice = CAIMMetal.device
-        let library:MTLLibrary? = device.newDefaultLibrary()
+        let library:MTLLibrary? = device.makeDefaultLibrary()
         let compute_func:MTLFunction? = library!.makeFunction(name: csh!.name!)
         
         do {

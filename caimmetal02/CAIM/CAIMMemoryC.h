@@ -1,3 +1,15 @@
+//
+// CAIMMemoryC.h
+// CAIM Project
+//   http://kengolab.net/CreApp/wiki/
+//
+// Copyright (c) Watanabe-DENKI Inc.
+//   http://wdkk.co.jp/
+//
+// This software is released under the MIT License.
+//   http://opensource.org/licenses/mit-license.php
+//
+
 // [include guard]
 #ifndef __CAIM_MEMORY_C_H__
 #define __CAIM_MEMORY_C_H__
