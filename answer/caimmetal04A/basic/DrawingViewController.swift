@@ -16,8 +16,8 @@ import UIKit
 let ID_VERTEX:Int     = 0
 let ID_PROJECTION:Int = 1
 
-// 1頂点情報の構造体
-struct VertexInfo : Initializable {
+// 頂点情報の構造体
+struct VertexInfo {
     var pos:Vec4 = Vec4()
     var uv:Vec2 = Vec2()
     var rgba:CAIMColor = CAIMColor()
@@ -34,15 +34,10 @@ struct Particle {
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMMetalViewController
 {
-    private var pl_circle:CAIMMetalRenderPipeline?
+    private var pl_circle:CAIMMetalRenderPipeline?      // パーティクル
     
-    // GPU:バッファ
-    private var mat_buf:CAIMMetalBuffer?            // 行列バッファ
-    private var circle_quads_buf:CAIMMetalBuffer?   // 頂点バッファ(円を描く四角形)
-
-    // CPU:形状メモリ
-    private var circle_quads = CAIMQuadrangles<VertexInfo>()    // 円用メモリ
-    
+    private var mat:Matrix4x4 = .identity                     // 変換行列
+    private var circles = CAIMQuadrangles<VertexInfo>()       // 円用４頂点メッシュ群(はじめは0個)
     // パーティクル情報配列
     private var circle_parts = [Particle]()     // 円用パーティクル情報
 
@@ -51,9 +46,6 @@ class DrawingViewController : CAIMMetalViewController
         // シェーダを指定してパイプラインの作成
         pl_circle = CAIMMetalRenderPipeline(vertname:"vert2d", fragname:"fragCircleCosCurve")
         pl_circle?.blend_type = .alpha_blend
-        
-        // (GPUバッファ)頂点バッファ(四角形)の作成
-        circle_quads_buf = CAIMMetalBuffer(vertice:circle_quads)
     }
     
     // パーティクルを生成する関数
@@ -73,7 +65,7 @@ class DrawingViewController : CAIMMetalViewController
             // パーティクルのライフを減らす(60FPSで1.5秒間保つようにする)
             particles[i].life -= 1.0 / (1.5 * 60.0)
             // ライフが0は下回らないようにする
-            particles[i].life = max(0.0, particles[i].life) //
+            particles[i].life = max(0.0, particles[i].life)
         }
     }
     
@@ -87,13 +79,12 @@ class DrawingViewController : CAIMMetalViewController
         }
     }
     
-    // 円情報からCPUメモリの更新、GPUメモリに転送
-    private func genCirclesBuffer(particles:[Particle]) {
-        // パーティクル配列からCPUメモリの作成(particles -> circle_quads)
-        circle_quads.resize(count: particles.count)
-        let p_circle_quads = circle_quads.pointer
-        for i:Int in 0 ..< circle_quads.count {
-            // パーティクル情報を展開する
+    // 円のパーティクル情報から頂点メッシュ情報を更新
+    private func genCirclesMesh(particles:[Particle]) {
+        // パーティクルの数に合わせてメッシュの数をリサイズする
+        circles.resize(count: particles.count)
+        for i:Int in 0 ..< circles.count {
+            // パーティクル情報を展開して、メッシュ情報を作る材料にする
             let p:Particle = particles[i]
             let x:Float = p.pos.x                   // x座標
             let y:Float = p.pos.y                   // y座標
@@ -101,43 +92,40 @@ class DrawingViewController : CAIMMetalViewController
             var rgba:CAIMColor = p.rgba             // 色
             rgba.A *= p.life                        // アルファ値の計算(ライフが短いと薄くなるようにする)
             
-            // 四角形頂点v0
-            p_circle_quads[i].v0.pos  = Vec4(x-r, y-r, 0, 1)
-            p_circle_quads[i].v0.uv   = Vec2(-1.0, -1.0)
-            p_circle_quads[i].v0.rgba = rgba
-            // 四角形頂点v1
-            p_circle_quads[i].v1.pos  = Vec4(x+r, y-r, 0, 1)
-            p_circle_quads[i].v1.uv   = Vec2(1.0, -1.0)
-            p_circle_quads[i].v1.rgba = rgba
-            // 四角形頂点v2
-            p_circle_quads[i].v2.pos  = Vec4(x-r, y+r, 0, 1)
-            p_circle_quads[i].v2.uv   = Vec2(-1.0, 1.0)
-            p_circle_quads[i].v2.rgba = rgba
-            // 四角形頂点v3
-            p_circle_quads[i].v3.pos  = Vec4(x+r, y+r, 0, 1)
-            p_circle_quads[i].v3.uv   = Vec2(1.0, 1.0)
-            p_circle_quads[i].v3.rgba = rgba
+            // 四角形メッシュi個目の頂点0
+            circles[i][0].pos  = Vec4(x-r, y-r, 0, 1)
+            circles[i][0].uv   = Vec2(-1.0, -1.0)
+            circles[i][0].rgba = rgba
+            // 四角形メッシュi個目の頂点1
+            circles[i][1].pos  = Vec4(x+r, y-r, 0, 1)
+            circles[i][1].uv   = Vec2(1.0, -1.0)
+            circles[i][1].rgba = rgba
+            // 四角形メッシュi個目の頂点2
+            circles[i][2].pos  = Vec4(x-r, y+r, 0, 1)
+            circles[i][2].uv   = Vec2(-1.0, 1.0)
+            circles[i][2].rgba = rgba
+            // 四角形メッシュi個目の頂点3
+            circles[i][3].pos  = Vec4(x+r, y+r, 0, 1)
+            circles[i][3].uv   = Vec2(1.0, 1.0)
+            circles[i][3].rgba = rgba
         }
-        
-        // GPUバッファの内容を更新(circle_quads -> circle_quads_buf)
-        circle_quads_buf?.update(vertice: circle_quads)
     }
     
     // 円の描画
     private func drawCircles(renderer:CAIMMetalRenderer) {
         // パイプライン(シェーダ)の切り替え
         renderer.use(pl_circle)
-        // 使用するバッファと番号をリンクする
-        renderer.link(circle_quads_buf!, to:.vertex, at:ID_VERTEX)
-        renderer.link(mat_buf!, to:.vertex, at:ID_PROJECTION)
-        // GPU描画実行(quadsを渡すと四角形を描く)
-        renderer.draw(circle_quads)
+        // CPUの頂点メッシュメモリからGPUバッファを作成し、シェーダ番号をリンクする
+        renderer.link(circles.metalBuffer, to:.vertex, at:ID_VERTEX)
+        renderer.link(mat.metalBuffer, to:.vertex, at:ID_PROJECTION)
+        // GPU描画実行(circlesを渡して4頂点メッシュを描画)
+        renderer.draw(circles)
     }
     
     // 準備関数
     override func setup() {
-        // (GPUバッファ)ピクセルプロジェクション行列バッファの作成(画面サイズに合わせる)
-        mat_buf = CAIMMetalBuffer(Matrix4x4.pixelProjection(CAIMScreenPixel))
+        // ピクセルプロジェクション行列バッファの作成(画面サイズに合わせる)
+        mat = Matrix4x4.pixelProjection(CAIMScreenPixel)
         // 円描画シェーダの準備
         setupCircleEffect()
     }
@@ -156,14 +144,13 @@ class DrawingViewController : CAIMMetalViewController
         
         // 円パーティクルのライフの更新
         updateLife(in: &circle_parts)
-        
         // 不要な円パーティクルの削除
         trashParticles(in: &circle_parts)
         
-        // パーティクルがない場合処理しない
+        // パーティクル情報がない場合処理しない
         if(circle_parts.count > 0) {
-            // 円パーティクルからGPUバッファを生成
-            genCirclesBuffer(particles:circle_parts)
+            // パーティクル情報からメッシュ情報を更新
+            genCirclesMesh(particles:circle_parts)
             // 円の描画
             drawCircles(renderer: renderer)
         }

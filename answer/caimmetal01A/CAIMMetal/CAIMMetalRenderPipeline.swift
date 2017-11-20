@@ -122,6 +122,7 @@ class CAIMMetalRenderPipeline
     }
 
     private func remake() {
+        //_render_pipeline_desc.depthAttachmentPixelFormat = .depth32Float
         _mtl_pipeline = self.makePipeline(_render_pipeline_desc)
     }
 }

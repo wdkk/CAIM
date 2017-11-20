@@ -12,6 +12,15 @@
 
 import Foundation
 
+extension CAIMColor {
+    init(_ R:Float, _ G:Float, _ B:Float, _ A:Float) {
+        self.R = R
+        self.G = G
+        self.B = B
+        self.A = A
+    }
+}
+
 // C実装でメモリを確保するメモリクラス
 class CAIMMemory {
     fileprivate var _mem:CAIMMemoryCPtr?
@@ -45,15 +54,15 @@ class CAIMMemory {
 }
 
 // アラインメントを考慮したメモリクラス
-class CAIMAlignedMemory<T> {
+public class CAIMAlignedMemory {
     fileprivate var _mem:CAIMMemoryCPtr?
-    fileprivate var _available_length:Int = 0
-    fileprivate var _available_count:Int = 0
+    public fileprivate(set) var span:Int = 1
+    public fileprivate(set) var length:Int = 0
+    public fileprivate(set) var count:Int = 0
     
-    init() { _mem = CAIMMemoryCNew() }
-    
-    init(count:Int = 0) {
+    init(span:Int, count:Int = 0) {
         _mem = CAIMMemoryCNew()
+        self.span = span
         self.resize(count: count)
     }
     
@@ -61,58 +70,52 @@ class CAIMAlignedMemory<T> {
     
     // C実装オブジェクトの取得
     var memoryc:CAIMMemoryCPtr? { return _mem }
+    
     // ポインタ(オブジェクト型)の取得
-    fileprivate var _pointer:UnsafeMutablePointer<T>?
-    var pointer:UnsafeMutablePointer<T> {
-        return _pointer!
-    }
+    public fileprivate(set) var pointer:UnsafeMutableRawPointer?
     
     // ポインタの更新
     private func updatePointer() {
         let cptr = CAIMMemoryCPointer(_mem)
         let opaqueptr = OpaquePointer(cptr)
-        _pointer = UnsafeMutablePointer<T>(opaqueptr!)
+        self.pointer = UnsafeMutableRawPointer(opaqueptr)
     }
     
-    // 利用可能なオブジェクト数
-    var count:Int { return _available_count }
-    // 利用可能なメモリサイズ
-    var length:Int { return _available_length }
     // アラインメント含め確保したメモリ容量
-    var allocated_capacity:Int { return CAIMMemoryCCapacity(_mem) }
+    var allocatedCapacity:Int { return CAIMMemoryCCapacity(_mem) }
     // アラインメント含め確保したメモリサイズ
-    var allocated_length:Int { return CAIMMemoryCLength(_mem) }
+    var allocatedLength:Int { return CAIMMemoryCLength(_mem) }
   
     // メモリのクリア
     func clear() { self.resize(count: 0) }
     
     // メモリのリサイズ
     func resize(count:Int) {
-        _available_count  = count
-        _available_length = count * MemoryLayout<T>.size
-        CAIMMemoryCResize(_mem, _available_length)
-        CAIMMemoryCReserve(_mem, _available_length)
+        self.count  = count
+        self.length = count * self.span
+        CAIMMemoryCResize(_mem, self.length)
+        CAIMMemoryCReserve(_mem, self.length)
         self.updatePointer()
     }
     
     // メモリの追加
-    func append(_ src:CAIMAlignedMemory<T>) {
-        _available_count  += src.count
-        _available_length += src.length
+    func append(_ src:CAIMAlignedMemory) {
+        self.count  += src.count
+        self.length += src.length
         CAIMMemoryCAppend(_mem, src._mem)
         self.updatePointer()
     }
     // メモリの追加
-    func append(_ element:T) {
-        _available_count  += 1
-        _available_length += MemoryLayout<T>.size
+    func append<T>(_ element:T) {
+        self.count  += 1
+        self.length += MemoryLayout<T>.size
         CAIMMemoryCAppendC(_mem, UnsafeMutablePointer<T>(mutating:[element]), MemoryLayout<T>.size)
         self.updatePointer()
     }
     // メモリの追加
-    func append(_ elements:[T]) {
-        _available_count  += 1
-        _available_length += MemoryLayout<T>.size * elements.count
+    func append<T>(_ elements:[T]) {
+        self.count  += 1
+        self.length += MemoryLayout<T>.size * elements.count
         CAIMMemoryCAppendC(_mem, UnsafeMutablePointer<T>(mutating:elements), MemoryLayout<T>.size * elements.count)
         self.updatePointer()
     }

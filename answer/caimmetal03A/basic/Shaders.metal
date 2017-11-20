@@ -61,9 +61,9 @@ fragment float4 fragCircle(VertexOut vout [[ stage_in ]]) {
 
 // フラグメントシェーダー(Cosカーブを使って滑らかな変化の円を描く)
 fragment float4 fragCircleCosCurve(VertexOut vout [[ stage_in ]]) {
-    // 中心からのuv距離
+    // 中心からのuv距離の二乗
     float dist2 = vout.uv[0] * vout.uv[0] + vout.uv[1] * vout.uv[1];
-    // uv距離が1.0以上 = 円の外 (discard_fragment()を呼ぶとピクセルが破棄される)
+    // uv距離の二乗が1.0以上 = 円の外 (discard_fragment()を呼ぶとピクセルが破棄される)
     if(dist2 >= 1.0) { discard_fragment(); }
     // 新しい色情報をつくる
     float4 rgba = vout.rgba;
@@ -73,14 +73,16 @@ fragment float4 fragCircleCosCurve(VertexOut vout [[ stage_in ]]) {
 
 // フラグメントシェーダー(リングを描く)
 fragment float4 fragRing(VertexOut vout [[ stage_in ]]) {
-    // 中心からのuv距離
+    // 中心からのuv距離の二乗
     float dist2 = vout.uv[0] * vout.uv[0] + vout.uv[1] * vout.uv[1];
+    // uv距離
+    float dist = sqrt(dist2);
     // uv距離が0.8以下か1.0以上ならピクセル破棄(リングの外)
-    if(dist2 <= 0.8 || 1.0 <= dist2) { discard_fragment(); }
+    if(dist <= 0.8 || 1.0 <= dist) { discard_fragment(); }
     
-    // リングの中心骨はdist2=0.9とする。kは中心骨との距離。これを10倍するとk=0.0~1.0になる。
+    // リングの中心骨はdist=0.9とする。kは中心骨との距離。これを10倍するとk=0.0~1.0になる。
     // このkをcosに用いてリングを柔らかくする
-    float k = fabs(0.9 - dist2) * 10.0;
+    float k = fabs(0.9 - dist) * 10.0;
     // 新しい色情報をつくる
     float4 rgba = vout.rgba;
     rgba[3] = vout.rgba[3] * (1.0 + cos(M_PI_F * k)) / 2.0;

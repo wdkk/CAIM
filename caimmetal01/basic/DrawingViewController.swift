@@ -12,18 +12,16 @@
 
 import UIKit
 
-
-
-
 // 1頂点情報の構造体
-struct VertexInfo : Initializable {
+struct VertexInfo {
 
 }
 
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMMetalViewController
 {
-    
+    // パイプラインやメッシュ群の変数を作る
+    // ...
     
     // 準備関数
     override func setup() {

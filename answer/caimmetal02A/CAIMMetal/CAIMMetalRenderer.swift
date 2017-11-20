@@ -111,7 +111,7 @@ class CAIMMetalRenderer
     }
     
     func draw<T>(_ shape:CAIMShape<T>) {
-        shape.draw(self)
+        shape.render(by:self)
     }
 }
 

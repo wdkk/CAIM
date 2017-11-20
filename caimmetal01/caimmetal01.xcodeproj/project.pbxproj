@@ -22,7 +22,6 @@
 		5D27F4FF1E5D7FD200199E32 /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FC1E5D7FD200199E32 /* Metal.framework */; };
 		5D27F5001E5D7FD200199E32 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */; };
 		5D27F5011E5D7FD200199E32 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */; };
-		5D67731D1E8148D700470496 /* CAIMModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D67731C1E8148D700470496 /* CAIMModel.swift */; };
 		5D67731F1E8152BB00470496 /* CAIMShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D67731E1E8152BB00470496 /* CAIMShape.swift */; };
 		5D8249541E6BF7A400156E38 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8249531E6BF7A400156E38 /* libstdc++.tbd */; };
 		5D984E9E1E5BE74F000CA4E3 /* CAIMImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E981E5BE74F000CA4E3 /* CAIMImage.swift */; };
@@ -54,7 +53,6 @@
 		5D27F4FC1E5D7FD200199E32 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		5D67731C1E8148D700470496 /* CAIMModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMModel.swift; sourceTree = "<group>"; };
 		5D67731E1E8152BB00470496 /* CAIMShape.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMShape.swift; sourceTree = "<group>"; };
 		5D8249531E6BF7A400156E38 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		5D984E971E5BE74F000CA4E3 /* CAIMBridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMBridging.h; sourceTree = "<group>"; };
@@ -106,7 +104,6 @@
 				5D27F4EB1E5D7F1200199E32 /* CAIMMetalView.swift */,
 				5DEE08391E5E72DC0013C7D8 /* CAIMMetalViewController.swift */,
 				5D27F4E61E5D7F1200199E32 /* CAIMGeometric.swift */,
-				5D67731C1E8148D700470496 /* CAIMModel.swift */,
 				5D67731E1E8152BB00470496 /* CAIMShape.swift */,
 			);
 			path = CAIMMetal;
@@ -265,7 +262,6 @@
 				5D27F4F61E5D7F1200199E32 /* CAIMMetalShader.swift in Sources */,
 				5D984EA11E5BE74F000CA4E3 /* CAIMView.swift in Sources */,
 				5D984E9F1E5BE74F000CA4E3 /* CAIMImageC.m in Sources */,
-				5D67731D1E8148D700470496 /* CAIMModel.swift in Sources */,
 				5D27F4F21E5D7F1200199E32 /* CAIMGeometric.swift in Sources */,
 				5DEE083A1E5E72DC0013C7D8 /* CAIMMetalViewController.swift in Sources */,
 				5D27F4F41E5D7F1200199E32 /* CAIMMetalRenderPipeline.swift in Sources */,

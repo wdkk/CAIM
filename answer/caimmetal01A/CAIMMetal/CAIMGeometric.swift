@@ -10,41 +10,55 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-
 import Foundation
 
-struct Vec2 {
-    var x: Float32
-    var y: Float32
+protocol Buffer {
+    var metalBuffer:CAIMMetalBuffer { get }
+}
+extension Buffer {
+    var metalBuffer:CAIMMetalBuffer { return CAIMMetalBuffer(self) }
+}
+
+struct Vec2 : Buffer {
+    var x: Float32, y: Float32
+    
     init(_ x:Float32=0.0, _ y:Float32=0.0) { self.x = x; self.y = y }
+    static var zero:Vec2 { return Vec2() }
 }
 
-struct Vec3 {
-    var x: Float32
-    var y: Float32
-    var z: Float32
+struct Vec3 : Buffer {
+    var x: Float32, y: Float32, z: Float32
+    
     init(_ x:Float32=0.0, _ y:Float32=0.0, _ z:Float32=0.0) { self.x = x; self.y = y; self.z = z }
+    static var zero:Vec3 { return Vec3() }
 }
 
-struct Vec4 {
-    var x: Float32
-    var y: Float32
-    var z: Float32
-    var w: Float32
+struct Vec4 : Buffer {
+    var x: Float32, y: Float32, z: Float32, w: Float32
+    
     init(_ x:Float32=0.0, _ y:Float32=0.0, _ z:Float32=0.0, _ w:Float32=1.0) { self.x = x; self.y = y; self.z = z; self.w = w }
+    static var zero:Vec4 { return Vec4() }
 }
 
-struct Size2 {
-    var w: Int32
-    var h: Int32
+struct Size2 : Buffer {
+    var w: Int32, h: Int32
     init(_ wid:Int32=0, _ hgt:Int32=0) { self.w = wid; self.h = hgt }
+    static var zero:Size2 { return Size2() }
 }
 
-struct Matrix4x4 {
-    var X: Vec4
-    var Y: Vec4
-    var Z: Vec4
-    var W: Vec4
+struct Matrix4x4 : Buffer {
+    var X: Vec4, Y: Vec4, Z: Vec4, W: Vec4
+    
+    // 単位行列
+    init() {
+        X = Vec4(1, 0, 0, 0)
+        Y = Vec4(0, 1, 0, 0)
+        Z = Vec4(0, 0, 1, 0)
+        W = Vec4(0, 0, 0, 1)
+    }
+    
+    // 単位行列
+    static var identity:Matrix4x4 { return Matrix4x4() }
     
     // ピクセル座標系変換行列
     static func pixelProjection(wid:Int, hgt:Int) -> Matrix4x4 {
@@ -74,15 +88,6 @@ struct Matrix4x4 {
         vp_mat.W.x = -1.0
         vp_mat.W.y =  1.0
         return vp_mat
-    }
-    
-    
-    // 単位行列
-    init() {
-        X = Vec4(1, 0, 0, 0)
-        Y = Vec4(0, 1, 0, 0)
-        Z = Vec4(0, 0, 1, 0)
-        W = Vec4(0, 0, 0, 1)
     }
     
     static func rotationAboutAxis(axis: Vec4, byAngle angle: Float32) -> Matrix4x4 {
@@ -151,24 +156,4 @@ func * (left: Matrix4x4, right:Matrix4x4) -> Matrix4x4 {
     mat.W.w = left.W.w * right.W.w
     
     return mat
-}
-
-struct CAIMPoint<T:Initializable>
-{
-    var v0:T = T()
-}
-
-struct CAIMLine<T:Initializable>
-{
-    var v0:T = T(), v1:T = T()
-}
-
-struct CAIMTriangle<T:Initializable>
-{
-    var v0:T = T(), v1:T = T(), v2:T = T()
-}
-
-struct CAIMQuadrangle<T:Initializable>
-{
-    var v0:T = T(), v1:T = T(), v2:T = T(), v3:T = T()
 }

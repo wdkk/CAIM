@@ -17,28 +17,25 @@ let ID_VERTEX:Int     = 0
 let ID_PROJECTION:Int = 1
 
 // 1頂点情報の構造体
-struct VertexInfo : Initializable {
+struct VertexInfo {
 
 }
 
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMMetalViewController
 {
-    private var pl:CAIMMetalRenderPipeline?
+    // パイプラインやメッシュ群の変数を作る
+    // ...
     
-    // GPU:バッファ
-    private var mat_buf:CAIMMetalBuffer?        // 行列バッファ
-    private var quads_buf:CAIMMetalBuffer?      // 頂点バッファ(四角形)
     
     // 準備関数
     override func setup() {
-        
-    
+
     }
     
     // 繰り返し処理関数
     override func update(renderer:CAIMMetalRenderer) {
-      
-    
+
     }
 }
+
