@@ -120,22 +120,89 @@ class CAIMQuadrangles<T> : CAIMShape<T>
     }
 }
 
-// キューブメモリクラス
-class CAIMCubes<T> : CAIMShape<T>
+// パネル型キューブメモリクラス
+public struct CAIMPanelCubeInfo
+{
+    // パネルの向き
+    public enum PanelSide {
+        case front
+        case back
+        case left
+        case right
+        case top
+        case bottom
+    }
+    var side:PanelSide = .front
+    var pos:Vec4 = Vec4()
+    var uv:Vec2  = Vec2()
+}
+
+class CAIMPanelCubes<T> : CAIMShape<T>
 {
     init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.size * 36, count: count, type:type)
+        super.init(span: MemoryLayout<T>.size * 24, count: count, type:type)
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 36))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 24))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
-
+    
     override func render(by renderer:CAIMMetalRenderer) {
         let count:Int = self.count
         let enc = renderer.encoder
-        enc?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 36 * count)
+        // パネル1枚ずつ6枚で1キューブを描く
+        for j:Int in 0 ..< count {
+            for i:Int in 0 ..< 6 {
+                enc?.drawPrimitives(type: .triangleStrip, vertexStart: (i * 4) + (j * 24), vertexCount: 4)
+            }
+        }
+    }
+    
+    func set(idx:Int, pos:Vec3, size:Float, iterator f: (Int,CAIMPanelCubeInfo)->T) {
+        let cube = self[idx]
+        let sz = size / 2.0
+        let x = pos.x
+        let y = pos.y
+        let z = pos.z
+        
+        let v = [
+            // Front
+            CAIMPanelCubeInfo(side: .front, pos: Vec4(-sz+x, sz+y, sz+z, 1.0), uv:Vec2(0, 0)),
+            CAIMPanelCubeInfo(side: .front, pos: Vec4( sz+x, sz+y, sz+z, 1.0), uv:Vec2(1, 0)),
+            CAIMPanelCubeInfo(side: .front, pos: Vec4(-sz+x,-sz+y, sz+z, 1.0), uv:Vec2(0, 1)),
+            CAIMPanelCubeInfo(side: .front, pos: Vec4( sz+x,-sz+y, sz+z, 1.0), uv:Vec2(1, 1)),
+            // Back
+            CAIMPanelCubeInfo(side: .back, pos: Vec4( sz+x, sz+y,-sz+z, 1.0), uv:Vec2(0, 0)),
+            CAIMPanelCubeInfo(side: .back, pos: Vec4(-sz+x, sz+y,-sz+z, 1.0), uv:Vec2(1, 0)),
+            CAIMPanelCubeInfo(side: .back, pos: Vec4( sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(0, 1)),
+            CAIMPanelCubeInfo(side: .back, pos: Vec4(-sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(1, 1)),
+            // Left
+            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x, sz+y,-sz+z, 1.0), uv:Vec2(0, 0)),
+            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x, sz+y, sz+z, 1.0), uv:Vec2(1, 0)),
+            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(0, 1)),
+            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x,-sz+y, sz+z, 1.0), uv:Vec2(1, 1)),
+            // Right
+            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x, sz+y, sz+z, 1.0), uv:Vec2(0, 0)),
+            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x, sz+y,-sz+z, 1.0), uv:Vec2(1, 0)),
+            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x,-sz+y, sz+z, 1.0), uv:Vec2(0, 1)),
+            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(1, 1)),
+            // Top
+            CAIMPanelCubeInfo(side: .top, pos: Vec4(-sz+x, sz+y,-sz+z, 1.0), uv:Vec2(0, 0)),
+            CAIMPanelCubeInfo(side: .top, pos: Vec4( sz+x, sz+y,-sz+z, 1.0), uv:Vec2(1, 0)),
+            CAIMPanelCubeInfo(side: .top, pos: Vec4(-sz+x, sz+y, sz+z, 1.0), uv:Vec2(0, 1)),
+            CAIMPanelCubeInfo(side: .top, pos: Vec4( sz+x, sz+y, sz+z, 1.0), uv:Vec2(1, 1)),
+            // Bottom
+            CAIMPanelCubeInfo(side: .bottom, pos: Vec4(-sz+x,-sz+y, sz+z, 1.0), uv:Vec2(0, 0)),
+            CAIMPanelCubeInfo(side: .bottom, pos: Vec4( sz+x,-sz+y, sz+z, 1.0), uv:Vec2(1, 0)),
+            CAIMPanelCubeInfo(side: .bottom, pos: Vec4(-sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(0, 1)),
+            CAIMPanelCubeInfo(side: .bottom, pos: Vec4( sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(1, 1)),
+            ]
+        
+        for i:Int in 0 ..< 24 {
+            cube[i] = f(i, v[i])
+        }
+        
     }
 }
 

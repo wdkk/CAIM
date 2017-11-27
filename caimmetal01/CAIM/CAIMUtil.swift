@@ -60,9 +60,9 @@ public func CAIMFPS() {
 }
 
 // ランダム値の計算
-public func CAIMRandom(_ max:Float32=1.0) -> Float32 { return Float32(arc4random() % 1000) / 1000.0 * max }
-public func CAIMRandom(_ max:Int32) -> Float32 { return Float32(arc4random() % 1000) / 1000.0 * Float32(max) }
-public func CAIMRandom(_ max:Int) -> Float32 { return Float32(arc4random() % 1000) / 1000.0 * Float32(max) }
+public func CAIMRandom(_ max:Float=1.0) -> Float { return Float(arc4random() % 1000) / 1000.0 * max }
+public func CAIMRandom(_ max:Int32) -> Float { return Float(arc4random() % 1000) / 1000.0 * Float(max) }
+public func CAIMRandom(_ max:Int) -> Float { return Float(arc4random() % 1000) / 1000.0 * Float(max) }
 
 // スクリーンサイズの取得
 public var CAIMScreenPixel:CGSize {

@@ -69,8 +69,8 @@ class DrawingViewController : CAIMMetalViewController
         // 演習3
         // 三角形の個数分、頂点情報を指定する
         for i:Int in 0 ..< tris.count {
-            let x:Float32 = Float32(i % 10)
-            let y:Float32 = Float32(i / 10)
+            let x:Float = Float(i % 10)
+            let y:Float = Float(i / 10)
             let c:Float   = Float(x+y) / 20.0
             
             // 三角形メッシュi個目の頂点0
@@ -87,14 +87,14 @@ class DrawingViewController : CAIMMetalViewController
         // 演習4
         // 矩形の個数分、頂点情報を指定する
         for i:Int in 0 ..< quads.count {
-            let x:Float32 = Float32(i % 5)
-            let y:Float32 = Float32(i / 5)
+            let x:Float = Float(i % 5)
+            let y:Float = Float(i / 5)
             let c:Float   = Float((8.0 - (x+y)) / 8.0)
             
-            let sz:Float32  = 100 // 四角形のサイズ
-            let mgn:Float32 = 20  // 隙間
-            let xx:Float32  = 40 + x*(sz+mgn)
-            let yy:Float32  = 40 + y*(sz+mgn)
+            let sz:Float  = 100 // 四角形のサイズ
+            let mgn:Float = 20  // 隙間
+            let xx:Float  = 40 + x*(sz+mgn)
+            let yy:Float  = 40 + y*(sz+mgn)
             
             // 四角形メッシュi個目の頂点0
             quads[i][0].pos  = Vec4(xx, yy, 0, 1)

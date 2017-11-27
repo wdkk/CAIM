@@ -51,7 +51,7 @@ class DrawingViewController : CAIMMetalViewController
     // パーティクルを生成する関数
     private func genParticle(pos:CGPoint, color:CAIMColor, radius:Float) -> Particle {
         var p:Particle = Particle()
-        p.pos = Vec2(Float32(pos.x), Float32(pos.y))
+        p.pos = Vec2(Float(pos.x), Float(pos.y))
         p.rgba = color
         p.radius = radius
         p.life = 1.0        // ライフを1.0から開始

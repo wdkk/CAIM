@@ -1,0 +1,42 @@
+//
+// CAIMMetalSampler.swift
+// CAIM Project
+//   http://kengolab.net/CreApp/wiki/
+//
+// Copyright (c) Watanabe-DENKI Inc.
+//   http://wdkk.co.jp/
+//
+// This software is released under the MIT License.
+//   http://opensource.org/licenses/mit-license.php
+//
+
+import UIKit
+import Metal
+import MetalKit
+
+public class CAIMMetalSampler {
+    
+    internal(set) var metalSampler:MTLSamplerState?
+  
+    static public var `default` : CAIMMetalSampler {
+        let caim_sampler = CAIMMetalSampler()
+        
+        // descriptorを作ってそこからsamplerを生成
+        let sampler = MTLSamplerDescriptor()
+        sampler.minFilter             = MTLSamplerMinMagFilter.nearest
+        sampler.magFilter             = MTLSamplerMinMagFilter.nearest
+        sampler.mipFilter             = MTLSamplerMipFilter.nearest
+        sampler.maxAnisotropy         = 1
+        sampler.sAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.tAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.rAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.normalizedCoordinates = true
+        sampler.lodMinClamp           = 0
+        sampler.lodMaxClamp           = Float.greatestFiniteMagnitude
+        
+        caim_sampler.metalSampler = CAIMMetal.device.makeSamplerState(descriptor: sampler)
+        return caim_sampler
+    }
+    
+    
+}

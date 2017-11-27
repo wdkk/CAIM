@@ -32,7 +32,6 @@ class CAIMMetalViewController: UIViewController
     fileprivate var _caim_metal_view:CAIMMetalView?     // MetalView
     fileprivate var _renderer:CAIMMetalRenderer?
     
-    
     // ページがロード(生成)された時、処理される。主にUI部品などを作るときに利用
     override func viewDidLoad() {
         // 親のviewDidLoadを呼ぶ[必須]
@@ -71,7 +70,7 @@ class CAIMMetalViewController: UIViewController
     @objc func polling(_ display_link :CADisplayLink) {
         // レンダラとビューの紐付け、および準備
         _renderer?.ready(view: _caim_metal_view!)
-        
+
         // オーバーライド関数のコール
         update(renderer: CAIMMetalRenderer.current!)
         

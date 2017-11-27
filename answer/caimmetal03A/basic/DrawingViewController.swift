@@ -38,7 +38,7 @@ class DrawingViewController : CAIMMetalViewController
     private var pl_ring:CAIMMetalRenderPipeline?    // パイプライン
     
     private var mat:Matrix4x4 = .identity                            // 変換行列
-    private var circles = CAIMQuadrangles<VertexInfo>(count: 100)    // 円用４頂点メッシュ群
+    private var circles = CAIMQuadrangles<VertexInfo>.init(count: 100)   // 円用４頂点メッシュ群
     private var rings = CAIMQuadrangles<VertexInfo>(count: 100)      // リング用４頂点メッシュ群
     
     // パーティクル情報配列

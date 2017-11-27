@@ -10,31 +10,26 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-
 import UIKit
 import Metal
 import QuartzCore
 
 class CAIMMetalRenderer
 {
-    private static weak var _current:CAIMMetalRenderer?
-    public static var current:CAIMMetalRenderer? { return CAIMMetalRenderer._current }
+    public private(set) static weak var current:CAIMMetalRenderer?
     
     private weak var _metal_view:CAIMMetalView?
     private var _drawable:CAMetalDrawable?
     private var _render_pass_desc:MTLRenderPassDescriptor?
     private var _command_buffer:MTLCommandBuffer?
     
-    private var _encoder:MTLRenderCommandEncoder?
-    public var encoder:MTLRenderCommandEncoder? { return _encoder }
+    public private(set) var encoder:MTLRenderCommandEncoder?
+    public private(set) weak var pipeline:CAIMMetalRenderPipeline?
     
-    private weak var _pipeline:CAIMMetalRenderPipeline?
-    public var pipeline:CAIMMetalRenderPipeline? { return _pipeline }
-    
-    public var culling:MTLCullMode = .none
+    public var culling:MTLCullMode = .front
     
     private var _bg_color:MTLClearColor? = MTLClearColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
-    public var bg_color:CAIMColor? {
+    public var bgColor:CAIMColor? {
         get { return _bg_color != nil ? CAIMColor(R: Float(_bg_color!.red),
                                                   G: Float(_bg_color!.green),
                                                   B: Float(_bg_color!.blue),
@@ -54,8 +49,8 @@ class CAIMMetalRenderer
         if(_drawable == nil) { print("cannot get Metal drawable."); return false }
         
         // カレントの設定
-        CAIMMetalRenderer._current = self
-        
+        CAIMMetalRenderer.current = self
+    
         // レンダーパスの属性（コマンドエンコーダの生成に必要）
         _render_pass_desc = MTLRenderPassDescriptor()
         _render_pass_desc?.colorAttachments[0].texture = _drawable!.texture
@@ -65,19 +60,19 @@ class CAIMMetalRenderer
         
         // 描画コマンドエンコーダの入力
         _command_buffer = CAIMMetal.command_queue.makeCommandBuffer()
-        _encoder = _command_buffer?.makeRenderCommandEncoder(descriptor: _render_pass_desc!)
-        
+        encoder = _command_buffer?.makeRenderCommandEncoder(descriptor: _render_pass_desc!)
+    
+        // カリングの設定
+        encoder?.setFrontFacing(.counterClockwise)
+        encoder?.setCullMode(self.culling)
+
         return true
     }
     
     // 描画結果の確定（画面へ反映)
     func commit() {
-        // カリングの設定
-        _encoder?.setFrontFacing(.counterClockwise)
-        _encoder?.setCullMode(self.culling)
-        
         // コマンドエンコーダの完了
-        _encoder?.endEncoding()
+        encoder?.endEncoding()
         // コマンドバッファの確定
         _command_buffer?.present(_drawable!)
         _command_buffer?.commit()
@@ -88,7 +83,7 @@ class CAIMMetalRenderer
     // 使用するパイプラインの設定
     func use(_ pipeline:CAIMMetalRenderPipeline?) {
         self.encoder?.setRenderPipelineState(pipeline!.mtl_pipeline!)
-        self._pipeline = pipeline
+        self.pipeline = pipeline
     }
     
     func link(_ buffer:CAIMMetalBufferBase, to type:CAIMMetalShaderType, at idx:Int) {
@@ -102,12 +97,19 @@ class CAIMMetalRenderer
         }
     }
     
-    func linkVertexBuffer(_ idx:Int, _ buffer:CAIMMetalBufferBase) {
-        self.encoder?.setVertexBuffer(buffer.mtlbuf, offset: 0, index: idx)
+    func linkVertexBuffer(_ buffer:CAIMMetalBufferBase, at idx:Int) {
+        encoder?.setVertexBuffer(buffer.mtlbuf, offset: 0, index: idx)
+    }    
+    func linkFragmentBuffer(_ buffer:CAIMMetalBufferBase, at idx:Int) {
+        encoder?.setFragmentBuffer(buffer.mtlbuf, offset: 0, index: idx)
     }
-    
-    func linkFragmentBuffer(_ idx:Int, _ buffer:CAIMMetalBufferBase) {
-        self.encoder?.setFragmentBuffer(buffer.mtlbuf, offset: 0, index: idx)
+    // エンコーダにサンプラを設定
+    func linkFragmentSampler(_ sampler:CAIMMetalSampler, at idx:Int) {
+        encoder?.setFragmentSamplerState(sampler.metalSampler, index: idx)
+    }
+    // エンコーダにテクスチャを設定
+    func linkFragmentTexture(_ texture:CAIMMetalTexture, at idx:Int) {
+        encoder?.setFragmentTexture(texture.metalTexture, index: idx)
     }
     
     func draw<T>(_ shape:CAIMShape<T>) {
