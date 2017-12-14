@@ -35,9 +35,9 @@ class DrawingViewController : CAIMViewController
     // ポーリング
     override func update() {
         clear() // 毎回クリア
-  
-        if(self.touch_pos.count > 0) {
-            for pos:CGPoint in self.touch_pos {
+
+        if(self.touchPos.count > 0) {
+            for pos:CGPoint in self.touchPos {
                 var p = Particle()
                 p.cx = Int(pos.x)
                 p.cy = Int(pos.y)

@@ -1,5 +1,5 @@
 //
-// CAIMShape.swift
+// CAIMMetalShape.swift
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
@@ -13,8 +13,12 @@
 import Foundation
 import Metal
 
+public protocol CAIMMetalDrawable {
+    func draw(with renderer:CAIMMetalRenderer)
+}
+
 // Metal向け形状メモリクラス
-class CAIMShape<T> : CAIMAlignedMemory
+public class CAIMMetalShape<T> : CAIMMemory4K, CAIMMetalDrawable
 {
     fileprivate var _metal_buffer:CAIMMetalBufferBase?
     fileprivate var _buffer_type:CAIMMetalBufferType = .alloc
@@ -22,98 +26,98 @@ class CAIMShape<T> : CAIMAlignedMemory
     init(span:Int, count:Int, type:CAIMMetalBufferType = .alloc) {
         super.init(span: span, count: count)
         _buffer_type = type
-        if(_buffer_type == .alloc) {    // default
-            _metal_buffer = CAIMMetalBuffer(vertice: self)
-        }
-        else {  // shared
-            _metal_buffer = CAIMMetalSharedBuffer(vertice: self)
-        }
-    }
-    
-    var metalBuffer:CAIMMetalBufferBase {
         if(_buffer_type == .alloc) {
-            _metal_buffer!.update(vertice: self)
+            _metal_buffer = CAIMMetalAllocatedBuffer(vertice: self) // メモリ確保型
         }
-        return _metal_buffer!
+        else {
+            _metal_buffer = CAIMMetalSharedBuffer(vertice: self)    // メモリ共有型
+        }
     }
     
-    var typePointer:UnsafeMutablePointer<T> {
+    public var metalBuffer:MTLBuffer {
+        if(_buffer_type == .alloc) {
+            _metal_buffer!.update(self.pointer!, length: self.length)
+        }
+        return _metal_buffer!.metalBuffer!
+    }
+    
+    public var typePointer:UnsafeMutablePointer<T> {
         return UnsafeMutablePointer<T>(OpaquePointer(self.pointer!))
     }
     
-    func render(by renderer:CAIMMetalRenderer) {}
+    public func draw(with renderer:CAIMMetalRenderer) {}
 }
 
 // 点メモリクラス
-class CAIMPoints<T> : CAIMShape<T>
+class CAIMPoints<T> : CAIMMetalShape<T>
 {
     init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.size * 1, count: count, type:type)
+        super.init(span: MemoryLayout<T>.stride * 1, count: count, type:type)
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 1))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 1))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    override func render(by renderer:CAIMMetalRenderer) {
-        let enc = renderer.encoder
+    public override func draw(with renderer:CAIMMetalRenderer) {
+        let enc = renderer.currentEncoder
         enc?.drawPrimitives(type: .point, vertexStart: 0, vertexCount: count)
     }
 }
 
 // ライン形状メモリクラス
-class CAIMLines<T> : CAIMShape<T>
+class CAIMLines<T> : CAIMMetalShape<T>
 {
     init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.size * 2, count: count, type: type)
+        super.init(span: MemoryLayout<T>.stride * 2, count: count, type: type)
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 2))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 2))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    override func render(by renderer:CAIMMetalRenderer) {
-        let enc = renderer.encoder
+    public override func draw(with renderer:CAIMMetalRenderer) {
+        let enc = renderer.currentEncoder
         enc?.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * 2)
     }
 }
 
 
 // 三角形メッシュ形状メモリクラス
-class CAIMTriangles<T> : CAIMShape<T>
+public class CAIMTriangles<T> : CAIMMetalShape<T>
 {
     init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.size * 3, count: count, type: type)
+        super.init(span: MemoryLayout<T>.stride * 3, count: count, type: type)
     }
 
-    subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 3))
+    public subscript(idx:Int) -> UnsafeMutablePointer<T> {
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 3))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    override func render(by renderer:CAIMMetalRenderer) {
-        let enc = renderer.encoder
+    public override func draw(with renderer:CAIMMetalRenderer) {
+        let enc = renderer.currentEncoder
         enc?.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: count * 3)
     }
 }
 
 // 四角形メッシュ形状メモリクラス
-class CAIMQuadrangles<T> : CAIMShape<T>
+public class CAIMQuadrangles<T> : CAIMMetalShape<T>
 {
     init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.size * 4, count: count, type: type)
+        super.init(span: MemoryLayout<T>.stride * 4, count: count, type: type)
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 4))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 4))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    override func render(by renderer:CAIMMetalRenderer) {
+    public override func draw(with renderer:CAIMMetalRenderer) {
         let count:Int = self.count
-        let enc = renderer.encoder
+        let enc = renderer.currentEncoder
         for i:Int in 0 ..< count {
             enc?.drawPrimitives(type: .triangleStrip, vertexStart: i*4, vertexCount: 4)
         }
@@ -121,7 +125,7 @@ class CAIMQuadrangles<T> : CAIMShape<T>
 }
 
 // パネル型キューブメモリクラス
-public struct CAIMPanelCubeInfo
+public struct CAIMPanelCubeParam
 {
     // パネルの向き
     public enum PanelSide {
@@ -132,25 +136,25 @@ public struct CAIMPanelCubeInfo
         case top
         case bottom
     }
-    var side:PanelSide = .front
-    var pos:Vec4 = Vec4()
-    var uv:Vec2  = Vec2()
+    public var side:PanelSide = .front
+    var pos:Float4 = Float4()
+    var uv:Float2 = Float2()
 }
 
-class CAIMPanelCubes<T> : CAIMShape<T>
+public class CAIMPanelCubes<T> : CAIMMetalShape<T>
 {
     init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.size * 24, count: count, type:type)
+        super.init(span: MemoryLayout<T>.stride * 24, count: count, type:type)
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.size * 24))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 24))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    override func render(by renderer:CAIMMetalRenderer) {
+    public override func draw(with renderer:CAIMMetalRenderer) {
         let count:Int = self.count
-        let enc = renderer.encoder
+        let enc = renderer.currentEncoder
         // パネル1枚ずつ6枚で1キューブを描く
         for j:Int in 0 ..< count {
             for i:Int in 0 ..< 6 {
@@ -159,7 +163,7 @@ class CAIMPanelCubes<T> : CAIMShape<T>
         }
     }
     
-    func set(idx:Int, pos:Vec3, size:Float, iterator f: (Int,CAIMPanelCubeInfo)->T) {
+    func set(idx:Int, pos:Float3, size:Float, iterator f: (Int,CAIMPanelCubeParam)->T) {
         let cube = self[idx]
         let sz = size / 2.0
         let x = pos.x
@@ -168,41 +172,40 @@ class CAIMPanelCubes<T> : CAIMShape<T>
         
         let v = [
             // Front
-            CAIMPanelCubeInfo(side: .front, pos: Vec4(-sz+x, sz+y, sz+z, 1.0), uv:Vec2(0, 0)),
-            CAIMPanelCubeInfo(side: .front, pos: Vec4( sz+x, sz+y, sz+z, 1.0), uv:Vec2(1, 0)),
-            CAIMPanelCubeInfo(side: .front, pos: Vec4(-sz+x,-sz+y, sz+z, 1.0), uv:Vec2(0, 1)),
-            CAIMPanelCubeInfo(side: .front, pos: Vec4( sz+x,-sz+y, sz+z, 1.0), uv:Vec2(1, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .front, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 0)),
             // Back
-            CAIMPanelCubeInfo(side: .back, pos: Vec4( sz+x, sz+y,-sz+z, 1.0), uv:Vec2(0, 0)),
-            CAIMPanelCubeInfo(side: .back, pos: Vec4(-sz+x, sz+y,-sz+z, 1.0), uv:Vec2(1, 0)),
-            CAIMPanelCubeInfo(side: .back, pos: Vec4( sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(0, 1)),
-            CAIMPanelCubeInfo(side: .back, pos: Vec4(-sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(1, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .back, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
             // Left
-            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x, sz+y,-sz+z, 1.0), uv:Vec2(0, 0)),
-            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x, sz+y, sz+z, 1.0), uv:Vec2(1, 0)),
-            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(0, 1)),
-            CAIMPanelCubeInfo(side: .left, pos: Vec4(-sz+x,-sz+y, sz+z, 1.0), uv:Vec2(1, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 0)),
             // Right
-            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x, sz+y, sz+z, 1.0), uv:Vec2(0, 0)),
-            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x, sz+y,-sz+z, 1.0), uv:Vec2(1, 0)),
-            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x,-sz+y, sz+z, 1.0), uv:Vec2(0, 1)),
-            CAIMPanelCubeInfo(side: .right, pos: Vec4( sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(1, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
             // Top
-            CAIMPanelCubeInfo(side: .top, pos: Vec4(-sz+x, sz+y,-sz+z, 1.0), uv:Vec2(0, 0)),
-            CAIMPanelCubeInfo(side: .top, pos: Vec4( sz+x, sz+y,-sz+z, 1.0), uv:Vec2(1, 0)),
-            CAIMPanelCubeInfo(side: .top, pos: Vec4(-sz+x, sz+y, sz+z, 1.0), uv:Vec2(0, 1)),
-            CAIMPanelCubeInfo(side: .top, pos: Vec4( sz+x, sz+y, sz+z, 1.0), uv:Vec2(1, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .top, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 0)),
             // Bottom
-            CAIMPanelCubeInfo(side: .bottom, pos: Vec4(-sz+x,-sz+y, sz+z, 1.0), uv:Vec2(0, 0)),
-            CAIMPanelCubeInfo(side: .bottom, pos: Vec4( sz+x,-sz+y, sz+z, 1.0), uv:Vec2(1, 0)),
-            CAIMPanelCubeInfo(side: .bottom, pos: Vec4(-sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(0, 1)),
-            CAIMPanelCubeInfo(side: .bottom, pos: Vec4( sz+x,-sz+y,-sz+z, 1.0), uv:Vec2(1, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
             ]
         
         for i:Int in 0 ..< 24 {
             cube[i] = f(i, v[i])
         }
-        
     }
 }
 

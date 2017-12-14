@@ -14,13 +14,10 @@ import UIKit
 import Metal
 import MetalKit
 
-public class CAIMMetalSampler {
-    
+public class CAIMMetalSampler {    
     internal(set) var metalSampler:MTLSamplerState?
   
-    static public var `default` : CAIMMetalSampler {
-        let caim_sampler = CAIMMetalSampler()
-        
+    static public var `default` : MTLSamplerState {
         // descriptorを作ってそこからsamplerを生成
         let sampler = MTLSamplerDescriptor()
         sampler.minFilter             = MTLSamplerMinMagFilter.nearest
@@ -34,8 +31,7 @@ public class CAIMMetalSampler {
         sampler.lodMinClamp           = 0
         sampler.lodMaxClamp           = Float.greatestFiniteMagnitude
         
-        caim_sampler.metalSampler = CAIMMetal.device.makeSamplerState(descriptor: sampler)
-        return caim_sampler
+        return CAIMMetal.device.makeSamplerState(descriptor: sampler)!
     }
     
     

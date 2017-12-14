@@ -29,7 +29,7 @@ struct Particle {
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMMetalViewController
 {
-    // パイプラインやメッシュ群の変数を作る
+    // レンダラやメッシュ群の変数を作る
     // ...
 
     
@@ -49,7 +49,7 @@ class DrawingViewController : CAIMMetalViewController
     }
     
     // 繰り返し処理関数
-    override func update(renderer:CAIMMetalRenderer) {
+    override func update(metalView: CAIMMetalView) {
         // 円情報の更新
 
         // 円情報から頂点メッシュ情報を生成

@@ -19,8 +19,8 @@ class CAIMImage
  
     var width:Int { return CAIMImageWidth(img) }
     var height:Int { return CAIMImageHeight(img) }
-    var memory:CAIMMemory { return CAIMImageMemory(img) }
-    var memory_size:Int { return CAIMImageMemorySize(img) }
+    var pointer:CAIMCharPtr { return CAIMImageMemory(img) }
+    var length:Int { return CAIMImageMemorySize(img) }
     var matrix:CAIMColorMatrix { return CAIMImageMatrix(img) }
     var matrix8:CAIMColor8Matrix { return CAIMImageMatrix8(img) }
     var depth:CAIMDepth { return CAIMImageDepth(img) }
@@ -42,7 +42,7 @@ class CAIMImage
     
     func loadFile(_ path:String) -> Bool { return (CAIMImageLoadFile(img, path) == 1) }
     
-    func saveToAlbum() -> Bool { return (CAIMImageSaveFileToAlbum(img) == 1) }
+    //func saveToAlbum() -> Bool { return (CAIMImageSaveFileToAlbum(img) == 1) }
     
     func fillColor(_ c:CAIMColor) { CAIMImageFillColor(img, c) }
     

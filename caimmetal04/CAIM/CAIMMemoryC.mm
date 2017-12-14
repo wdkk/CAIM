@@ -1,5 +1,5 @@
 //
-// CAIMMemoryC.mm
+// CAIMMemory4KC.mm
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
@@ -41,59 +41,116 @@ public:
     void deallocate(Ptr p, SizeType) const noexcept { alignedFree(p); }
 };
 
+static const int ALIGNMENT16   = 16;
 static const int ALIGNMENT4096 = 4096;
 
-typedef std::vector<char, AlignedAllocator<char, ALIGNMENT4096>> CAIMMemoryC;
+typedef std::vector<char, AlignedAllocator<char, ALIGNMENT4096>> CAIMMemory4KC;
 
-static CAIMMemoryC* _M(CAIMMemoryCPtr mem_) { return (CAIMMemoryC*)mem_; }
+static CAIMMemory4KC* _M4K(CAIMMemory4KCPtr mem_) { return (CAIMMemory4KC*)mem_; }
 
-CAIMMemoryCPtr CAIMMemoryCNew() {
-    CAIMMemoryC* mem = (CAIMMemoryC*)(new CAIMMemoryC());
+CAIMMemory4KCPtr CAIMMemory4KCNew() {
+    CAIMMemory4KC* mem = (CAIMMemory4KC*)(new CAIMMemory4KC());
     mem->reserve(ALIGNMENT4096);
     return mem;
 }
 
-void CAIMMemoryCDelete(CAIMMemoryCPtr mem_) {
-    delete _M(mem_);
+void CAIMMemory4KCDelete(CAIMMemory4KCPtr mem_) {
+    delete _M4K(mem_);
 }
 
-void* CAIMMemoryCPointer(CAIMMemoryCPtr mem_) {
-    return _M(mem_)->data();
+void* CAIMMemory4KCPointer(CAIMMemory4KCPtr mem_) {
+    return _M4K(mem_)->data();
 }
 
-long CAIMMemoryCCapacity(CAIMMemoryCPtr mem_) {
-    return (long)_M(mem_)->capacity();
+long CAIMMemory4KCCapacity(CAIMMemory4KCPtr mem_) {
+    return (long)_M4K(mem_)->capacity();
 }
 
-long CAIMMemoryCLength(CAIMMemoryCPtr mem_) {
-    return (long)_M(mem_)->size();
+long CAIMMemory4KCLength(CAIMMemory4KCPtr mem_) {
+    return (long)_M4K(mem_)->size();
 }
 
-void CAIMMemoryCResize(CAIMMemoryCPtr mem_, long length_) {
+void CAIMMemory4KCResize(CAIMMemory4KCPtr mem_, long length_) {
     long mod = length_ % ALIGNMENT4096;
     long length = mod == 0 ? length_ : length_ + (ALIGNMENT4096 - mod);
-    CAIMMemoryC *mem = _M(mem_);
+    CAIMMemory4KC *mem = _M4K(mem_);
     if(length == mem->size()) { return; }
     mem->resize(length);
 }
 
-void CAIMMemoryCReserve(CAIMMemoryCPtr mem_, long length_) {
+void CAIMMemory4KCReserve(CAIMMemory4KCPtr mem_, long length_) {
     long mod = length_ % ALIGNMENT4096;
     long length = mod == 0 ? length_ : length_ + (ALIGNMENT4096 - mod);
-    _M(mem_)->reserve(length);
+    _M4K(mem_)->reserve(length);
 }
 
-void CAIMMemoryCAppend(CAIMMemoryCPtr mem_, CAIMMemoryCPtr src_) {
-    CAIMMemoryC* d = _M(mem_);
-    CAIMMemoryC* s = _M(src_);
+void CAIMMemory4KCAppend(CAIMMemory4KCPtr mem_, CAIMMemory4KCPtr src_) {
+    CAIMMemory4KC* d = _M4K(mem_);
+    CAIMMemory4KC* s = _M4K(src_);
     std::copy(s->begin(), s->end(), std::back_inserter(*d));
 }
 
-void CAIMMemoryCAppendC(CAIMMemoryCPtr mem_, void* bin_, long length_) {
-    CAIMMemoryC* m = _M(mem_);
+void CAIMMemory4KCAppendC(CAIMMemory4KCPtr mem_, void* bin_, long length_) {
+    CAIMMemory4KC* m = _M4K(mem_);
     long sz = m->size();
     m->resize((size_t)(sz + length_));
-    char* p = (char*)CAIMMemoryCPointer(mem_);
+    char* p = (char*)CAIMMemory4KCPointer(mem_);
+    
+    memcpy(&p[sz], bin_, (size_t)length_);
+}
+
+
+typedef std::vector<char, AlignedAllocator<char, ALIGNMENT16>> CAIMMemory16C;
+
+static CAIMMemory16C* _M16(CAIMMemory16CPtr mem_) { return (CAIMMemory16C*)mem_; }
+
+CAIMMemory16CPtr CAIMMemory16CNew() {
+    CAIMMemory16C* mem = (CAIMMemory16C*)(new CAIMMemory16C());
+    mem->reserve(ALIGNMENT16);
+    return mem;
+}
+
+void CAIMMemory16CDelete(CAIMMemory16CPtr mem_) {
+    delete _M16(mem_);
+}
+
+void* CAIMMemory16CPointer(CAIMMemory16CPtr mem_) {
+    return _M16(mem_)->data();
+}
+
+long CAIMMemory16CCapacity(CAIMMemory16CPtr mem_) {
+    return (long)_M16(mem_)->capacity();
+}
+
+long CAIMMemory16CLength(CAIMMemory16CPtr mem_) {
+    return (long)_M16(mem_)->size();
+}
+
+void CAIMMemory16CResize(CAIMMemory16CPtr mem_, long length_) {
+    long mod = length_ % ALIGNMENT16;
+    long length = mod == 0 ? length_ : length_ + (ALIGNMENT16 - mod);
+    CAIMMemory16C *mem = _M16(mem_);
+    if(length == mem->size()) { return; }
+    mem->resize(length);
+}
+
+void CAIMMemory16CReserve(CAIMMemory16CPtr mem_, long length_) {
+    long mod = length_ % ALIGNMENT16;
+    long length = mod == 0 ? length_ : length_ + (ALIGNMENT16 - mod);
+    _M16(mem_)->reserve(length);
+}
+
+void CAIMMemory16CAppend(CAIMMemory16CPtr mem_, CAIMMemory4KCPtr src_) {
+    CAIMMemory16C* d = _M16(mem_);
+    CAIMMemory16C* s = _M16(src_);
+    std::copy(s->begin(), s->end(), std::back_inserter(*d));
+}
+
+void CAIMMemory16CAppendC(CAIMMemory16CPtr mem_, void* bin_, long length_) {
+    CAIMMemory16C* m = _M16(mem_);
+    long sz = m->size();
+    m->resize((size_t)(sz + length_));
+    char* p = (char*)CAIMMemory16CPointer(mem_);
     
     memcpy(&p[sz], bin_, (size_t)length_);
 }

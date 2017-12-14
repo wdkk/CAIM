@@ -17,7 +17,7 @@ let ID_VERTEX:Int     = 0
 let ID_PROJECTION:Int = 1
 
 // 頂点情報の構造体
-struct VertexInfo {
+struct Vertex {
 
 }
 
@@ -43,9 +43,9 @@ class DrawingViewController : CAIMMetalViewController
     }
     
     // 繰り返し処理関数
-    override func update(renderer:CAIMMetalRenderer) {
+    override func update(metalView: CAIMMetalView) {
         // タッチ位置にパーティクル発生
-        for pos:CGPoint in touch_pos {
+        for pos in self.touchPos {
             // 新しいパーティクルを生成
 
             

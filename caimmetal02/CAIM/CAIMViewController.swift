@@ -24,8 +24,8 @@ class CAIMViewController: UIViewController
     func touchCancelled() {}
     
     // タッチ位置の座標変数
-    var touch_pos:[CGPoint] = [CGPoint]()
-    var release_pos:[CGPoint] = [CGPoint]()
+    var touchPos:[CGPoint] = [CGPoint]()
+    var releasePos:[CGPoint] = [CGPoint]()
   
     fileprivate var _display_link:CADisplayLink!    // ループ処理用ディスプレイリンク
     
@@ -112,8 +112,8 @@ class CAIMViewController: UIViewController
     // このため、Retinaスケールを考慮してpointをpixelに置き換える
     fileprivate func recognizeTouchInfo(_ event: UIEvent) {
         // タッチ情報の配列をリセット
-        self.touch_pos.removeAll(keepingCapacity: false)
-        self.release_pos.removeAll(keepingCapacity: false)
+        self.touchPos.removeAll(keepingCapacity: false)
+        self.releasePos.removeAll(keepingCapacity: false)
         // retinaスケールの取得
         let sc:CGFloat = UIScreen.main.scale
         // タッチ数分のループ
@@ -122,12 +122,12 @@ class CAIMViewController: UIViewController
             // point座標系を取得
             let pos:CGPoint = touch.location(in: self.view)
             if(touch.phase == .ended || touch.phase == .cancelled) {
-                // scを掛け算してpixel座標系に変換し、release_posに追加
-                self.release_pos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                // scを掛け算してpixel座標系に変換し、releasePosに追加
+                self.releasePos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
             else {
-                // scを掛け算してpixel座標系に変換し、touch_posに追加
-                self.touch_pos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                // scを掛け算してpixel座標系に変換し、touchPosに追加
+                self.touchPos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
         }
     }

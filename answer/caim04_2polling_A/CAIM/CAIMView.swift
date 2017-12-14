@@ -14,7 +14,7 @@ import UIKit
 import Accelerate
 
 // CAIM用画像表示ビュークラス
-class CAIMView : UIView
+public class CAIMView : UIView
 {
     // オーバーライド用関数群
     func touchPressed() {}
@@ -33,18 +33,18 @@ class CAIMView : UIView
     fileprivate var bufhgt:Int = 0
     
     // タッチ位置の座標変数
-    var touch_pos:[CGPoint] = [CGPoint]()
-    var release_pos:[CGPoint] = [CGPoint]()
+    var touchPos:[CGPoint] = [CGPoint]()
+    var releasePos:[CGPoint] = [CGPoint]()
     
     // 初期化関数フレームあり
-    override init(frame:CGRect = .zero) {
+    public override init(frame:CGRect = .zero) {
         super.init(frame: frame)
         self.backgroundColor = .clear
         self.isMultipleTouchEnabled = true
     }
     
     // 初期化関数(requiredされて入れたもの)
-    required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
+    public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     // 解放時関数
     deinit {
@@ -52,28 +52,28 @@ class CAIMView : UIView
     }
     
     // タッチ開始関数
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with:event)    // 親のメソッドをコール(必須)
         self.recognizeTouchInfo(event!)                 // 指の情報を取得
         touchPressed()
     }
     
     // タッチなぞり関数
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with:event)    // 親のメソッドをコール(必須)
         self.recognizeTouchInfo(event!)               // 指の情報を取得
         touchMoved()
     }
     
     // タッチ終了関数
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with:event)     // 親のメソッドをコール(必須)
         self.recognizeTouchInfo(event!)                 // 指の情報を取得
         touchReleased()
     }
     
     // タッチ中の中断関数
-    override func touchesCancelled(_ rmv_touches: Set<UITouch>, with event: UIEvent?) {
+    public override func touchesCancelled(_ rmv_touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(rmv_touches, with:event) // 親のメソッドをコール(必須)
         self.recognizeTouchInfo(event!)                 // 指の情報を取得
         touchCancelled()
@@ -84,8 +84,8 @@ class CAIMView : UIView
     // このため、Retinaスケールを考慮してpointをpixelに置き換える
     fileprivate func recognizeTouchInfo(_ event: UIEvent) {
         // タッチ情報の配列をリセット
-        self.touch_pos.removeAll(keepingCapacity: false)
-        self.release_pos.removeAll(keepingCapacity: false)
+        self.touchPos.removeAll(keepingCapacity: false)
+        self.releasePos.removeAll(keepingCapacity: false)
         // retinaスケールの取得
         let sc:CGFloat = UIScreen.main.scale
         // タッチ数分のループ
@@ -94,21 +94,21 @@ class CAIMView : UIView
             // point座標系を取得
             let pos:CGPoint = touch.location(in: self)
             if(touch.phase == .ended || touch.phase == .cancelled) {
-                // scを掛け算してpixel座標系に変換し、release_posに追加
-                self.release_pos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                // scを掛け算してpixel座標系に変換し、releasePosに追加
+                self.releasePos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
             else {
-                // scを掛け算してpixel座標系に変換し、touch_posに追加
-                self.touch_pos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                // scを掛け算してpixel座標系に変換し、touchPosに追加
+                self.touchPos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
         }
     }
     
     // 再描画命令
-    func redraw() { setNeedsDisplay() }
+    public func redraw() { setNeedsDisplay() }
     
     // UIKit API draw(rect:)の上書き
-    override func draw(_ rect: CGRect) {
+    public override func draw(_ rect: CGRect) {
         super.draw(rect)
     
         let context:CGContext = UIGraphicsGetCurrentContext()!
@@ -124,7 +124,7 @@ class CAIMView : UIView
         // parameter of CAIMImage
         let wid:Int = image.width
         let hgt:Int = image.height
-        let mem:UnsafeMutablePointer<UInt8> = image.memory
+        let mem:UnsafeMutablePointer<UInt8> = image.pointer
         
         // 画像データがない場合、サイズが変更された場合のみメモリを確保する
         if(buf == nil || wid != bufwid || hgt != bufhgt) {

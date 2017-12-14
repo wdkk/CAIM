@@ -63,10 +63,10 @@ class DrawingViewController : CAIMViewController
     // 指でなぞった時に呼ばれる
     override func touchMoved() {
         // マルチタッチの数
-        let count = self.touch_pos.count
+        let count = self.touchPos.count
         
         for i in 0 ..< count {
-            let pos = self.touch_pos[i]
+            let pos = self.touchPos[i]
             
             // 薄い赤円を描く
             ImageToolBox.fillCircle(self.image, cx: Int(pos.x), cy: Int(pos.y), radius: 20,

@@ -20,18 +20,33 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-    typedef void* CAIMMemoryCPtr;
+    // 4096バイトアラインメントメモリ
+    typedef void* CAIMMemory4KCPtr;
     
-    CAIMMemoryCPtr CAIMMemoryCNew();
-    void CAIMMemoryCDelete(CAIMMemoryCPtr mem);
+    CAIMMemory4KCPtr CAIMMemory4KCNew();
+    void CAIMMemory4KCDelete(CAIMMemory4KCPtr mem);
     
-    void* CAIMMemoryCPointer(CAIMMemoryCPtr mem);
-    long  CAIMMemoryCCapacity(CAIMMemoryCPtr mem);
-    long  CAIMMemoryCLength(CAIMMemoryCPtr mem);
-    void  CAIMMemoryCResize(CAIMMemoryCPtr mem, long length);
-    void  CAIMMemoryCReserve(CAIMMemoryCPtr mem, long length);
-    void  CAIMMemoryCAppend(CAIMMemoryCPtr mem, CAIMMemoryCPtr src);
-    void  CAIMMemoryCAppendC(CAIMMemoryCPtr mem, void *bin, long length);
+    void* CAIMMemory4KCPointer(CAIMMemory4KCPtr mem);
+    long  CAIMMemory4KCCapacity(CAIMMemory4KCPtr mem);
+    long  CAIMMemory4KCLength(CAIMMemory4KCPtr mem);
+    void  CAIMMemory4KCResize(CAIMMemory4KCPtr mem, long length);
+    void  CAIMMemory4KCReserve(CAIMMemory4KCPtr mem, long length);
+    void  CAIMMemory4KCAppend(CAIMMemory4KCPtr mem, CAIMMemory4KCPtr src);
+    void  CAIMMemory4KCAppendC(CAIMMemory4KCPtr mem, void *bin, long length);
+    
+    // 16バイトアラインメントメモリ
+    typedef void* CAIMMemory16CPtr;
+    
+    CAIMMemory16CPtr CAIMMemory16CNew();
+    void CAIMMemory16CDelete(CAIMMemory16CPtr mem);
+    
+    void* CAIMMemory16CPointer(CAIMMemory16CPtr mem);
+    long  CAIMMemory16CCapacity(CAIMMemory16CPtr mem);
+    long  CAIMMemory16CLength(CAIMMemory16CPtr mem);
+    void  CAIMMemory16CResize(CAIMMemory16CPtr mem, long length);
+    void  CAIMMemory16CReserve(CAIMMemory16CPtr mem, long length);
+    void  CAIMMemory16CAppend(CAIMMemory16CPtr mem, CAIMMemory16CPtr src);
+    void  CAIMMemory16CAppendC(CAIMMemory16CPtr mem, void *bin, long length);
     
 #if defined(__cplusplus)
 }

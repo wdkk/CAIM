@@ -86,7 +86,7 @@ class DrawingViewController : CAIMViewController
         
         redraw()    // 画面を更新
         
-        CAIMFPS()
+        CAIM.fps()
     }
     
 }

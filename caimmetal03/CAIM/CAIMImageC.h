@@ -60,7 +60,7 @@ void              CAIMImageResize(CAIMImageCPtr img, long wid, long hgt);
 // load & save file functions.
 int               CAIMImageLoadFile(CAIMImageCPtr img, NSString* _Nonnull file_path);
 // load & save image file to Album.
-int               CAIMImageSaveFileToAlbum(CAIMImageCPtr img);
+//int               CAIMImageSaveFileToAlbum(CAIMImageCPtr img);
 // get matrix
 CAIMCharPtr       CAIMImageMemory(CAIMImageCPtr img);
 CAIMColorMatrix   CAIMImageMatrix(CAIMImageCPtr img);

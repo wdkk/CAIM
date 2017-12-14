@@ -180,6 +180,7 @@ int CAIMImageLoadFile( CAIMImageCPtr img_, NSString* _Nonnull file_path_) {
     return 1;
 }
 
+/*
 int CAIMImageSaveFileToAlbum( CAIMImageCPtr img_ ) {
     if(img_ == NULL) { return 0; }
  
@@ -237,6 +238,7 @@ int CAIMImageSaveFileToAlbum( CAIMImageCPtr img_ ) {
     
     return 1;
 }
+*/
 
 // 高速なmemset
 // https://www16.atwiki.jp/projectpn/pages/36.html

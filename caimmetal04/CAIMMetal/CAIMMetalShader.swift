@@ -21,16 +21,16 @@ enum CAIMMetalShaderType
 }
 
 // シェーダクラス
-class CAIMMetalShader
+public class CAIMMetalShader
 {
     // シェーダ名
     fileprivate var _shader_name:String?
-    var name:String? { return _shader_name }
+    public var name:String? { return _shader_name }
 
     fileprivate var _function:MTLFunction?
-    var function:MTLFunction { return _function! }
+    public var function:MTLFunction { return _function! }
     
-    init(_ sh:String) {
+    public init(_ sh:String) {
         _shader_name = sh
         let library:MTLLibrary? = CAIMMetal.device.makeDefaultLibrary()
         _function = library!.makeFunction(name: self.name!)

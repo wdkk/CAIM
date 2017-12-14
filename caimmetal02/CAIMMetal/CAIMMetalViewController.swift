@@ -17,20 +17,19 @@ class CAIMMetalViewController: UIViewController
     // オーバーライド用関数群
     // DrawingViewControllerではこれらを「上書き」して処理を追加する
     func setup() {}
-    func update(renderer:CAIMMetalRenderer) {}
+    func update(metalView:CAIMMetalView) {}
     func touchPressed() {}
     func touchMoved() {}
     func touchReleased() {}
     func touchCancelled() {}
 
-    // タッチ位置の座標変数
-    var touch_pos:[CGPoint] = [CGPoint]()
-    var release_pos:[CGPoint] = [CGPoint]()
+    var commandBufferCompletion:()->() = {}
+    
+    var touchPos:[CGPoint] = [CGPoint]()        // タッチしている座標
+    var releasePos:[CGPoint] = [CGPoint]()      // 指を離した座標
     
     fileprivate var _display_link:CADisplayLink?        // ループ処理用ディスプレイリンク
-    
     fileprivate var _caim_metal_view:CAIMMetalView?     // MetalView
-    fileprivate var _renderer:CAIMMetalRenderer?
     
     // ページがロード(生成)された時、処理される。主にUI部品などを作るときに利用
     override func viewDidLoad() {
@@ -40,10 +39,7 @@ class CAIMMetalViewController: UIViewController
         
         // 画像を表示するCAIMViewを内部でつくり、ViewControllerに貼り付ける
         _caim_metal_view = CAIMMetalView(frame: self.view.bounds)
-        self.view.addSubview(_caim_metal_view!)
-        
-        // レンダラの作成
-        self._renderer = CAIMMetalRenderer()
+        self.view = _caim_metal_view
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -61,21 +57,18 @@ class CAIMMetalViewController: UIViewController
     override func viewDidDisappear(_ animated: Bool) {
         // 親のviewDidAppearを呼ぶ
         super.viewDidDisappear(animated)
-        
         // updateのループ処理を終了
         _display_link?.remove(from: RunLoop.current, forMode: RunLoopMode.commonModes)
     }
     
     // CADisplayLinkで60fpsで呼ばれる関数
     @objc func polling(_ display_link :CADisplayLink) {
-        // レンダラとビューの紐付け、および準備
-        _renderer?.ready(view: _caim_metal_view!)
-
+        // Metalレンダの準備
+        _caim_metal_view?.ready(completion: commandBufferCompletion)
         // オーバーライド関数のコール
-        update(renderer: CAIMMetalRenderer.current!)
-        
-        // レンダ処理を確定する
-        _renderer?.commit()
+        update(metalView:_caim_metal_view!)
+        // レンダの描画処理を確定する
+        _caim_metal_view?.commit()
     }
     
     // タッチ開始関数
@@ -111,8 +104,8 @@ class CAIMMetalViewController: UIViewController
     // このため、Retinaスケールを考慮してpointをpixelに置き換える
     fileprivate func recognizeTouchInfo(_ event: UIEvent) {
         // タッチ情報の配列をリセット
-        self.touch_pos.removeAll(keepingCapacity: false)
-        self.release_pos.removeAll(keepingCapacity: false)
+        self.touchPos.removeAll(keepingCapacity: false)
+        self.releasePos.removeAll(keepingCapacity: false)
         // retinaスケールの取得
         let sc:CGFloat = UIScreen.main.scale
         // タッチ数分のループ
@@ -120,12 +113,12 @@ class CAIMMetalViewController: UIViewController
             // point座標系を取得
             let pos:CGPoint = touch.location(in: self.view)
             if(touch.phase == .ended || touch.phase == .cancelled) {
-                // scを掛け算してpixel座標系に変換し、release_posに追加
-                self.release_pos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                // scを掛け算してpixel座標系に変換し、releasePosに追加
+                self.releasePos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
             else {
-                // scを掛け算してpixel座標系に変換し、touch_posに追加
-                self.touch_pos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                // scを掛け算してpixel座標系に変換し、touchPosに追加
+                self.touchPos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
         }
     }

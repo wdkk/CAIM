@@ -11,8 +11,8 @@
 //
 
 // [include guard]
-#ifndef __CAIM_IMAGE_H__
-#define __CAIM_IMAGE_H__
+#ifndef __CAIM_IMAGEC_H__
+#define __CAIM_IMAGEC_H__
 
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
@@ -44,7 +44,7 @@ typedef NS_ENUM(unsigned char, CAIMDepth)
     CAIMDepth_float= 32
 };
 
-typedef unsigned char* _Nonnull CAIMMemory;
+typedef unsigned char* _Nonnull CAIMCharPtr;
 
 //// shared method ////
 
@@ -60,9 +60,9 @@ void              CAIMImageResize(CAIMImageCPtr img, long wid, long hgt);
 // load & save file functions.
 int               CAIMImageLoadFile(CAIMImageCPtr img, NSString* _Nonnull file_path);
 // load & save image file to Album.
-int               CAIMImageSaveFileToAlbum(CAIMImageCPtr img);
+//int               CAIMImageSaveFileToAlbum(CAIMImageCPtr img);
 // get matrix
-CAIMMemory        CAIMImageMemory(CAIMImageCPtr img);
+CAIMCharPtr       CAIMImageMemory(CAIMImageCPtr img);
 CAIMColorMatrix   CAIMImageMatrix(CAIMImageCPtr img);
 CAIMColor8Matrix  CAIMImageMatrix8(CAIMImageCPtr img);
 // get width/height

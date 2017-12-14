@@ -15,41 +15,39 @@ import Foundation
 import Metal
 
 
-enum CAIMMetalBufferType : Int
+public enum CAIMMetalBufferType : Int
 {
     case alloc
     case shared
 }
 
-class CAIMMetalBufferBase
+public class CAIMMetalBufferBase
 {
-    fileprivate var _mtlbuf:MTLBuffer?
-    var mtlbuf:MTLBuffer? { return _mtlbuf }
-    
     fileprivate var _length:Int = 0
     
-    func update<T>(_ obj:T) {}
+    fileprivate var _mtlbuf:MTLBuffer?
+    public var metalBuffer:MTLBuffer? { return _mtlbuf }
+
+    public func update<T>(_ obj:T) {}
     
-    func update<T>(elements:[T]) {}
+    public func update<T>(elements:[T]) {}
     
-    func update(_ buf:UnsafeRawPointer, length:Int) {}
-    
-    func update(vertice:CAIMAlignedMemory) {}
+    public func update(_ buf:UnsafeRawPointer, length:Int) {}
 }
 
-class CAIMMetalBuffer : CAIMMetalBufferBase
+public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
 {
     //// 初期化
     // 指定したオブジェクトのサイズで確保＆初期化
-    init<T>(_ obj:T) {
+    public init<T>(_ obj:T) {
         super.init()
-        _length = MemoryLayout<T>.size
+        _length = MemoryLayout<T>.stride
         _mtlbuf = self.allocate([obj], length:_length)
     }
     // 指定したオブジェクト配列で確保＆初期化
-    init<T>(elements:[T]) {
+    public init<T>(elements:[T]) {
         super.init()
-        _length = MemoryLayout<T>.size * elements.count
+        _length = MemoryLayout<T>.stride * elements.count
         if(_length == 0) {
             _mtlbuf = nil
             return
@@ -57,7 +55,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
         _mtlbuf = self.allocate(UnsafeMutablePointer(mutating: elements), length:_length)
     }
     // 指定したバイト数を確保（初期化はなし）
-    init(length:Int) {
+    public init(length:Int) {
         super.init()
         _length = length
         if(_length == 0) {
@@ -67,7 +65,7 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
         _mtlbuf = self.allocate(_length)
     }
     // 指定したバイト数で確保＆ポインタ先からコピーして初期化
-    init(_ buf:UnsafeRawPointer, length:Int) {
+    public init(_ buf:UnsafeRawPointer, length:Int) {
         super.init()
         _length = length
         if(_length == 0) {
@@ -77,7 +75,17 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
         _mtlbuf = self.allocate(buf, length: _length)
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化
-    init(vertice:CAIMAlignedMemory) {
+    public init(vertice:CAIMMemory16) {
+        super.init()
+        _length = vertice.allocatedLength
+        if(_length == 0) {
+            _mtlbuf = nil
+            return
+        }
+        _mtlbuf = self.allocate(vertice.pointer!, length:_length)
+    }
+    // 指定した頂点プールの内容とサイズで確保＆初期化(4Kアラインメントデータも受け取る)
+    public init(vertice:CAIMMemory4K) {
         super.init()
         _length = vertice.allocatedLength
         if(_length == 0) {
@@ -88,25 +96,25 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
     }
     
     //// 更新
-    override func update<T>(_ obj:T) {
-        let sz:Int = MemoryLayout<T>.size
+    public override func update<T>(_ obj:T) {
+        let sz:Int = MemoryLayout<T>.stride
         if(_length != sz) { _mtlbuf = self.allocate(sz) }
         memcpy( _mtlbuf!.contents(), [obj], sz )
     }
     
-    override func update<T>(elements:[T]) {
-        let sz:Int = MemoryLayout<T>.size * elements.count
+    public override func update<T>(elements:[T]) {
+        let sz:Int = MemoryLayout<T>.stride * elements.count
         if(_length != sz) { _mtlbuf = self.allocate(sz) }
         memcpy( _mtlbuf!.contents(), UnsafeMutablePointer(mutating: elements), sz)
     }
     
-    override func update(_ buf:UnsafeRawPointer, length:Int) {
+    public override func update(_ buf:UnsafeRawPointer, length:Int) {
         let sz:Int = length
         if(_length != sz) { _mtlbuf = self.allocate(sz) }
         memcpy( _mtlbuf!.contents(), buf, sz )
     }
     
-    override func update(vertice:CAIMAlignedMemory) {
+    public func update(vertice:CAIMMemory16) {
         let sz:Int = vertice.allocatedLength
         if(_length != sz) { _mtlbuf = self.allocate(sz) }
         memcpy( _mtlbuf!.contents(), vertice.pointer, sz )
@@ -122,10 +130,10 @@ class CAIMMetalBuffer : CAIMMetalBufferBase
     }
 }
 
-class CAIMMetalSharedBuffer : CAIMMetalBufferBase
+public class CAIMMetalSharedBuffer : CAIMMetalBufferBase
 {
     // 指定したオブジェクト全体を共有して確保・初期化
-    init(vertice:CAIMAlignedMemory) {
+    public init(vertice:CAIMMemory4K) {
         super.init()
         _length = vertice.allocatedLength
         if(_length == 0) {
@@ -136,16 +144,16 @@ class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     }
     
     // 更新関数は何もしない
-    override internal func update<T>(_ obj:T) {
+    public override func update<T>(_ obj:T) {
     }
     
-    override internal func update<T>(elements:[T]) {
+    public override func update<T>(elements:[T]) {
     }
     
-    override internal func update(_ buf:UnsafeRawPointer, length:Int) {
+    public override func update(_ buf:UnsafeRawPointer, length:Int) {
     }
     
-    override func update(vertice:CAIMAlignedMemory) {
+    public func update(vertice:CAIMMemory4K) {
         _mtlbuf = self.nocopy(vertice.pointer!, length: vertice.allocatedLength)
     }
     

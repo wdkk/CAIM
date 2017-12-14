@@ -20,9 +20,9 @@ constant int ID_PROJECTION = 1;
 
 // 入力頂点情報
 struct VertexIn {
-    packed_float4 pos;
-    packed_float2 uv;
-    packed_float4 rgba;
+    float2 pos;
+    float2 uv;
+    float4 rgba;
 };
 
 // 出力頂点情報

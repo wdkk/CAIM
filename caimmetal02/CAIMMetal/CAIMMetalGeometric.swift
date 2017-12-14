@@ -11,106 +11,226 @@
 //
 
 import Foundation
+import simd
+import Accelerate
 
-protocol Buffer {
-    var metalBuffer:CAIMMetalBuffer { get }
+// Metalバッファを出力できるようにするプロトコル
+protocol CAIMBufferAllocatable {
+    var metalBuffer:MTLBuffer { get }
+    static var format:(MTLVertexFormat, Int) { get }
 }
-extension Buffer {
-    var metalBuffer:CAIMMetalBuffer { return CAIMMetalBuffer(self) }
-}
-
-struct Vec2 : Buffer {
-    var x: Float, y: Float
-    
-    init(_ x:Float=0.0, _ y:Float=0.0) { self.x = x; self.y = y }
-    static var zero:Vec2 { return Vec2() }
+extension CAIMBufferAllocatable {
+    var metalBuffer:MTLBuffer { return CAIMMetalAllocatedBuffer(self).metalBuffer! }
+    static var format:(MTLVertexFormat, Int) { return (.invalid, 0) }
 }
 
-struct Vec3 : Buffer {
-    var x: Float, y: Float, z: Float
-    
-    init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0) { self.x = x; self.y = y; self.z = z }
-    static var zero:Vec3 { return Vec3() }
+// Int2(8バイト)
+typealias Int2 = vector_int2
+extension Int2 : CAIMBufferAllocatable {
+    init(_ x:Int32=0, _ y:Int32=0) { self.init(); self.x = x; self.y = y }
+    static var zero:Int2 { return Int2() }
+    static var format:(MTLVertexFormat, Int) { return (.int2, 8) }
+}
+// Int3(16バイト)
+typealias Int3 = vector_int3
+extension Int3 : CAIMBufferAllocatable {
+    init(_ x:Int32=0, _ y:Int32=0, _ z:Int32=0) { self.init(); self.x = x; self.y = y; self.z = z }
+    static var zero:Int3 { return Int3() }
+    static var format:(MTLVertexFormat, Int) { return (.int3, 12) }
+}
+// Int4(16バイト)
+typealias Int4 = vector_int4
+extension Int4 : CAIMBufferAllocatable {
+    init(_ x:Int32=0, _ y:Int32=0, _ z:Int32=0, _ w:Int32=0) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
+    static var zero:Int4 { return Int4() }
+    static var format:(MTLVertexFormat, Int) { return (.int4, 16) }
 }
 
-struct Vec4 : Buffer {
-    var x: Float, y: Float, z: Float, w: Float
-    
-    init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0, _ w:Float=1.0) { self.x = x; self.y = y; self.z = z; self.w = w }
-    static var zero:Vec4 { return Vec4() }
+// Size2(8バイト)
+typealias Size2 = Int2
+extension Size2 {
+    var w:Int32 { get { return self.x } set { self.x = newValue } }
+    var h:Int32 { get { return self.y } set { self.y = newValue } }
+}
+// Size3(16バイト)
+typealias Size3 = Int3
+extension Size3 {
+    var w:Int32 { get { return self.x } set { self.x = newValue } }
+    var h:Int32 { get { return self.y } set { self.y = newValue } }
+    var d:Int32 { get { return self.z } set { self.z = newValue } }
 }
 
-struct Size2 : Buffer {
-    var w: Int32, h: Int32
-    init(_ wid:Int32=0, _ hgt:Int32=0) { self.w = wid; self.h = hgt }
-    static var zero:Size2 { return Size2() }
+// Float2(8バイト)
+typealias Float2 = vector_float2
+extension Float2 : CAIMBufferAllocatable {
+    init(_ x:Float=0.0, _ y:Float=0.0) { self.init(); self.x = x; self.y = y }
+    static var zero:Float2 { return Float2() }
+    static var format:(MTLVertexFormat, Int) { return (.float2, 8) }
+}
+// Float3(16バイト)
+typealias Float3 = vector_float3
+extension Float3 : CAIMBufferAllocatable {
+    init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0) { self.init(); self.x = x; self.y = y; self.z = z }
+    static var zero:Float3 { return Float3() }
+    static var format:(MTLVertexFormat, Int) { return (.float3, 16) }
+}
+// Float4(16バイト)
+typealias Float4 = vector_float4
+extension Float4 : CAIMBufferAllocatable {
+    init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0, _ w:Float=1.0) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
+    static var zero:Float4 { return Float4() }
+    static var format:(MTLVertexFormat, Int) { return (.float4, 16) }
 }
 
-struct Matrix4x4 : Buffer {
-    var X: Vec4, Y: Vec4, Z: Vec4, W: Vec4
-    
+// 3x3行列(48バイト)
+typealias Matrix3x3 = matrix_float3x3
+extension Matrix3x3 : CAIMBufferAllocatable {
     // 単位行列
-    init() {
-        X = Vec4(1, 0, 0, 0)
-        Y = Vec4(0, 1, 0, 0)
-        Z = Vec4(0, 0, 1, 0)
-        W = Vec4(0, 0, 0, 1)
+    public init() {
+        self.columns.0 = Float3(1, 0, 0)
+        self.columns.1 = Float3(0, 1, 0)
+        self.columns.2 = Float3(0, 0, 1)
     }
-    
+    // 単位行列
+    static var identity:Matrix3x3 { return Matrix3x3() }
+}
+
+// 4x4行列(64バイト)
+typealias Matrix4x4 = matrix_float4x4
+extension Matrix4x4 : CAIMBufferAllocatable {
+    // 単位行列
+    public init() {
+        self.columns.0 = Float4(1, 0, 0, 0)
+        self.columns.1 = Float4(0, 1, 0, 0)
+        self.columns.2 = Float4(0, 0, 1, 0)
+        self.columns.3 = Float4(0, 0, 0, 1)
+    }
     // 単位行列
     static var identity:Matrix4x4 { return Matrix4x4() }
     
-    // ピクセル座標系変換行列
-    static func pixelProjection(wid:Int, hgt:Int) -> Matrix4x4 {
-        var vp_mat:Matrix4x4 = Matrix4x4()
-        vp_mat.X.x =  2.0 / Float(wid)
-        vp_mat.Y.y = -2.0 / Float(hgt)
-        vp_mat.W.x = -1.0
-        vp_mat.W.y =  1.0
-        return vp_mat
+    var X:Float4 { get { return columns.0 } set { columns.0 = newValue } }
+    var Y:Float4 { get { return columns.1 } set { columns.1 = newValue } }
+    var Z:Float4 { get { return columns.2 } set { columns.2 = newValue } }
+    var W:Float4 { get { return columns.3 } set { columns.3 = newValue } }
+    
+    // 平行移動
+    static func translate(_ x:Float, _ y:Float, _ z:Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
+        mat.W.x = x
+        mat.W.y = y
+        mat.W.z = z
+        return mat
     }
     
-    // ピクセル座標系変換行列
-    static func pixelProjection(wid:CGFloat, hgt:CGFloat) -> Matrix4x4 {
-        var vp_mat:Matrix4x4 = Matrix4x4()
-        vp_mat.X.x =  2.0 / Float(wid)
-        vp_mat.Y.y = -2.0 / Float(hgt)
-        vp_mat.W.x = -1.0
-        vp_mat.W.y =  1.0
-        return vp_mat
+    // 拡大縮小
+    static func scale(_ x:Float, _ y:Float, _ z:Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
+        mat.X.x = x
+        mat.Y.y = y
+        mat.Z.z = z
+        return mat
     }
     
-    // ピクセル座標系変換行列
-    static func pixelProjection(_ size:CGSize) -> Matrix4x4 {
-        var vp_mat:Matrix4x4 = Matrix4x4()
-        vp_mat.X.x =  2.0 / Float(size.width)
-        vp_mat.Y.y = -2.0 / Float(size.height)
-        vp_mat.W.x = -1.0
-        vp_mat.W.y =  1.0
-        return vp_mat
-    }
-    
-    static func rotate(axis: Vec4, byAngle angle: Float) -> Matrix4x4 {
-        var mat:Matrix4x4 = Matrix4x4()
+    // 回転(三軸同時)
+    static func rotate(axis: Float4, byAngle angle: Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
         
         let c:Float = cos(angle)
         let s:Float = sin(angle)
         
         mat.X.x = axis.x * axis.x + (1 - axis.x * axis.x) * c
-        mat.X.y = axis.x * axis.y * (1 - c) - axis.z * s
-        mat.X.z = axis.x * axis.z * (1 - c) + axis.y * s
+        mat.Y.x = axis.x * axis.y * (1 - c) - axis.z * s
+        mat.Z.x = axis.x * axis.z * (1 - c) + axis.y * s
         
-        mat.Y.x = axis.x * axis.y * (1 - c) + axis.z * s
+        mat.X.y = axis.x * axis.y * (1 - c) + axis.z * s
         mat.Y.y = axis.y * axis.y + (1 - axis.y * axis.y) * c
-        mat.Y.z = axis.y * axis.z * (1 - c) - axis.x * s
+        mat.Z.y = axis.y * axis.z * (1 - c) - axis.x * s
         
-        mat.Z.x = axis.x * axis.z * (1 - c) - axis.y * s
-        mat.Z.y = axis.y * axis.z * (1 - c) + axis.x * s
+        mat.X.z = axis.x * axis.z * (1 - c) - axis.y * s
+        mat.Y.z = axis.y * axis.z * (1 - c) + axis.x * s
         mat.Z.z = axis.z * axis.z + (1 - axis.z * axis.z) * c
         
         return mat
     }
     
+    static func rotateX(byAngle angle: Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
+        
+        let cosv:Float = cos(angle)
+        let sinv:Float = sin(angle)
+        
+        mat.Y.y = cosv
+        mat.Z.y = -sinv
+        mat.Y.z = sinv
+        mat.Z.z = cosv
+        
+        return mat
+    }
+    
+    static func rotateY(byAngle angle: Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
+        
+        let cosv:Float = cos(angle)
+        let sinv:Float = sin(angle)
+        
+        mat.X.x = cosv
+        mat.Z.x = sinv
+        mat.X.z = -sinv
+        mat.Z.z = cosv
+        
+        return mat
+    }
+    
+    static func rotateZ(byAngle angle: Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
+        
+        let cosv:Float = cos(angle)
+        let sinv:Float = sin(angle)
+        
+        mat.X.x = cosv
+        mat.Y.x = -sinv
+        mat.X.y = sinv
+        mat.Y.y = cosv
+        
+        return mat
+    }
+    
+    // ピクセル座標系変換行列
+    static func pixelProjection(wid:Int, hgt:Int) -> Matrix4x4 {
+        var vp_mat:Matrix4x4 = .identity
+        vp_mat.X.x =  2.0 / Float(wid)
+        vp_mat.Y.y = -2.0 / Float(hgt)
+        vp_mat.W.x = -1.0
+        vp_mat.W.y =  1.0
+        return vp_mat
+    }
+    // ピクセル座標系変換行列
+    static func pixelProjection(wid:CGFloat, hgt:CGFloat) -> Matrix4x4 {
+        return pixelProjection(wid: Int(wid), hgt: Int(hgt))
+    }
+    // ピクセル座標系変換行列
+    static func pixelProjection(_ size:CGSize) -> Matrix4x4 {
+        return pixelProjection(wid: Int(size.width), hgt: Int(size.height))
+    }
+    
+    static func ortho(left l: Float, right r: Float, bottom b: Float, top t: Float, near n: Float, far f: Float) -> Matrix4x4 {
+        var mat:Matrix4x4 = .identity
+        
+        mat.X.x = 2.0 / (r-l)
+        mat.W.x = (r+l) / (r-l)
+        mat.Y.y = 2.0 / (t-b)
+        mat.W.y = (t+b) / (t-b)
+        mat.Z.z = -2.0 / (f-n)
+        mat.W.z = (f+n) / (f-n)
+        
+        return mat
+    }
+    
+    static func ortho2d(wid:Float, hgt:Float) -> Matrix4x4 {
+        return ortho(left: 0, right: wid, bottom: hgt, top: 0, near: -1, far: 1)
+    }
+    
+    // 透視投影変換行列(手前:Z軸正方向)
     static func perspective(aspect: Float, fieldOfViewY: Float, near: Float, far: Float) -> Matrix4x4 {
         var mat:Matrix4x4 = Matrix4x4()
         
@@ -131,38 +251,4 @@ struct Matrix4x4 : Buffer {
         
         return mat
     }
-    
-    static func translate(_ x:Float, _ y:Float, _ z:Float) -> Matrix4x4 {
-        var mat:Matrix4x4 = .identity
-        mat.W.x = x
-        mat.W.y = y
-        mat.W.z = z
-        return mat
-    }
-}
-
-func * (left: Matrix4x4, right:Matrix4x4) -> Matrix4x4 {
-    var mat:Matrix4x4 = Matrix4x4()
-    
-    mat.X.x = (left.X.x * right.X.x) + (left.X.y * right.Y.x) + (left.X.z * right.Z.x) + (left.X.w * right.W.x)
-    mat.X.y = (left.X.x * right.X.y) + (left.X.y * right.Y.y) + (left.X.z * right.Z.y) + (left.X.w * right.W.y)
-    mat.X.z = (left.X.x * right.X.z) + (left.X.y * right.Y.z) + (left.X.z * right.Z.z) + (left.X.w * right.W.z)
-    mat.X.w = (left.X.x * right.X.w) + (left.X.y * right.Y.w) + (left.X.z * right.Z.w) + (left.X.w * right.W.w)
-    
-    mat.Y.x = (left.Y.x * right.X.x) + (left.Y.y * right.Y.x) + (left.Y.z * right.Z.x) + (left.Y.w * right.W.x)
-    mat.Y.y = (left.Y.x * right.X.y) + (left.Y.y * right.Y.y) + (left.Y.z * right.Z.y) + (left.Y.w * right.W.y)
-    mat.Y.z = (left.Y.x * right.X.z) + (left.Y.y * right.Y.z) + (left.Y.z * right.Z.z) + (left.Y.w * right.W.z)
-    mat.Y.w = (left.Y.x * right.X.w) + (left.Y.y * right.Y.w) + (left.Y.z * right.Z.w) + (left.Y.w * right.W.w)
-    
-    mat.Z.x = (left.Z.x * right.X.x) + (left.Z.y * right.Y.x) + (left.Z.z * right.Z.x) + (left.Z.w * right.W.x)
-    mat.Z.y = (left.Z.x * right.X.y) + (left.Z.y * right.Y.y) + (left.Z.z * right.Z.y) + (left.Z.w * right.W.y)
-    mat.Z.z = (left.Z.x * right.X.z) + (left.Z.y * right.Y.z) + (left.Z.z * right.Z.z) + (left.Z.w * right.W.z)
-    mat.Z.w = (left.Z.x * right.X.w) + (left.Z.y * right.Y.w) + (left.Z.z * right.Z.w) + (left.Z.w * right.W.w)
-    
-    mat.W.x = (left.W.x * right.X.x) + (left.W.y * right.Y.x) + (left.W.z * right.Z.x) + (left.W.w * right.W.x)
-    mat.W.y = (left.W.x * right.X.y) + (left.W.y * right.Y.y) + (left.W.z * right.Z.y) + (left.W.w * right.W.y)
-    mat.W.z = (left.W.x * right.X.z) + (left.W.y * right.Y.z) + (left.W.z * right.Z.z) + (left.W.w * right.W.z)
-    mat.W.w = (left.W.x * right.X.w) + (left.W.y * right.Y.w) + (left.W.z * right.Z.w) + (left.W.w * right.W.w)
-    
-    return mat
 }

@@ -26,10 +26,10 @@ class DrawingViewController : CAIMViewController
     // 60FPSで繰り返し呼ばれる関数
     override func update() {
         // タッチしているかどうかの反応 = self.touch_pos.countが1つ以上あるとき
-        if(self.touch_pos.count > 0) {
+        if(self.touchPos.count > 0) {
            
-            for i in 0 ..< self.touch_pos.count {
-                let pos = self.touch_pos[i]
+            for i in 0 ..< self.touchPos.count {
+                let pos = self.touchPos[i]
             
                 // 薄い赤円を描く
                 ImageToolBox.fillCircle(self.image, cx: Int(pos.x), cy: Int(pos.y), radius: 20,
