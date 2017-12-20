@@ -11,7 +11,6 @@
 //
 
 #include <metal_stdlib>                        // Metalの標準ライブラリ
-#include "../CAIMMetal/CAIMShaderUtil.h"       // CAIMの補助機能
 
 using namespace metal;
 

@@ -26,7 +26,7 @@ class DrawingViewController : CAIMViewController
     // タッチ開始の時に呼ばれる
     override func touchPressed() {
         // タッチ座標の1つ目を取得する
-        let pos = self.touch_pos[0]
+        let pos = self.touchPos[0]
         
         // 青円を描く
         ImageToolBox.fillCircle(self.image, cx: Int(pos.x), cy: Int(pos.y), radius: 20,
@@ -38,7 +38,7 @@ class DrawingViewController : CAIMViewController
     // 指でなぞった時に呼ばれる
     override func touchMoved() {
         // タッチ座標の1つ目を取得する
-        let pos = self.touch_pos[0]
+        let pos = self.touchPos[0]
 
         // 薄い赤円を描く
         ImageToolBox.fillCircle(self.image, cx: Int(pos.x), cy: Int(pos.y), radius: 20,
@@ -50,7 +50,7 @@ class DrawingViewController : CAIMViewController
     // 指を離した時に呼ばれる
     override func touchReleased() {
         // リリース座標の1つ目を取得する
-        let pos = self.release_pos[0]
+        let pos = self.releasePos[0]
         
         // 緑円を描く
         ImageToolBox.fillCircle(self.image, cx: Int(pos.x), cy: Int(pos.y), radius: 20,
