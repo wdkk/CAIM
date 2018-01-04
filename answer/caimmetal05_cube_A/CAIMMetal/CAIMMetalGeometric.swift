@@ -17,11 +17,9 @@ import Accelerate
 // Metalバッファを出力できるようにするプロトコル
 protocol CAIMBufferAllocatable {
     var metalBuffer:MTLBuffer { get }
-    static var format:(MTLVertexFormat, Int) { get }
 }
 extension CAIMBufferAllocatable {
     var metalBuffer:MTLBuffer { return CAIMMetalAllocatedBuffer(self).metalBuffer! }
-    static var format:(MTLVertexFormat, Int) { return (.invalid, 0) }
 }
 
 // Int2(8バイト)
@@ -29,21 +27,18 @@ typealias Int2 = vector_int2
 extension Int2 : CAIMBufferAllocatable {
     init(_ x:Int32=0, _ y:Int32=0) { self.init(); self.x = x; self.y = y }
     static var zero:Int2 { return Int2() }
-    static var format:(MTLVertexFormat, Int) { return (.int2, 8) }
 }
 // Int3(16バイト)
 typealias Int3 = vector_int3
 extension Int3 : CAIMBufferAllocatable {
     init(_ x:Int32=0, _ y:Int32=0, _ z:Int32=0) { self.init(); self.x = x; self.y = y; self.z = z }
     static var zero:Int3 { return Int3() }
-    static var format:(MTLVertexFormat, Int) { return (.int3, 12) }
 }
 // Int4(16バイト)
 typealias Int4 = vector_int4
 extension Int4 : CAIMBufferAllocatable {
     init(_ x:Int32=0, _ y:Int32=0, _ z:Int32=0, _ w:Int32=0) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
     static var zero:Int4 { return Int4() }
-    static var format:(MTLVertexFormat, Int) { return (.int4, 16) }
 }
 
 // Size2(8バイト)
@@ -65,21 +60,18 @@ typealias Float2 = vector_float2
 extension Float2 : CAIMBufferAllocatable {
     init(_ x:Float=0.0, _ y:Float=0.0) { self.init(); self.x = x; self.y = y }
     static var zero:Float2 { return Float2() }
-    static var format:(MTLVertexFormat, Int) { return (.float2, 8) }
 }
 // Float3(16バイト)
 typealias Float3 = vector_float3
 extension Float3 : CAIMBufferAllocatable {
     init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0) { self.init(); self.x = x; self.y = y; self.z = z }
     static var zero:Float3 { return Float3() }
-    static var format:(MTLVertexFormat, Int) { return (.float3, 16) }
 }
 // Float4(16バイト)
 typealias Float4 = vector_float4
 extension Float4 : CAIMBufferAllocatable {
     init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0, _ w:Float=1.0) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
     static var zero:Float4 { return Float4() }
-    static var format:(MTLVertexFormat, Int) { return (.float4, 16) }
 }
 
 // 3x3行列(48バイト)

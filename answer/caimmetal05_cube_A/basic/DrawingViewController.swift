@@ -52,8 +52,6 @@ class DrawingViewController : CAIMMetalViewController
         let blue  = CAIMColor(0, 0, 1, 1).float4
         let gray  = CAIMColor(0.5, 0.5, 0.5, 1.0).float4
         
-        // キューブ情報をセットすると、コールバック関数で各頂点の情報が繰り返し送られてくるので、
-        // 引数のinfoから情報を抜き出し、Vertex構造体に値を詰めて返すようにする。
         cubes.set(idx: 0, pos: Float3(0, 0, 0), size: 2.0) { (idx:Int, info:CAIMPanelCubeParam) -> Vertex in
             var vi       = Vertex()
             vi.pos       = info.pos

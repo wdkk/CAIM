@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5D02B67A1E5AFA10002869D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D02B6791E5AFA10002869D2 /* AppDelegate.swift */; };
+		5D1A3BD41FF7C2DB00BF37C1 /* CAIMVertexFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A3BD31FF7C2DB00BF37C1 /* CAIMVertexFormatter.swift */; };
 		5D224A8E1C5FD6FD00AD55B3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */; };
 		5D225CB71FC97107002AD653 /* Lily.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D225CB61FC97107002AD653 /* Lily.png */; };
 		5D225CB91FC97A3A002AD653 /* CAIMMetalSampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D225CB81FC97A3A002AD653 /* CAIMMetalSampler.swift */; };
@@ -36,7 +37,6 @@
 		5DC601AC1FE1873A0078BF6C /* CAIMColor+MetalExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC601A61FE187390078BF6C /* CAIMColor+MetalExt.swift */; };
 		5DC601AD1FE1873A0078BF6C /* CAIMMetalMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC601A71FE187390078BF6C /* CAIMMetalMesh.swift */; };
 		5DC601AE1FE1873A0078BF6C /* CAIMMetalComputeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC601A81FE187390078BF6C /* CAIMMetalComputeEngine.swift */; };
-		5DC601AF1FE1873A0078BF6C /* MTLVertexDescriptor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC601A91FE187390078BF6C /* MTLVertexDescriptor+Ext.swift */; };
 		5DC601B01FE1873A0078BF6C /* CAIMMetalUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DC601AB1FE187390078BF6C /* CAIMMetalUtil.swift */; };
 		5DD58FF41B8B47A80055600D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DD58FF21B8B47A80055600D /* Images.xcassets */; };
 		5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5DDEABE91E6FDB5F00E34118 /* CAIMMemoryC.mm */; };
@@ -47,6 +47,7 @@
 
 /* Begin PBXFileReference section */
 		5D02B6791E5AFA10002869D2 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		5D1A3BD31FF7C2DB00BF37C1 /* CAIMVertexFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMVertexFormatter.swift; sourceTree = "<group>"; };
 		5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		5D225CB61FC97107002AD653 /* Lily.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Lily.png; sourceTree = "<group>"; };
 		5D225CB81FC97A3A002AD653 /* CAIMMetalSampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAIMMetalSampler.swift; sourceTree = "<group>"; };
@@ -78,7 +79,6 @@
 		5DC601A61FE187390078BF6C /* CAIMColor+MetalExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+MetalExt.swift"; sourceTree = "<group>"; };
 		5DC601A71FE187390078BF6C /* CAIMMetalMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalMesh.swift; sourceTree = "<group>"; };
 		5DC601A81FE187390078BF6C /* CAIMMetalComputeEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputeEngine.swift; sourceTree = "<group>"; };
-		5DC601A91FE187390078BF6C /* MTLVertexDescriptor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLVertexDescriptor+Ext.swift"; sourceTree = "<group>"; };
 		5DC601AA1FE187390078BF6C /* CAIMShaderUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMShaderUtil.h; sourceTree = "<group>"; };
 		5DC601AB1FE187390078BF6C /* CAIMMetalUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalUtil.swift; sourceTree = "<group>"; };
 		5DD58FF21B8B47A80055600D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -111,12 +111,12 @@
 		5D27F4E01E5D7F1200199E32 /* CAIMMetal */ = {
 			isa = PBXGroup;
 			children = (
+				5D1A3BD31FF7C2DB00BF37C1 /* CAIMVertexFormatter.swift */,
 				5DC601A61FE187390078BF6C /* CAIMColor+MetalExt.swift */,
 				5DC601A81FE187390078BF6C /* CAIMMetalComputeEngine.swift */,
 				5DC601A71FE187390078BF6C /* CAIMMetalMesh.swift */,
 				5DC601AB1FE187390078BF6C /* CAIMMetalUtil.swift */,
 				5DC601AA1FE187390078BF6C /* CAIMShaderUtil.h */,
-				5DC601A91FE187390078BF6C /* MTLVertexDescriptor+Ext.swift */,
 				5D27F4E31E5D7F1200199E32 /* CAIMMetalBuffer.swift */,
 				5D27F4E91E5D7F1200199E32 /* CAIMMetalRenderer.swift */,
 				5D27F4E51E5D7F1200199E32 /* CAIMMetalComputer.swift */,
@@ -247,6 +247,7 @@
 				TargetAttributes = {
 					FD1E8C241966407A0031E727 = {
 						CreatedOnToolsVersion = 6.0;
+						DevelopmentTeam = YC4UJA55P2;
 						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
@@ -288,7 +289,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DC601AF1FE1873A0078BF6C /* MTLVertexDescriptor+Ext.swift in Sources */,
 				5D27F4F61E5D7F1200199E32 /* CAIMMetalShader.swift in Sources */,
 				5D984EA11E5BE74F000CA4E3 /* CAIMView.swift in Sources */,
 				5D984E9F1E5BE74F000CA4E3 /* CAIMImageC.m in Sources */,
@@ -308,6 +308,7 @@
 				5DC601AE1FE1873A0078BF6C /* CAIMMetalComputeEngine.swift in Sources */,
 				5D27F4FA1E5D7F4300199E32 /* Shaders.metal in Sources */,
 				5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */,
+				5D1A3BD41FF7C2DB00BF37C1 /* CAIMVertexFormatter.swift in Sources */,
 				5D27F4F51E5D7F1200199E32 /* CAIMMetalRenderer.swift in Sources */,
 				5D27F4F71E5D7F1200199E32 /* CAIMMetalView.swift in Sources */,
 				5DC601A41FE1872E0078BF6C /* CAIMColor+Ext.swift in Sources */,
@@ -427,7 +428,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = YC4UJA55P2;
 				INFOPLIST_FILE = config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
@@ -448,7 +449,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = YC4UJA55P2;
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

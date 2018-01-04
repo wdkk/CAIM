@@ -32,7 +32,6 @@ struct VertexOut {
     float2 tex_coord;
 };
 
-// 行列群の構造体
 struct Uniforms {
     float4x4 view_matrix;
     float4x4 model_matrix;

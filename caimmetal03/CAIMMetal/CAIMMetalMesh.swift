@@ -34,11 +34,11 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
         return mtl_vertex
     }
     
-    public init(with path:String, at index:Int) {
-        metalMesh = self.load(with:path, at:index)
+    public init(with path:String, at index:Int, addNormal add_normal:Bool=true, normalThreshold normal_threshold:Float=1.0) {
+        metalMesh = self.load(with:path, at:index, addNormal: add_normal, normalThreshold: normal_threshold)
     }
     
-    private func load(with path: String, at index:Int) -> MTKMesh {
+    private func load(with path: String, at index:Int, addNormal add_normal:Bool, normalThreshold normal_threshold:Float) -> MTKMesh {
         let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal(CAIMMetalMesh.vertexDesc(at:index))
         (modelDescriptor3D.attributes[0] as! MDLVertexAttribute).name = MDLVertexAttributePosition
         (modelDescriptor3D.attributes[1] as! MDLVertexAttribute).name = MDLVertexAttributeNormal
@@ -48,20 +48,27 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
         let asset = MDLAsset(url: URL(fileURLWithPath:CAIM.bundle(path)),
                              vertexDescriptor: modelDescriptor3D,
                              bufferAllocator: allocator)
-        let newMesh = try! MTKMesh.newMeshes(asset: asset, device: CAIMMetal.device)
-        return newMesh.metalKitMeshes.first!
+        let new_mesh = try! MTKMesh.newMeshes(asset: asset, device: CAIMMetal.device)
+        if(add_normal) {
+            new_mesh.modelIOMeshes.first!.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: normal_threshold)
+            let mtk_mesh = try! MTKMesh(mesh: new_mesh.modelIOMeshes.first!, device: CAIMMetal.device)
+            return mtk_mesh
+        }
+        else {
+            return new_mesh.metalKitMeshes.first!
+        }
     }
     
     public func draw(with renderer:CAIMMetalRenderer) {
         let enc = renderer.currentEncoder
-        
-        let submesh = metalMesh!.submeshes[0]
- 
-        enc?.drawIndexedPrimitives(type: submesh.primitiveType,
-                                   indexCount: submesh.indexCount,
-                                   indexType: submesh.indexType,
-                                   indexBuffer: submesh.indexBuffer.buffer,
-                                   indexBufferOffset: submesh.indexBuffer.offset)
+
+        metalMesh?.submeshes.forEach {
+            enc?.drawIndexedPrimitives(type: $0.primitiveType,
+                                       indexCount: $0.indexCount,
+                                       indexType: $0.indexType,
+                                       indexBuffer: $0.indexBuffer.buffer,
+                                       indexBufferOffset: $0.indexBuffer.offset)
+        }
     }
 }
 

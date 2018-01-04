@@ -18,16 +18,15 @@ let ID_VERTEX:Int = 0
 let ID_UNIFORMS:Int = 1
 let ID_PROJECTION:Int = 1
 
-// 1頂点情報の構造体
-struct Vertex {
+// 1頂点情報の構造体(VertexDescriptorを使うため、CAIMVertexFormatterプロトコルを使用する)
+struct Vertex : CAIMVertexFormatter {    
     var pos:Float2 = Float2()
     var uv:Float2 = Float2()
     var rgba:Float4 = Float4()
 
-    static func vertexDesc(at index:Int) -> MTLVertexDescriptor {
-        return MTLVertexDescriptor(at:index,
-                                   format:[Float2.format, Float2.format, Float4.format],
-                                   stride:MemoryLayout<Vertex>.stride)
+    // CAIMVertexFormatterで作成を義務付けられる関数: 構造体の型と同じ型をformats: [...]のなかで指定していく
+    static func vertexDescriptor(at idx: Int) -> MTLVertexDescriptor {
+        return makeVertexDescriptor(at: idx, formats: [.float2, .float2, .float4])
     }
 }
 
@@ -91,7 +90,7 @@ class DrawingViewController : CAIMMetalViewController
         // シェーダを指定してパイプラインレンダラの作成
         render_circle = CAIMMetalRenderer(vertname:"vert2d", fragname:"fragCircleCosCurve")
         // 頂点をどのように使うのかを設定
-        render_circle?.vertexDesc = Vertex.vertexDesc(at: ID_VERTEX)
+        render_circle?.vertexDesc = Vertex.vertexDescriptor(at: 0)
         // アルファブレンドを設定
         render_circle?.blendType = .alphaBlend
         render_circle?.depthCompare = .always
@@ -117,7 +116,7 @@ class DrawingViewController : CAIMMetalViewController
         // シェーダを指定してパイプラインレンダラの作成
         render_ring = CAIMMetalRenderer(vertname:"vert2d", fragname:"fragRing")
         // 頂点をどのように使うのかを設定
-        render_ring?.vertexDesc = Vertex.vertexDesc(at: ID_VERTEX)
+        render_ring?.vertexDesc = Vertex.vertexDescriptor(at: 0)
         // アルファブレンドを設定
         render_ring?.blendType = .alphaBlend
         render_ring?.depthCompare = .always

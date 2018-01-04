@@ -138,7 +138,7 @@ class DrawingViewController : CAIMMetalViewController
     // 繰り返し処理関数
     override func update(metalView: CAIMMetalView) {
         // タッチ位置にパーティクル発生
-        for pos in self.touchPos {
+        for pos:CGPoint in self.touchPos {
             // 新しいパーティクルを生成
             let p = genParticle(pos: pos,
                                 color: CAIMColor(CAIM.random(), CAIM.random(), CAIM.random(), CAIM.random()),
