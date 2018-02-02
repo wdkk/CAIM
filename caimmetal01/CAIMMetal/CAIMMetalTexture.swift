@@ -23,15 +23,17 @@ public class CAIMMetalTexture {
         let img:UIImage = UIImage(contentsOfFile: CAIM.bundle(path))!
         let cgimg:CGImage = img.cgImage!
         // テクスチャのY軸反転
+        /*
         UIGraphicsBeginImageContext(img.size)
         let context = UIGraphicsGetCurrentContext()
         context?.draw(cgimg, in: CGRect(x: 0, y: 0, width: img.size.width, height: img.size.height))
         context?.translateBy(x: 0, y: img.size.height)
         context?.scaleBy(x: 1.0, y: -1.0)
-        let result_cgimg2:CGImage = context!.makeImage()!
+        let result_cgimg:CGImage = context!.makeImage()!
         UIGraphicsEndImageContext()
-        
-        self.metalTexture = try! tex_loader.newTexture(cgImage: result_cgimg2, options: nil)
+        self.metalTexture = try! tex_loader.newTexture(cgImage: result_cgimg, options: nil)
+        */
+        self.metalTexture = try! tex_loader.newTexture(cgImage: cgimg, options: nil)
     }
 }
 

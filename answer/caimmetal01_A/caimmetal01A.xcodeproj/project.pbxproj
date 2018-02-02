@@ -82,7 +82,6 @@
 		5DEE08391E5E72DC0013C7D8 /* CAIMMetalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalViewController.swift; sourceTree = "<group>"; };
 		5DEECE8D1FD8E4BC00F2D5A4 /* CAIMColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+Ext.swift"; sourceTree = "<group>"; };
 		5DEECE8F1FD8E4CD00F2D5A4 /* CAIMMetalUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalUtil.swift; sourceTree = "<group>"; };
-		5DEECE951FD919FB00F2D5A4 /* CAIMShaderUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CAIMShaderUtil.h; sourceTree = "<group>"; };
 		5DF9D3621C5BC6550056E506 /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		FD1E8C251966407A0031E727 /* caimmetal01A.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = caimmetal01A.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD3E807D19739A39007553FB /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
@@ -108,7 +107,6 @@
 			isa = PBXGroup;
 			children = (
 				5D1A3BCB1FF7C2A100BF37C1 /* CAIMVertexFormatter.swift */,
-				5DEECE951FD919FB00F2D5A4 /* CAIMShaderUtil.h */,
 				5DEECE8F1FD8E4CD00F2D5A4 /* CAIMMetalUtil.swift */,
 				5D1A95EA1FD41898003677C3 /* CAIMColor+MetalExt.swift */,
 				5D1A95EB1FD41898003677C3 /* CAIMMetalComputeEngine.swift */,

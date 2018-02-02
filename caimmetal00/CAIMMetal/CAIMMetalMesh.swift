@@ -33,9 +33,17 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
         mtl_vertex.layouts[index].stepRate = 1
         return mtl_vertex
     }
+
+    public init() {}
     
     public init(with path:String, at index:Int, addNormal add_normal:Bool=true, normalThreshold normal_threshold:Float=1.0) {
         metalMesh = self.load(with:path, at:index, addNormal: add_normal, normalThreshold: normal_threshold)
+    }
+    
+    public static func sphere(at index:Int) -> CAIMMetalMesh {
+        let mesh = CAIMMetalMesh()
+        mesh.metalMesh = mesh.makeSphere(at: index)
+        return mesh
     }
     
     private func load(with path: String, at index:Int, addNormal add_normal:Bool, normalThreshold normal_threshold:Float) -> MTKMesh {
@@ -57,6 +65,18 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
         else {
             return new_mesh.metalKitMeshes.first!
         }
+    }
+    
+    private func makeSphere(at index:Int) -> MTKMesh {
+        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal(CAIMMetalMesh.vertexDesc(at:index))
+        (modelDescriptor3D.attributes[0] as! MDLVertexAttribute).name = MDLVertexAttributePosition
+        (modelDescriptor3D.attributes[1] as! MDLVertexAttribute).name = MDLVertexAttributeNormal
+        (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
+        
+        let allocator = MTKMeshBufferAllocator(device: CAIMMetal.device)
+        let mesh = MDLMesh(sphereWithExtent: vector_float3(1.0), segments: vector_uint2(32), inwardNormals: true, geometryType: .triangles, allocator: allocator)
+        let new_mesh = try! MTKMesh(mesh: mesh, device: CAIMMetal.device)
+        return new_mesh
     }
     
     public func draw(with renderer:CAIMMetalRenderer) {

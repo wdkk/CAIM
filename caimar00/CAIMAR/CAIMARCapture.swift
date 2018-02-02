@@ -38,7 +38,16 @@ class CAIMARCapture {
         
         render_ar_capture = CAIMMetalRenderer(vertname: "capturedImageVertexTransform", fragname: "capturedImageFragmentShader")
         // 頂点ディスクリプタ
-        render_ar_capture?.vertexDesc = MTLVertexDescriptor(at: 0, format: [Float2.format, Float2.format], stride:16)
+        let vert_desc = MTLVertexDescriptor()
+        vert_desc.attributes[0].format = .float2
+        vert_desc.attributes[0].offset = 0
+        vert_desc.attributes[0].bufferIndex = 0
+        vert_desc.attributes[1].format = .float2
+        vert_desc.attributes[1].offset = 8
+        vert_desc.attributes[1].bufferIndex = 0
+        vert_desc.layouts[0].stride = 16
+        vert_desc.layouts[0].stepRate = 1
+        render_ar_capture?.vertexDesc = vert_desc
         // デプス無効
         render_ar_capture?.depthCompare = .always
         render_ar_capture?.depthEnabled = false

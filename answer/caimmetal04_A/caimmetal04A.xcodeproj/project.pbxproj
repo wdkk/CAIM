@@ -75,7 +75,6 @@
 		5DC601811FE1828B0078BF6C /* CAIMMetalComputeEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputeEngine.swift; sourceTree = "<group>"; };
 		5DC601821FE1828B0078BF6C /* CAIMMetalMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalMesh.swift; sourceTree = "<group>"; };
 		5DC601831FE1828B0078BF6C /* CAIMMetalUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalUtil.swift; sourceTree = "<group>"; };
-		5DC601841FE1828B0078BF6C /* CAIMShaderUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMShaderUtil.h; sourceTree = "<group>"; };
 		5DC601851FE1828B0078BF6C /* CAIMColor+MetalExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+MetalExt.swift"; sourceTree = "<group>"; };
 		5DD58FF21B8B47A80055600D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		5DD58FF31B8B47A80055600D /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -112,7 +111,6 @@
 				5DC601811FE1828B0078BF6C /* CAIMMetalComputeEngine.swift */,
 				5DC601821FE1828B0078BF6C /* CAIMMetalMesh.swift */,
 				5DC601831FE1828B0078BF6C /* CAIMMetalUtil.swift */,
-				5DC601841FE1828B0078BF6C /* CAIMShaderUtil.h */,
 				5D0D038A1FCC04F90066DE67 /* CAIMMetalGeometric.swift */,
 				5D0D038C1FCC04FA0066DE67 /* CAIMMetalSampler.swift */,
 				5D0D038B1FCC04FA0066DE67 /* CAIMMetalShape.swift */,

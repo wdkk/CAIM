@@ -65,7 +65,6 @@
 		5D47AB9F1FE2527D00CD939C /* CAIMMetalMesh.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalMesh.swift; sourceTree = "<group>"; };
 		5D47ABA01FE2527D00CD939C /* CAIMColor+MetalExt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+MetalExt.swift"; sourceTree = "<group>"; };
 		5D47ABA11FE2527D00CD939C /* CAIMMetalComputeEngine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputeEngine.swift; sourceTree = "<group>"; };
-		5D47ABA31FE2527D00CD939C /* CAIMShaderUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMShaderUtil.h; sourceTree = "<group>"; };
 		5D47ABA41FE2527D00CD939C /* CAIMMetalUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalUtil.swift; sourceTree = "<group>"; };
 		5D8249531E6BF7A400156E38 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		5D984E971E5BE74F000CA4E3 /* CAIMBridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMBridging.h; sourceTree = "<group>"; };
@@ -112,7 +111,6 @@
 				5D47ABA11FE2527D00CD939C /* CAIMMetalComputeEngine.swift */,
 				5D47AB9F1FE2527D00CD939C /* CAIMMetalMesh.swift */,
 				5D47ABA41FE2527D00CD939C /* CAIMMetalUtil.swift */,
-				5D47ABA31FE2527D00CD939C /* CAIMShaderUtil.h */,
 				5D0D03651FCC03C80066DE67 /* CAIMMetalGeometric.swift */,
 				5D0D03631FCC03C70066DE67 /* CAIMMetalSampler.swift */,
 				5D0D03641FCC03C70066DE67 /* CAIMMetalShape.swift */,
