@@ -16,29 +16,40 @@ import Accelerate
 // CAIM用画像表示ビュークラス
 public class CAIMView : UIView
 {
-    // オーバーライド用関数群
-    func touchPressed() {}
-    func touchMoved() {}
-    func touchReleased() {}
-    func touchCancelled() {}
+    // タッチイベント関数オブジェクト
+    public var touchPressed:()->() = {}
+    public var touchMoved:()->() = {}
+    public var touchReleased:()->() = {}
+    public var touchCancelled:()->() = {}
     
     // 画像プロパティ
-    var image:CAIMImage! {
-        didSet(new_image) { redraw() }
-    }
+    var image:CAIMImage! { didSet(new_image) { redraw() } }
 
     // ピクセル表示命令用の変数
-    fileprivate var buf:CAIMColor8Ptr! = nil
+    fileprivate var buf:CAIMColor8Ptr? = nil
     fileprivate var bufwid:Int = 0
     fileprivate var bufhgt:Int = 0
     
     // タッチ位置の座標変数
-    var touchPos:[CGPoint] = [CGPoint]()
-    var releasePos:[CGPoint] = [CGPoint]()
-    
-    // 初期化関数フレームあり
+    public var touchPixelPos:[CGPoint] = [CGPoint]()
+    public var releasePixelPos:[CGPoint] = [CGPoint]()
+        
     public override init(frame:CGRect = .zero) {
         super.init(frame: frame)
+        self.backgroundColor = .clear
+        self.isMultipleTouchEnabled = true
+    }
+    
+    public init(pixelFrame pfrm:CGRect = .zero) {
+        super.init(frame: .zero)
+        self.pixelFrame = pfrm
+        self.backgroundColor = .clear
+        self.isMultipleTouchEnabled = true
+    }
+    
+    public init(x:CGFloat, y:CGFloat, width:CGFloat, height:CGFloat) {
+        super.init(frame: .zero)
+        self.pixelFrame = CGRect(x: x, y:y, width:width, height:height )
         self.backgroundColor = .clear
         self.isMultipleTouchEnabled = true
     }
@@ -84,22 +95,21 @@ public class CAIMView : UIView
     // このため、Retinaスケールを考慮してpointをpixelに置き換える
     fileprivate func recognizeTouchInfo(_ event: UIEvent) {
         // タッチ情報の配列をリセット
-        self.touchPos.removeAll(keepingCapacity: false)
-        self.releasePos.removeAll(keepingCapacity: false)
+        self.touchPixelPos.removeAll(keepingCapacity: false)
+        self.releasePixelPos.removeAll(keepingCapacity: false)
         // retinaスケールの取得
         let sc:CGFloat = UIScreen.main.scale
         // タッチ数分のループ
         for touch:UITouch in event.allTouches! {
-            
             // point座標系を取得
             let pos:CGPoint = touch.location(in: self)
             if(touch.phase == .ended || touch.phase == .cancelled) {
                 // scを掛け算してpixel座標系に変換し、releasePosに追加
-                self.releasePos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                self.releasePixelPos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
             else {
                 // scを掛け算してpixel座標系に変換し、touchPosに追加
-                self.touchPos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
+                self.touchPixelPos.append(CGPoint(x: pos.x * sc, y: pos.y * sc))
             }
         }
     }

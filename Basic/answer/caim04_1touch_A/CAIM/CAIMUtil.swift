@@ -67,17 +67,31 @@ public class CAIM
     public static func random(_ max:Int) -> Float { return Float(arc4random() % 1000) / 1000.0 * Float(max) }
     
     // スクリーンサイズの取得
-    public static var screenPoint:CGSize {
+    public static var screenPointSize:CGSize {
         return UIScreen.main.bounds.size
     }
     
     // スクリーンピクセルサイズの取得
-    public static var screenPixel:CGSize {
+    public static var screenPixelSize:CGSize {
         let sc:CGFloat = UIScreen.main.scale
         let size:CGSize = UIScreen.main.bounds.size
         let wid = size.width * sc
         let hgt = size.height * sc
         return CGSize(width:wid, height:hgt)
+    }
+    
+    // スクリーンサイズの取得
+    public static var screenPointRect:CGRect {
+        return UIScreen.main.bounds
+    }
+    
+    // スクリーンピクセルサイズの取得
+    public static var screenPixelRect:CGRect {
+        let sc:CGFloat = UIScreen.main.scale
+        let rc:CGRect = UIScreen.main.bounds
+        let wid = rc.width * sc
+        let hgt = rc.height * sc
+        return CGRect(x:0, y:0, width:wid, height:hgt)
     }
 }
 

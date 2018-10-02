@@ -10,8 +10,6 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-
-
 import UIKit
 import Metal
 import QuartzCore
