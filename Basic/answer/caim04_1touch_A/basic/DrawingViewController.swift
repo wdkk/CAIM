@@ -27,12 +27,14 @@ class DrawingViewController : CAIMViewController
         // view_allを画面に追加
         self.view.addSubview( view_all )
         
+        /*
         // view_all上のタッチ開始時の処理として、touchPressedOnView関数を指定
         view_all.touchPressed = self.touchPressedOnView
         // view_all上のタッチ移動時の処理として、touchMovedOnView関数を指定
         view_all.touchMoved = self.touchMovedOnView
         // view_all上のタッチ終了時の処理として、touchReleasedOnView関数を指定
         view_all.touchReleased = self.touchReleasedOnView
+        */
         
         // view_all上のタッチ移動時の処理に、マルチタッチ対応したmultiTouchMovedOnView関数を指定
         view_all.touchMoved = self.multiTouchMovedOnView

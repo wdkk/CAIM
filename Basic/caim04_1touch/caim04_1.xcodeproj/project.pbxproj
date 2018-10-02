@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5D1A33752163F032003E19C7 /* UIVIew+CAIM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A33732163F032003E19C7 /* UIVIew+CAIM.swift */; };
+		5D1A33762163F032003E19C7 /* UnsafeRawPointer+CAIM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A33742163F032003E19C7 /* UnsafeRawPointer+CAIM.swift */; };
 		5D224A8E1C5FD6FD00AD55B3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */; };
 		5D47AB6D1FE2511E00CD939C /* CAIMMemoryC.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AB691FE2511E00CD939C /* CAIMMemoryC.mm */; };
-		5D47AB6E1FE2511E00CD939C /* UnsafeRawPointer+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AB6A1FE2511E00CD939C /* UnsafeRawPointer+Ext.swift */; };
 		5D47AB6F1FE2511E00CD939C /* CAIMMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AB6B1FE2511E00CD939C /* CAIMMemory.swift */; };
 		5D47AB701FE2511E00CD939C /* CAIMColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AB6C1FE2511E00CD939C /* CAIMColor+Ext.swift */; };
 		5D984E811E5BE5A8000CA4E3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D984E781E5BE5A8000CA4E3 /* AppDelegate.swift */; };
@@ -25,10 +26,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5D1A33732163F032003E19C7 /* UIVIew+CAIM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIVIew+CAIM.swift"; sourceTree = "<group>"; };
+		5D1A33742163F032003E19C7 /* UnsafeRawPointer+CAIM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UnsafeRawPointer+CAIM.swift"; sourceTree = "<group>"; };
 		5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		5D47AB681FE2511D00CD939C /* CAIMMemoryC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMMemoryC.h; sourceTree = "<group>"; };
 		5D47AB691FE2511E00CD939C /* CAIMMemoryC.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CAIMMemoryC.mm; sourceTree = "<group>"; };
-		5D47AB6A1FE2511E00CD939C /* UnsafeRawPointer+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UnsafeRawPointer+Ext.swift"; sourceTree = "<group>"; };
 		5D47AB6B1FE2511E00CD939C /* CAIMMemory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMemory.swift; sourceTree = "<group>"; };
 		5D47AB6C1FE2511E00CD939C /* CAIMColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+Ext.swift"; sourceTree = "<group>"; };
 		5D984E781E5BE5A8000CA4E3 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -64,11 +66,12 @@
 		5D984E791E5BE5A8000CA4E3 /* CAIM */ = {
 			isa = PBXGroup;
 			children = (
+				5D1A33732163F032003E19C7 /* UIVIew+CAIM.swift */,
+				5D1A33742163F032003E19C7 /* UnsafeRawPointer+CAIM.swift */,
 				5D47AB6C1FE2511E00CD939C /* CAIMColor+Ext.swift */,
 				5D47AB6B1FE2511E00CD939C /* CAIMMemory.swift */,
 				5D47AB681FE2511D00CD939C /* CAIMMemoryC.h */,
 				5D47AB691FE2511E00CD939C /* CAIMMemoryC.mm */,
-				5D47AB6A1FE2511E00CD939C /* UnsafeRawPointer+Ext.swift */,
 				5D984E7A1E5BE5A8000CA4E3 /* CAIMBridging.h */,
 				5D984E7B1E5BE5A8000CA4E3 /* CAIMImage.swift */,
 				5D984E7C1E5BE5A8000CA4E3 /* CAIMImageC.h */,
@@ -203,10 +206,11 @@
 				5D984E851E5BE5A8000CA4E3 /* CAIMView.swift in Sources */,
 				5D984E831E5BE5A8000CA4E3 /* CAIMImageC.m in Sources */,
 				5D47AB6F1FE2511E00CD939C /* CAIMMemory.swift in Sources */,
-				5D47AB6E1FE2511E00CD939C /* UnsafeRawPointer+Ext.swift in Sources */,
 				5D984E811E5BE5A8000CA4E3 /* AppDelegate.swift in Sources */,
+				5D1A33762163F032003E19C7 /* UnsafeRawPointer+CAIM.swift in Sources */,
 				5DF9D3591C5BBCEB0056E506 /* ImageToolBox.swift in Sources */,
 				5D984E861E5BE5A8000CA4E3 /* CAIMViewController.swift in Sources */,
+				5D1A33752163F032003E19C7 /* UIVIew+CAIM.swift in Sources */,
 				5D47AB701FE2511E00CD939C /* CAIMColor+Ext.swift in Sources */,
 				5D47AB6D1FE2511E00CD939C /* CAIMMemoryC.mm in Sources */,
 				5DF9D3631C5BC6550056E506 /* DrawingViewController.swift in Sources */,

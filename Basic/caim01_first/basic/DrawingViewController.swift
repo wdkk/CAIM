@@ -12,7 +12,6 @@
 
 import UIKit
 
-// 自由にピクセルを塗って絵を作れるViewController
 class DrawingViewController: CAIMViewController
 {
     // はじめに1度だけ呼ばれる関数(アプリの準備)
