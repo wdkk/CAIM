@@ -85,7 +85,7 @@ class DrawingViewController : CAIMViewController
         ImageToolBox.gradCosDome(img_grad_dome, color1:cdom1, color2:cdom2)
         // view_grad_domeの画像として、img_grad_domeを設定する
         view_grad_dome.image = img_grad_dome
-        // view_grad_xを画面に追加
+        // view_grad_domeを画面に追加
         self.view.addSubview( view_grad_dome )
     
     }

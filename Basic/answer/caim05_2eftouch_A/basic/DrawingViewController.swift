@@ -63,8 +63,7 @@ class DrawingViewController : CAIMViewController
         }
         
         // 現在のparts内のパーティクル情報をすべてスキャンする
-        let count:Int = parts.count
-        for i in 0 ..< count {
+        for i in 0 ..< parts.count {
             // パーティクルの描画ステップを0.02進める
             parts[i].step += 0.02
 
@@ -82,7 +81,7 @@ class DrawingViewController : CAIMViewController
         }
         
         // partsを後ろからスキャンし、stepが1.0以上になったパーティクル情報を削除する
-        for i in (0 ..< count).reversed() {
+        for i in (0 ..< parts.count).reversed() {
             if(parts[i].step >= 1.0) {
                 parts.remove(at: i)
             }

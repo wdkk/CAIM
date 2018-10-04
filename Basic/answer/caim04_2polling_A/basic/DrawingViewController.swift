@@ -31,7 +31,7 @@ class DrawingViewController : CAIMViewController
    
     // 60FPSで繰り返し呼ばれる関数
     override func update() {
-        // タッチしているかどうかを判定 = self.touchPixelPos.countが1以上のときはタッチがある
+        // タッチしているかどうかを判定 = view_all.touchPixelPos.countが1以上のときはタッチがある
         if(view_all.touchPixelPos.count > 0) {
             // タッチしている指の数分繰り返す
             for i in 0 ..< view_all.touchPixelPos.count {
@@ -46,7 +46,6 @@ class DrawingViewController : CAIMViewController
             view_all.redraw()
         }
     }
-    
 }
 
 

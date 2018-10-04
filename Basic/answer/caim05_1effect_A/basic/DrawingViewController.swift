@@ -72,8 +72,7 @@ class DrawingViewController : CAIMViewController
         img_all.fillColor( CAIMColor.white )
         
         // parts内のパーティクル情報をすべてスキャンする
-        let count:Int = parts.count
-        for i in 0 ..< count {
+        for i in 0 ..< parts.count {
             // 1回処理をするごとにstepを0.01足す
             parts[i].step += 0.01
             // stepがマイナスの値の場合処理せず、次のパーティクルに移る
