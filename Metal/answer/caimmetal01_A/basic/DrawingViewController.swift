@@ -29,7 +29,7 @@ class DrawingViewController : CAIMViewController
         super.setup()
         
         // Metalを使うビューを作成してViewControllerに追加
-        metal_view = CAIMMetalView( frame: view.bounds )
+        metal_view = CAIMMetalView(frame: view.bounds)
         self.view.addSubview( metal_view! )
         
         // レンダラで使用する頂点シェーダを設定
@@ -46,7 +46,7 @@ class DrawingViewController : CAIMViewController
     
     // 形状データを作成する関数
     func makeShapes() {
-        // ピクセル座標変換行列を作成
+        // ピクセル座標変換行列をmetal_viewのサイズから作成
         mat = Matrix4x4.pixelProjection( metal_view!.pixelBounds.size )
         
         // 三角形の個数分、頂点情報を指定する

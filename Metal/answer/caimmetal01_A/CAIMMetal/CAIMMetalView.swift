@@ -30,7 +30,13 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
     public var depthCompare:MTLCompareFunction = .always
     public var depthEnabled:Bool = false
     
-    public override var bounds:CGRect { didSet { setupMetal() } }
+    public override var bounds:CGRect {
+        didSet { metalLayer.frame = self.bounds }
+    }
+    
+    public override var frame:CGRect {
+        didSet { metalLayer.frame = self.bounds }
+    }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -78,11 +84,11 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
                          postRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in } )
     {
         CAIMMetal.execute(
-            prev: preRenderFunc,
-            main: { ( commandBuffer:MTLCommandBuffer ) in
-                self.beginDraw( commandBuffer:commandBuffer, renderFunc:renderFunc )
+        prev: preRenderFunc,
+        main: { ( commandBuffer:MTLCommandBuffer ) in
+            self.beginDraw( commandBuffer:commandBuffer, renderFunc:renderFunc )
         },
-            post: postRenderFunc )
+        post: postRenderFunc )
     }
     
     @discardableResult
