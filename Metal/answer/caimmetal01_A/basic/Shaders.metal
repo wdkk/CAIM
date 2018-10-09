@@ -14,10 +14,6 @@
 
 using namespace metal;
 
-// バッファID番号
-constant int ID_VERTEX = 0;
-constant int ID_PROJECTION = 1;
-
 // 入力頂点情報
 struct VertexIn {
     float2 pos;
@@ -31,8 +27,8 @@ struct VertexOut {
 };
 
 // 頂点シェーダー(2Dピクセル座標系)
-vertex VertexOut vert2d(device VertexIn *vin [[ buffer(ID_VERTEX) ]],
-                        constant float4x4 &proj_matrix [[ buffer(ID_PROJECTION) ]],
+vertex VertexOut vert2d(device VertexIn *vin [[ buffer(0) ]],
+                        constant float4x4 &proj_matrix [[ buffer(1) ]],
                         uint idx [[ vertex_id ]]) {
     VertexOut vout;
     // float2に、z=0,w=1を追加 → float4を作成し、行列を使って座標変換

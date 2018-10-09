@@ -1,5 +1,5 @@
 //
-// CAIMMetalTexture.swift
+// CAIMMetalMeshes.swift
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
@@ -10,13 +10,15 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import UIKit
 import Metal
 import MetalKit
 
-public class CAIMMetalMesh : CAIMMetalDrawable {
-    var metalMesh: MTKMesh?
-    var metalVertexBuffer:MTLBuffer { return metalMesh!.vertexBuffers[0].buffer }
+public class CAIMMetalMesh : CAIMMetalDrawable
+{    
+    public var encoder: MTLRenderCommandEncoder?
+    
+    public var metalMesh: MTKMesh?
+    public var metalVertexBuffer:MTLBuffer { return metalMesh!.vertexBuffers[0].buffer }
     
     static func vertexDesc(at index:Int) -> MTLVertexDescriptor {
         let mtl_vertex = MTLVertexDescriptor()
@@ -33,10 +35,10 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
         mtl_vertex.layouts[index].stepRate = 1
         return mtl_vertex
     }
-
+    
     public init() {}
     
-    public init(with path:String, at index:Int, addNormal add_normal:Bool=true, normalThreshold normal_threshold:Float=1.0) {
+    public init(with path:String, at index:Int = 0, addNormal add_normal:Bool = true, normalThreshold normal_threshold:Float = 1.0) {
         metalMesh = self.load(with:path, at:index, addNormal: add_normal, normalThreshold: normal_threshold)
     }
     
@@ -46,20 +48,20 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
         return mesh
     }
     
-    private func load(with path: String, at index:Int, addNormal add_normal:Bool, normalThreshold normal_threshold:Float) -> MTKMesh {
-        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal(CAIMMetalMesh.vertexDesc(at:index))
+    private func load(with path: String, at index:Int = 0, addNormal add_normal:Bool, normalThreshold normal_threshold:Float) -> MTKMesh {
+        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal( CAIMMetalMesh.vertexDesc(at:index) )
         (modelDescriptor3D.attributes[0] as! MDLVertexAttribute).name = MDLVertexAttributePosition
         (modelDescriptor3D.attributes[1] as! MDLVertexAttribute).name = MDLVertexAttributeNormal
         (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
         
-        let allocator = MTKMeshBufferAllocator(device: CAIMMetal.device)
-        let asset = MDLAsset(url: URL(fileURLWithPath:CAIM.bundle(path)),
+        let allocator = MTKMeshBufferAllocator( device: CAIMMetal.device! )
+        let asset = MDLAsset(url: URL(fileURLWithPath: CAIM.bundle( path ) ),
                              vertexDescriptor: modelDescriptor3D,
                              bufferAllocator: allocator)
-        let new_mesh = try! MTKMesh.newMeshes(asset: asset, device: CAIMMetal.device)
+        let new_mesh = try! MTKMesh.newMeshes(asset: asset, device: CAIMMetal.device! )
         if(add_normal) {
             new_mesh.modelIOMeshes.first!.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: normal_threshold)
-            let mtk_mesh = try! MTKMesh(mesh: new_mesh.modelIOMeshes.first!, device: CAIMMetal.device)
+            let mtk_mesh = try! MTKMesh(mesh: new_mesh.modelIOMeshes.first!, device: CAIMMetal.device! )
             return mtk_mesh
         }
         else {
@@ -68,26 +70,24 @@ public class CAIMMetalMesh : CAIMMetalDrawable {
     }
     
     private func makeSphere(at index:Int) -> MTKMesh {
-        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal(CAIMMetalMesh.vertexDesc(at:index))
+        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal( CAIMMetalMesh.vertexDesc(at:index) )
         (modelDescriptor3D.attributes[0] as! MDLVertexAttribute).name = MDLVertexAttributePosition
         (modelDescriptor3D.attributes[1] as! MDLVertexAttribute).name = MDLVertexAttributeNormal
         (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
         
-        let allocator = MTKMeshBufferAllocator(device: CAIMMetal.device)
+        let allocator = MTKMeshBufferAllocator( device: CAIMMetal.device!)
         let mesh = MDLMesh(sphereWithExtent: vector_float3(1.0), segments: vector_uint2(32), inwardNormals: true, geometryType: .triangles, allocator: allocator)
-        let new_mesh = try! MTKMesh(mesh: mesh, device: CAIMMetal.device)
+        let new_mesh = try! MTKMesh( mesh: mesh, device: CAIMMetal.device! )
         return new_mesh
     }
     
-    public func draw(with renderer:CAIMMetalRenderer) {
-        let enc = renderer.currentEncoder
-
+    public func draw() {
         metalMesh?.submeshes.forEach {
-            enc?.drawIndexedPrimitives(type: $0.primitiveType,
+            encoder?.drawIndexedPrimitives(type: $0.primitiveType,
                                        indexCount: $0.indexCount,
                                        indexType: $0.indexType,
                                        indexBuffer: $0.indexBuffer.buffer,
-                                       indexBufferOffset: $0.indexBuffer.offset)
+                                       indexBufferOffset: $0.indexBuffer.offset )
         }
     }
 }

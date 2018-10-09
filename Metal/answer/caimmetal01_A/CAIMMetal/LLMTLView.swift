@@ -1,13 +1,9 @@
 //
-// CAIMMetalView.swift
-// CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+// LLMetalView.swift
+// Lily Project
 //
 // Copyright (c) Watanabe-DENKI Inc.
 //   http://wdkk.co.jp/
-//
-// This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
 //
 
 #if os(macOS) || (os(iOS) && !arch(x86_64))
@@ -15,47 +11,39 @@
 import Metal
 import QuartzCore
 
-public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
+open class LLMTLView: LLView, LLMTLViewProtocol
 {
     // UI
     public private(set) lazy var metalLayer:CAMetalLayer = CAMetalLayer()
     // デプス
-    public private(set) var depthState:CAIMMetalDepthState = CAIMMetalDepthState()
+    public private(set) var depthState:LLMTLDepthState = LLMTLDepthState()
     public private(set) var depthTexture:MTLTexture?
     // クリアカラー
-    public var clearColor:CAIMColor = .white
+    public var clearColor:LLColor = .white
+    
     // カリング
     public var culling:MTLCullMode = .none
     // デプス判定
     public var depthCompare:MTLCompareFunction = .always
     public var depthEnabled:Bool = false
     
-    public override var bounds:CGRect { didSet { setupMetal() } }
-    
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    open override func setup() {
+        super.setup()
         setupMetal()
     }
     
-    public override init(pixelFrame pfrm: CGRect) {
-        super.init(pixelFrame: pfrm)
-        setupMetal()
+    open override func buildup() {
+        super.buildup()
+        metalLayer.frame = self.bounds
     }
-    
-    public override init(x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) {
-        super.init(x: x, y: y, width: width, height: height)
-        setupMetal()
-    }
-    
-    public required init?(coder aDecoder: NSCoder) { super.init(coder: aDecoder) }
     
     // Metalの初期化 / Metal Layerの準備
     private func setupMetal() {
-        metalLayer.device = CAIMMetal.device
+        metalLayer.device = LLMTL.device
         metalLayer.pixelFormat = .bgra8Unorm
         metalLayer.framebufferOnly = false
         metalLayer.frame = self.bounds
-        metalLayer.contentsScale = UIScreen.main.scale
+        metalLayer.contentsScale = LLSys.retinaScale.cgf
         self.layer.addSublayer( metalLayer )
     }
     
@@ -68,30 +56,30 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
         let depth_desc = MTLDepthStencilDescriptor()
         depth_desc.depthCompareFunction = self.depthCompare
         depth_desc.isDepthWriteEnabled = self.depthEnabled
-        let depth_stencil_state = CAIMMetal.device?.makeDepthStencilState( descriptor: depth_desc )
+        let depth_stencil_state = LLMTL.device?.makeDepthStencilState( descriptor: depth_desc )
         encoder.setDepthStencilState( depth_stencil_state )
     }
     
-    // Metalコマンドの開始(CAIMMetalViewから呼び出せる簡易版。本体はCAIMMetal.execute)
+    // Metalコマンドの開始(LLMTLViewから呼び出せる簡易版。本体はLLMTL.execute)
     public func execute( preRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
                          renderFunc:( _ renderEncoder:MTLRenderCommandEncoder )->(),
                          postRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in } )
     {
-        CAIMMetal.execute(
-            prev: preRenderFunc,
-            main: { ( commandBuffer:MTLCommandBuffer ) in
-                self.beginDraw( commandBuffer:commandBuffer, renderFunc:renderFunc )
+        LLMTL.execute(
+        prev: preRenderFunc,
+        main: { ( commandBuffer:MTLCommandBuffer ) in
+            self.beginDraw( commandBuffer:commandBuffer, renderFunc:renderFunc )
         },
-            post: postRenderFunc )
+        post: postRenderFunc )
     }
     
     @discardableResult
     public func beginDraw( commandBuffer command_buffer:MTLCommandBuffer,
-                           renderFunc:( _ renderEncoder:MTLRenderCommandEncoder )->() ) -> Bool {
-        if( metalLayer.bounds.width < 1 || metalLayer.bounds.height < 1 ) { return false }
+                             renderFunc:( _ renderEncoder:MTLRenderCommandEncoder )->() ) -> Bool {
+        if( metalLayer.width < 1 || metalLayer.height < 1 ) { return false }
         
         guard let drawable:CAMetalDrawable = metalLayer.nextDrawable() else {
-            print("cannot get Metal drawable.")
+            LLLog("cannot get Metal drawable.")
             return false
         }
         
@@ -104,14 +92,14 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
         
         // エンコーダ生成
         guard var encoder:MTLRenderCommandEncoder = command_buffer.makeRenderCommandEncoder( descriptor: r_pass_desc ) else {
-            print("don't get RenderCommandEncoder.")
+            LLLog("don't get RenderCommandEncoder.")
             return false
         }
         
         // エンコーダの整備
         treatEncoder( &encoder )
         // 現在のエンコーダを更新
-        CAIMMetal.currentRenderEncoder = encoder
+        LLMTL.currentRenderEncoder = encoder
         
         // 指定された関数オブジェクトの実行
         renderFunc( encoder )
@@ -125,10 +113,10 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
         return true
     }
     
-    public func makeDepthTexture( drawable:CAMetalDrawable, depthDesc depth_desc:MTLTextureDescriptor, depthState depth_state:CAIMMetalDepthState ) {
+    public func makeDepthTexture( drawable:CAMetalDrawable, depthDesc depth_desc:MTLTextureDescriptor, depthState depth_state:LLMTLDepthState ) {
         // まだテクスチャメモリが生成されていない場合、もしくはサイズが変更された場合、新しいテクスチャを生成する
         if(depthTexture == nil || depthTexture!.width != depth_desc.width || depthTexture!.height != depth_desc.height) {
-            depthTexture = CAIMMetal.device?.makeTexture( descriptor: depth_desc )
+            depthTexture = LLMTL.device?.makeTexture( descriptor: depth_desc )
         }
     }
 }
