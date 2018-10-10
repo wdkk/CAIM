@@ -84,25 +84,18 @@ public class CAIMMetalRenderer
         return r_pipeline_desc
     }
     
-    public func begin( _ f:( _ encoder:MTLRenderCommandEncoder )->() ) {
-        if pipeline == nil {
-            // パイプラインディスクリプタの準備
-            let r_pipeline_desc = makeRenderPipelineDesc()
-            // パイプラインの生成
-            do {
-                pipeline = try CAIMMetal.device?.makeRenderPipelineState( descriptor: r_pipeline_desc )
-            }
-            catch {
-                print( error.localizedDescription )
-            }
+    public func readyPipeline() {
+        if pipeline != nil { return }
+        
+        // パイプラインディスクリプタの準備
+        let r_pipeline_desc = makeRenderPipelineDesc()
+        // パイプラインの生成
+        do {
+            pipeline = try CAIMMetal.device?.makeRenderPipelineState( descriptor: r_pipeline_desc )
         }
-        
-        if pipeline == nil { return }
-        guard let encoder:MTLRenderCommandEncoder = CAIMMetal.currentRenderEncoder else { return }
-        
-        encoder.setRenderer( self )
-        
-        f( encoder )
+        catch {
+            print( error.localizedDescription )
+        }
     }
 }
 

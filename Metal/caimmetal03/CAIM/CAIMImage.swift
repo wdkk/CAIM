@@ -26,9 +26,11 @@ class CAIMImage
     var depth:CAIMDepth { return CAIMImageDepth(img) }
     var scale:Float { return Float(CAIMImageRetinaScale(img)) }
     
-    init(wid:Int, hgt:Int, depth:CAIMDepth = CAIMDepth.float) { img = CAIMImageCreate(wid, hgt, depth) }
+    init(width:Int, height:Int, depth:CAIMDepth = .float) { img = CAIMImageCreate(width, height, depth) }
     
-    init(path:String, depth:CAIMDepth = CAIMDepth.float) { img = CAIMImageCreateWithFile(path, depth) }
+    init(size:CGSize, depth:CAIMDepth = .float) { img = CAIMImageCreate(Int(size.width), Int(size.height), depth) }
+    
+    init(path:String, depth:CAIMDepth = .float) { img = CAIMImageCreateWithFile(path, depth) }
     
     fileprivate init(img_clone:CAIMImageCPtr) { img = CAIMImageClone(img_clone) }
     
@@ -42,9 +44,7 @@ class CAIMImage
     
     func loadFile(_ path:String) -> Bool { return (CAIMImageLoadFile(img, path) == 1) }
     
-    //func saveToAlbum() -> Bool { return (CAIMImageSaveFileToAlbum(img) == 1) }
-    
-    func fillColor(_ c:CAIMColor) { CAIMImageFillColor(img, c) }
+    func fillColor(_ c:CAIMColor) { CAIMImagefillColor(img, c) }
     
     func paste(_ img_src:CAIMImage, x:Int, y:Int) { CAIMImagePaste(img_src.img, self.img, Int32(x), Int32(y)) }
 }

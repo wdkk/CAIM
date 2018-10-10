@@ -11,11 +11,6 @@
 //
 
 import UIKit
-import simd
-
-// バッファID番号
-let ID_VERTEX:Int     = 0
-let ID_PROJECTION:Int = 1
 
 // 1頂点情報の構造体
 struct Vertex {
@@ -25,27 +20,40 @@ struct Vertex {
 }
 
 // CAIM-Metalを使うビューコントローラ
-class DrawingViewController : CAIMMetalViewController
+class DrawingViewController : CAIMViewController
 {
-    private var renderer:CAIMMetalRenderer?                     // パイプラインレンダラ
-    private var mat:Matrix4x4 = .identity                       // 変換行列
-    private var quads = CAIMQuadrangles<Vertex>(count: 100)     // ４頂点メッシュ群
+    private var metal_view:CAIMMetalView?       // Metalビュー
+    private var renderer = CAIMMetalRenderer()  // Metalレンダラ
+    private var mat:Matrix4x4 = .identity       // 変換行列
+    private var quads = CAIMMetalQuadrangles<Vertex>( count: 100, at:0 )    // ４頂点メッシュ群
     
     // 準備関数
     override func setup() {
-        // シェーダを指定してパイプラインレンダラの作成
-        renderer = CAIMMetalRenderer(vertname:"vert2d", fragname:"fragRing")
-        // アルファブレンドを有効にする
-        renderer?.blendType = .alphaBlend
-        // デプスを無効にする
-        renderer?.depthCompare = .always
-        renderer?.depthEnabled = false
+        super.setup()
+        // Metalを使うビューを作成してViewControllerに追加
+        metal_view = CAIMMetalView( frame: view.bounds )
+        self.view.addSubview( metal_view! )
         
-        // ピクセル座標変換行列を作成
-        mat = Matrix4x4.pixelProjection(CAIM.screenPixel)
+        // レンダラで使用する頂点シェーダを設定
+        renderer.vertexShader = CAIMMetalShader( "vert2d" )
+        // レンダラで使用するフラグメントシェーダを設定
+        renderer.fragmentShader = CAIMMetalShader( "fragRing" )
         
-        let wid = Float(CAIM.screenPixel.width)
-        let hgt = Float(CAIM.screenPixel.height)
+        // 形状データを作成する関数を呼ぶ
+        makeShapes()
+        
+        // MetalViewのレンダリングを実行
+        metal_view?.execute( renderFunc: self.render )
+    }
+    
+    // 形状データを作成する関数
+    func makeShapes() {
+        // ピクセル座標変換行列をmetal_viewのサイズから作成
+        mat = Matrix4x4.pixelProjection( metal_view!.pixelBounds.size )
+        
+        let wid = Float( metal_view!.pixelBounds.width )
+        let hgt = Float( metal_view!.pixelBounds.height )
+        
         // ４頂点メッシュの個数分、値を設定
         for i:Int in 0 ..< quads.count {
             let x = CAIM.random(wid)   // 横位置: 0.0 ~ widまでの乱数
@@ -56,34 +64,27 @@ class DrawingViewController : CAIMMetalViewController
             let blue = CAIM.random()   // 青(0.0~1.0までの乱数)
             let alpha = CAIM.random()  // アルファ(0.0~1.0までの乱数)
             
-            // 四角形メッシュi個目の頂点0
-            quads[i][0].pos  = Float2(x-r, y-r)
-            quads[i][0].uv   = Float2(-1.0, -1.0)
-            quads[i][0].rgba = CAIMColor(red, green, blue, alpha).float4
             // 四角形メッシュi個目の頂点1
-            quads[i][1].pos  = Float2(x+r, y-r)
-            quads[i][1].uv   = Float2(1.0, -1.0)
-            quads[i][1].rgba = CAIMColor(red, green, blue, alpha).float4
+            quads[i].p1 = Vertex( pos:[ x-r, y-r ], uv:[ -1.0, -1.0 ], rgba:[ red, green, blue, alpha ] )
             // 四角形メッシュi個目の頂点2
-            quads[i][2].pos  = Float2(x-r, y+r)
-            quads[i][2].uv   = Float2(-1.0, 1.0)
-            quads[i][2].rgba = CAIMColor(red, green, blue, alpha).float4
+            quads[i].p2 = Vertex( pos:[ x+r, y-r ], uv:[ 1.0, -1.0 ], rgba:[ red, green, blue, alpha ] )
             // 四角形メッシュi個目の頂点3
-            quads[i][3].pos  = Float2(x+r, y+r)
-            quads[i][3].uv   = Float2(1.0, 1.0)
-            quads[i][3].rgba = CAIMColor(red, green, blue, alpha).float4
+            quads[i].p3 = Vertex( pos:[ x-r, y+r ], uv:[ -1.0, 1.0 ], rgba:[ red, green, blue, alpha ] )
+            // 四角形メッシュi個目の頂点4
+            quads[i].p4 = Vertex( pos:[ x+r, y+r ], uv:[ 1.0, 1.0 ], rgba:[ red, green, blue, alpha ] )
         }
     }
     
-    // 繰り返し処理関数
-    override func update(metalView: CAIMMetalView) {
-        // パイプラインレンダラで描画開始
-        renderer?.beginDrawing(on: metalView)
-        
-        // 使用するCPUメモリからGPUバッファを作成し、シェーダの番号をリンクする
-        renderer?.link(quads.metalBuffer, to:.vertex, at:ID_VERTEX)
-        renderer?.link(mat.metalBuffer, to:.vertex, at:ID_PROJECTION)
-        // GPU描画実行(quadsを渡して４頂点メッシュを描く)
-        renderer?.draw(quads)
+    // Metalで実際に描画を指示する関数
+    func render( encoder:MTLRenderCommandEncoder ) {
+        // rendererをつかって、描画を開始
+        renderer.begin { encoder in
+            // 図形描画のためにエンコーダを設定
+            quads.encoder = encoder
+            // 頂点シェーダのバッファ1番に行列matをセット
+            quads.setVertexBuffer( mat, at: 1 )
+            // 四角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
+            quads.draw()
+        }
     }
 }

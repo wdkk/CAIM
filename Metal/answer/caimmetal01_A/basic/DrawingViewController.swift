@@ -19,7 +19,7 @@ struct Vertex {
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMViewController
 {
-    var metal_view:CAIMMetalView?               // Metalビュー
+    private var metal_view:CAIMMetalView?       // Metalビュー
     private var renderer = CAIMMetalRenderer()  // Metalレンダラ
     private var mat:Matrix4x4 = .identity                              // 変換行列
     private var tris = CAIMMetalTriangles<Vertex>(count:100, at:0)     // ３頂点メッシュ群
@@ -87,21 +87,17 @@ class DrawingViewController : CAIMViewController
     
     // Metalで実際に描画を指示する関数
     func render( encoder:MTLRenderCommandEncoder ) {
-        // rendererをつかって、描画を開始
-        renderer.begin { encoder in
-            // 図形描画のためにエンコーダを設定
-            tris.encoder = encoder
+        // rendererをつかって、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
+        encoder.use( renderer ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            tris.setVertexBuffer( mat, at: 1 )
+            $0.setVertexBuffer( mat, at: 1 )
             // 三角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            tris.draw()
-
-            // 図形描画のためにエンコーダを設定
-            quads.encoder = encoder
+            $0.drawShape( tris )
+            
             // 頂点シェーダのバッファ1番に行列matをセット
-            quads.setVertexBuffer( mat, at: 1 )
+            $0.setVertexBuffer( mat, at: 1 )
             // 四角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            quads.draw()
+            $0.drawShape( quads )
         }
     }
 }

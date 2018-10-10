@@ -72,7 +72,7 @@ CAIMDepth         CAIMImageDepth(CAIMImageCPtr img);
 long              CAIMImageMemorySize(CAIMImageCPtr img);
 CGFloat           CAIMImageRetinaScale(CAIMImageCPtr img);
 
-void              CAIMImageFillColor(CAIMImageCPtr img, CAIMColor c);
+void              CAIMImagefillColor(CAIMImageCPtr img, CAIMColor c);
 void              CAIMImagePaste(CAIMImageCPtr img_src, CAIMImageCPtr img_dst, int x, int y);
 
 #endif

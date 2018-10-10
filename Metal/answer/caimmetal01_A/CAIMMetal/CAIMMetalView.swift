@@ -15,7 +15,7 @@
 import Metal
 import QuartzCore
 
-public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
+public class CAIMMetalView: CAIMBaseView, CAIMMetalViewProtocol
 {
     // UI
     public private(set) lazy var metalLayer:CAMetalLayer = CAMetalLayer()
@@ -104,7 +104,7 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
         // デプステクスチャディスクリプタの設定
         let depth_desc:MTLTextureDescriptor = makeDepthTextureDescriptor( drawable:drawable, depthState:depthState )
         // デプステクスチャの作成
-        makeDepthTexture( drawable:drawable, depthDesc:depth_desc, depthState:depthState )
+        makeDepthTexture( depthDesc:depth_desc, depthState:depthState )
         // レンダーパスディスクリプタの設定
         let r_pass_desc:MTLRenderPassDescriptor = makeRenderPassDescriptor( drawable:drawable, color:clearColor, depthTexture:depthTexture! )
         
@@ -116,8 +116,6 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
         
         // エンコーダの整備
         treatEncoder( &encoder )
-        // 現在のエンコーダを更新
-        CAIMMetal.currentRenderEncoder = encoder
         
         // 指定された関数オブジェクトの実行
         renderFunc( encoder )
@@ -131,7 +129,7 @@ public class CAIMMetalView: CAIMView, CAIMMetalViewProtocol
         return true
     }
     
-    public func makeDepthTexture( drawable:CAMetalDrawable, depthDesc depth_desc:MTLTextureDescriptor, depthState depth_state:CAIMMetalDepthState ) {
+    public func makeDepthTexture( depthDesc depth_desc:MTLTextureDescriptor, depthState depth_state:CAIMMetalDepthState ) {
         // まだテクスチャメモリが生成されていない場合、もしくはサイズが変更された場合、新しいテクスチャを生成する
         if(depthTexture == nil || depthTexture!.width != depth_desc.width || depthTexture!.height != depth_desc.height) {
             depthTexture = CAIMMetal.device?.makeTexture( descriptor: depth_desc )

@@ -1,5 +1,5 @@
 //
-// CAIMMetalShader.swift
+// CAIMMetalView.swift
 // CAIM Project
 //   http://kengolab.net/CreApp/wiki/
 //
@@ -10,30 +10,28 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import Foundation
 import Metal
-
-enum CAIMMetalShaderType
-{
-    case vertex
-    case fragment
-    case compute
-}
 
 // シェーダクラス
 public class CAIMMetalShader
 {
-    // シェーダ名
-    fileprivate var _shader_name:String?
-    public var name:String? { return _shader_name }
-
-    fileprivate var _function:MTLFunction?
-    public var function:MTLFunction { return _function! }
+    public var name:String? = nil { didSet { make() } }
     
-    public init(_ sh:String) {
-        _shader_name = sh
-        let library:MTLLibrary? = CAIMMetal.device.makeDefaultLibrary()
-        _function = library!.makeFunction(name: self.name!)
+    public private(set) var function:MTLFunction?
+
+    public init( _ shader_name:String? = nil ) {
+        name = shader_name
+        make()
+    }
+    
+    private func make() {
+        guard let n:String = name else { return }
+        guard let lib:MTLLibrary = CAIMMetal.device?.makeDefaultLibrary() else { return }
+        function = lib.makeFunction( name: n )
     }
 }
 
+#endif

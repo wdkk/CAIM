@@ -44,7 +44,7 @@ class CAIMImage
     
     func loadFile(_ path:String) -> Bool { return (CAIMImageLoadFile(img, path) == 1) }
     
-    func fillColor(_ c:CAIMColor) { CAIMImageFillColor(img, c) }
+    func fillColor(_ c:CAIMColor) { CAIMImagefillColor(img, c) }
     
     func paste(_ img_src:CAIMImage, x:Int, y:Int) { CAIMImagePaste(img_src.img, self.img, Int32(x), Int32(y)) }
 }

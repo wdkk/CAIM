@@ -258,7 +258,7 @@ void *memsetex(void *dst, void *src, size_t nmemb, size_t size) {
     return dst;
 }
 
-void CAIMImageFillColor(CAIMImageCPtr img_, CAIMColor c_) {
+void CAIMImagefillColor(CAIMImageCPtr img_, CAIMColor c_) {
     long wid       = img_->width;
     long hgt       = img_->height;    
     memsetex(img_->memory, &c_, sizeof(CAIMColor), wid * hgt);

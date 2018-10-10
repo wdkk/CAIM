@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		5D1A335221632464003E19C7 /* UIVIew+CAIM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D1A335121632464003E19C7 /* UIVIew+CAIM.swift */; };
 		5D224A8E1C5FD6FD00AD55B3 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */; };
+		5D3F7B47216E813400047045 /* CAIMBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F7B46216E813400047045 /* CAIMBaseView.swift */; };
 		5D47AAF01FE2458D00CD939C /* CAIMColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AAEB1FE2458D00CD939C /* CAIMColor+Ext.swift */; };
 		5D47AAF11FE2458D00CD939C /* CAIMMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AAEC1FE2458D00CD939C /* CAIMMemory.swift */; };
 		5D47AAF21FE2458D00CD939C /* UnsafeRawPointer+CAIM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47AAEE1FE2458D00CD939C /* UnsafeRawPointer+CAIM.swift */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		5D1A335121632464003E19C7 /* UIVIew+CAIM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIVIew+CAIM.swift"; sourceTree = "<group>"; };
 		5D224A8D1C5FD6FD00AD55B3 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		5D3F7B46216E813400047045 /* CAIMBaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMBaseView.swift; sourceTree = "<group>"; };
 		5D47AAEB1FE2458D00CD939C /* CAIMColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+Ext.swift"; sourceTree = "<group>"; };
 		5D47AAEC1FE2458D00CD939C /* CAIMMemory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMemory.swift; sourceTree = "<group>"; };
 		5D47AAED1FE2458D00CD939C /* CAIMMemoryC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CAIMMemoryC.h; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 		5DC9CAD81D1B9211006D86AD /* CAIM */ = {
 			isa = PBXGroup;
 			children = (
+				5D3F7B46216E813400047045 /* CAIMBaseView.swift */,
 				5D47AAEE1FE2458D00CD939C /* UnsafeRawPointer+CAIM.swift */,
 				5D1A335121632464003E19C7 /* UIVIew+CAIM.swift */,
 				5D47AAEB1FE2458D00CD939C /* CAIMColor+Ext.swift */,
@@ -206,6 +209,7 @@
 				5DC9CAF21D1B9345006D86AD /* CAIMUtil.swift in Sources */,
 				5DF9D3591C5BBCEB0056E506 /* ImageToolBox.swift in Sources */,
 				5D47AAF11FE2458D00CD939C /* CAIMMemory.swift in Sources */,
+				5D3F7B47216E813400047045 /* CAIMBaseView.swift in Sources */,
 				5DC9CAF11D1B9345006D86AD /* CAIMImage.swift in Sources */,
 				5DC9CAF01D1B9345006D86AD /* CAIMImageC.m in Sources */,
 				5D47AAF21FE2458D00CD939C /* UnsafeRawPointer+CAIM.swift in Sources */,

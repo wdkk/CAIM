@@ -10,13 +10,11 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import UIKit
 import Metal
 import MetalKit
 
-public class CAIMMetalSampler {    
-    internal(set) var metalSampler:MTLSamplerState?
-  
+public class CAIMMetalSampler
+{
     static public var `default` : MTLSamplerState {
         // descriptorを作ってそこからsamplerを生成
         let sampler = MTLSamplerDescriptor()
@@ -31,8 +29,6 @@ public class CAIMMetalSampler {
         sampler.lodMinClamp           = 0
         sampler.lodMaxClamp           = Float.greatestFiniteMagnitude
         
-        return CAIMMetal.device.makeSamplerState(descriptor: sampler)!
+        return CAIMMetal.device!.makeSamplerState(descriptor: sampler)!
     }
-    
-    
 }

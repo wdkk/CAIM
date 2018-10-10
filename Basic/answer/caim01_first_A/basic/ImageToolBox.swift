@@ -93,14 +93,14 @@ class ImageToolBox
                     mat[y][x].B = color1.B
                     mat[y][x].A = color1.A
                 }
-                else if(x < wid / 2 && y >= hgt / 2) {
+                else if(x < wid / 2 && hgt / 2 <= y) {
                     // 左下にcolor2を設定
                     mat[y][x].R = color2.R
                     mat[y][x].G = color2.G
                     mat[y][x].B = color2.B
                     mat[y][x].A = color2.A
                 }
-                else if(x < wid / 2 && y < hgt / 2) {
+                else if(wid / 2 <= x && y < hgt / 2) {
                     // 右上にcolor3を設定
                     mat[y][x].R = color3.R
                     mat[y][x].G = color3.G
