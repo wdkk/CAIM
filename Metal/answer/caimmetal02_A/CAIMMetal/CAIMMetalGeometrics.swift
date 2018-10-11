@@ -28,19 +28,19 @@ public extension CAIMMetalBufferAllocatable {
 // Int2(8バイト)
 public typealias Int2 = vector_int2
 extension Int2 : CAIMMetalBufferAllocatable {
-    public init(_ x:Int32=0, _ y:Int32=0) { self.init(); self.x = x; self.y = y }
+    public init( x:Int32=0, y:Int32=0 ) { self.init(); self.x = x; self.y = y }
     public static var zero:Int2 { return Int2() }
 }
 // Int3(16バイト)
 public typealias Int3 = vector_int3
 extension Int3 : CAIMMetalBufferAllocatable {
-    public init(_ x:Int32=0, _ y:Int32=0, _ z:Int32=0) { self.init(); self.x = x; self.y = y; self.z = z }
+    public init( x:Int32=0, y:Int32=0, z:Int32=0 ) { self.init(); self.x = x; self.y = y; self.z = z }
     public static var zero:Int3 { return Int3() }
 }
 // Int4(16バイト)
 public typealias Int4 = vector_int4
 extension Int4 : CAIMMetalBufferAllocatable {
-    public init(_ x:Int32=0, _ y:Int32=0, _ z:Int32=0, _ w:Int32=0) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
+    public init( x:Int32=0, y:Int32=0, z:Int32=0, w:Int32=0 ) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
     public static var zero:Int4 { return Int4() }
 }
 
@@ -61,19 +61,19 @@ extension Size3 {
 // Float2(8バイト)
 public typealias Float2 = vector_float2
 extension Float2 : CAIMMetalBufferAllocatable {
-    public init(_ x:Float=0.0, _ y:Float=0.0) { self.init(); self.x = x; self.y = y }
+    public init( x:Float=0.0, y:Float=0.0 ) { self.init(); self.x = x; self.y = y }
     public static var zero:Float2 { return Float2() }
 }
 // Float3(16バイト)
 public typealias Float3 = vector_float3
 extension Float3 : CAIMMetalBufferAllocatable {
-    public init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0) { self.init(); self.x = x; self.y = y; self.z = z }
+    public init( x:Float=0.0, y:Float=0.0, z:Float=0.0 ) { self.init(); self.x = x; self.y = y; self.z = z }
     public static var zero:Float3 { return Float3() }
 }
 // Float4(16バイト)
 public typealias Float4 = vector_float4
 extension Float4 : CAIMMetalBufferAllocatable {
-    public init(_ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0, _ w:Float=1.0) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
+    public init( x:Float=0.0, y:Float=0.0, z:Float=0.0, w:Float=1.0 ) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
     public static var zero:Float4 { return Float4() }
 }
 

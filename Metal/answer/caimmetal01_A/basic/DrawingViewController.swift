@@ -16,11 +16,10 @@ struct Vertex {
     var rgba:Float4 = Float4()
 }
 
-// CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMViewController
 {
-    private var metal_view:CAIMMetalView?       // Metalビュー
-    private var renderer = CAIMMetalRenderer()  // Metalレンダラ
+    private var metal_view:CAIMMetalView?               // Metalビュー
+    private var pipeline = CAIMMetalRenderPipeline()    // Metalレンダパイプライン
     private var mat:Matrix4x4 = .identity                              // 変換行列
     private var tris = CAIMMetalTriangles<Vertex>(count:100, at:0)     // ３頂点メッシュ群
     private var quads = CAIMMetalQuadrangles<Vertex>(count:25, at:0)   // ４頂点メッシュ群
@@ -29,14 +28,14 @@ class DrawingViewController : CAIMViewController
         super.setup()
         
         // Metalを使うビューを作成してViewControllerに追加
-        metal_view = CAIMMetalView(frame: view.bounds)
+        metal_view = CAIMMetalView( frame: view.bounds )
         self.view.addSubview( metal_view! )
         
-        // レンダラで使用する頂点シェーダを設定
-        renderer.vertexShader = CAIMMetalShader( "vert2d" )
-        // レンダラで使用するフラグメントシェーダを設定
-        renderer.fragmentShader = CAIMMetalShader( "fragStandard" )
-        
+        // パイプラインで使用する頂点シェーダを設定
+        pipeline.vertexShader = CAIMMetalShader( "vert2d" )
+        // パイプラインで使用するフラグメントシェーダを設定
+        pipeline.fragmentShader = CAIMMetalShader( "fragStandard" )
+
         // 形状データを作成する関数を呼ぶ
         makeShapes()
         
@@ -56,11 +55,11 @@ class DrawingViewController : CAIMViewController
             let c = Float(x+y) / 20.0
             
             // 三角形メッシュi個目の頂点p1
-            tris[i].p1 = Vertex( pos:[ (x+0.5) * 60.0, y * 60.0 ], rgba:[ c, 0.0, 0.0, 1.0 ] )
+            tris[i].p1 = Vertex( pos:Float2( (x+0.5) * 60.0, y * 60.0 ), rgba:Float4( c, 0.0, 0.0, 1.0 ) )
             // 三角形メッシュi個目の頂点p2
-            tris[i].p2 = Vertex( pos:[ (x+1.0) * 60.0, (y+1) * 60.0 ], rgba:[ c, 0.0, 0.0, 1.0 ] )
+            tris[i].p2 = Vertex( pos:Float2( (x+1.0) * 60.0, (y+1) * 60.0 ), rgba:Float4( c, 0.0, 0.0, 1.0 ) )
             // 三角形メッシュi個目の頂点p3
-            tris[i].p3 = Vertex( pos:[ x * 60.0, (y+1) * 60.0 ], rgba:[ c, 0.0, 0.0, 1.0 ] )
+            tris[i].p3 = Vertex( pos:Float2( x * 60.0, (y+1) * 60.0 ), rgba:Float4( c, 0.0, 0.0, 1.0 ) )
         }
         
         // 矩形の個数分、頂点情報を指定する
@@ -75,20 +74,20 @@ class DrawingViewController : CAIMViewController
             let yy  = Float(40 + y * (sz + mgn))
             
             // 四角形メッシュi個目の頂点1
-            quads[i].p1 = Vertex( pos:[ xx, yy ], rgba:[ 0.0, 0.0, 0.0, 0.75 ] )
+            quads[i].p1 = Vertex( pos:Float2( xx, yy ), rgba:Float4( 0.0, 0.0, 0.0, 0.75 ) )
             // 四角形メッシュi個目の頂点2
-            quads[i].p2 = Vertex( pos:[ xx+sz, yy ], rgba:[ c, 0.0, c / 2.0, 0.75 ] )
+            quads[i].p2 = Vertex( pos:Float2( xx+sz, yy ), rgba:Float4( c, 0.0, c / 2.0, 0.75 ) )
             // 四角形メッシュi個目の頂点3
-            quads[i].p3 = Vertex( pos:[ xx, yy+sz ], rgba:[ 0.0, c, c / 2.0, 0.75 ] )
+            quads[i].p3 = Vertex( pos:Float2( xx, yy+sz ), rgba:Float4( 0.0, c, c / 2.0, 0.75 ) )
             // 四角形メッシュi個目の頂点4
-            quads[i].p4 = Vertex( pos:[ xx+sz, yy+sz ], rgba:[ c, c, c, 0.75 ] )
+            quads[i].p4 = Vertex( pos:Float2( xx+sz, yy+sz ), rgba:Float4( c, c, c, 0.75 ) )
         }
     }
     
     // Metalで実際に描画を指示する関数
     func render( encoder:MTLRenderCommandEncoder ) {
-        // rendererをつかって、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
-        encoder.use( renderer ) {
+        // 準備したpipelineを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
+        encoder.use( pipeline ) {
             // 頂点シェーダのバッファ1番に行列matをセット
             $0.setVertexBuffer( mat, at: 1 )
             // 三角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)

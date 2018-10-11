@@ -41,12 +41,12 @@ extension MTLRenderCommandEncoder
         self.setFragmentBuffer( mem.metalBuffer, offset: offset, index: idx )
     }
     
-    // MARK: - renderer function
-    public func use( _ renderer:CAIMMetalRenderer, _ drawFunc:( MTLRenderCommandEncoder )->() ) {
-        // レンダラのパイプラインを準備
-        renderer.readyPipeline()
-        // エンコーダにレンダラを指定
-        self.setRenderPipelineState( renderer.pipeline! )
+    // MARK: - pipeline function
+    public func use( _ pipeline:CAIMMetalRenderPipeline, _ drawFunc:( MTLRenderCommandEncoder )->() ) {
+        // パイプラインを準備
+        pipeline.readyPipeline()
+        // エンコーダにパイプラインを指定
+        self.setRenderPipelineState( pipeline.state! )
         // 描画関数を実行
         drawFunc( self )
     }

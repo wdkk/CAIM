@@ -23,7 +23,7 @@ struct Vertex {
 class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
-    private var renderer = CAIMMetalRenderer()  // Metalレンダラ
+    private var pipeline = CAIMMetalRenderPipeline()  // Metalレンダパイプライン
     private var mat:Matrix4x4 = .identity       // 変換行列
     private var quads = CAIMMetalQuadrangles<Vertex>( count: 100, at:0 )    // ４頂点メッシュ群
     
@@ -34,10 +34,10 @@ class DrawingViewController : CAIMViewController
         metal_view = CAIMMetalView( frame: view.bounds )
         self.view.addSubview( metal_view! )
         
-        // レンダラで使用する頂点シェーダを設定
-        renderer.vertexShader = CAIMMetalShader( "vert2d" )
-        // レンダラで使用するフラグメントシェーダを設定
-        renderer.fragmentShader = CAIMMetalShader( "fragRing" )
+        // レンダパイプラインで使用する頂点シェーダを設定
+        pipeline.vertexShader = CAIMMetalShader( "vert2d" )
+        // レンダパイプラインで使用するフラグメントシェーダを設定
+        pipeline.fragmentShader = CAIMMetalShader( "fragRing" )
         
         // 形状データを作成する関数を呼ぶ
         makeShapes()
@@ -63,28 +63,27 @@ class DrawingViewController : CAIMViewController
             let green = CAIM.random()  // 緑(0.0~1.0までの乱数)
             let blue = CAIM.random()   // 青(0.0~1.0までの乱数)
             let alpha = CAIM.random()  // アルファ(0.0~1.0までの乱数)
+            let color = Float4( red, green, blue, alpha )   // 上4つを合わせたRGBA色値
             
             // 四角形メッシュi個目の頂点1
-            quads[i].p1 = Vertex( pos:[ x-r, y-r ], uv:[ -1.0, -1.0 ], rgba:[ red, green, blue, alpha ] )
+            quads[i].p1 = Vertex( pos:Float2( x-r, y-r ), uv:Float2( -1.0, -1.0 ), rgba:color )
             // 四角形メッシュi個目の頂点2
-            quads[i].p2 = Vertex( pos:[ x+r, y-r ], uv:[ 1.0, -1.0 ], rgba:[ red, green, blue, alpha ] )
+            quads[i].p2 = Vertex( pos:Float2( x+r, y-r ), uv:Float2( 1.0, -1.0 ), rgba:color )
             // 四角形メッシュi個目の頂点3
-            quads[i].p3 = Vertex( pos:[ x-r, y+r ], uv:[ -1.0, 1.0 ], rgba:[ red, green, blue, alpha ] )
+            quads[i].p3 = Vertex( pos:Float2( x-r, y+r ), uv:Float2( -1.0, 1.0 ), rgba:color )
             // 四角形メッシュi個目の頂点4
-            quads[i].p4 = Vertex( pos:[ x+r, y+r ], uv:[ 1.0, 1.0 ], rgba:[ red, green, blue, alpha ] )
+            quads[i].p4 = Vertex( pos:Float2( x+r, y+r ), uv:Float2( 1.0, 1.0 ), rgba:color )
         }
     }
     
     // Metalで実際に描画を指示する関数
     func render( encoder:MTLRenderCommandEncoder ) {
-        // rendererをつかって、描画を開始
-        renderer.begin { encoder in
-            // 図形描画のためにエンコーダを設定
-            quads.encoder = encoder
+        // 準備したpipelineを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
+        encoder.use( pipeline ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            quads.setVertexBuffer( mat, at: 1 )
+            $0.setVertexBuffer( mat, at: 1 )
             // 四角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            quads.draw()
+            $0.drawShape( quads )
         }
     }
 }

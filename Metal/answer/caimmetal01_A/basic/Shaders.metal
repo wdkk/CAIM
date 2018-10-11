@@ -10,8 +10,7 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-#include <metal_stdlib>                        // Metalの標準ライブラリ
-
+#include <metal_stdlib>      // Metalの標準ライブラリ
 using namespace metal;
 
 // 入力頂点情報

@@ -32,8 +32,8 @@ class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
 
-    private var renderer_circle:CAIMMetalRenderer = CAIMMetalRenderer()
-    private var renderer_ring:CAIMMetalRenderer = CAIMMetalRenderer()
+    private var pipeline_circle:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
+    private var pipeline_ring:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
     
     private var mat:Matrix4x4 = .identity                         // 変換行列
     private var circles = CAIMMetalQuadrangles<Vertex>( count: 100, at:0 )   // 円用４頂点メッシュ群
@@ -62,8 +62,8 @@ class DrawingViewController : CAIMViewController
     // 円描画の準備関数
     private func setupCircles() {
         // シェーダを指定してパイプラインレンダラの作成
-        renderer_circle.vertexShader = CAIMMetalShader( "vert2d" )
-        renderer_circle.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        pipeline_circle.vertexShader = CAIMMetalShader( "vert2d" )
+        pipeline_circle.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
         
         // 円のパーティクル情報配列を作る
         let wid = Float( metal_view!.pixelBounds.width )
@@ -83,8 +83,8 @@ class DrawingViewController : CAIMViewController
     // リング描画の準備関数
     private func setupRings() {
         // リング用のレンダラの作成
-        renderer_ring.vertexShader = CAIMMetalShader( "vert2d" )
-        renderer_ring.fragmentShader = CAIMMetalShader( "fragRing" )
+        pipeline_ring.vertexShader = CAIMMetalShader( "vert2d" )
+        pipeline_ring.fragmentShader = CAIMMetalShader( "fragRing" )
         
         // リング用のパーティクル情報を作る
         let wid = Float( metal_view!.pixelBounds.width )
@@ -197,14 +197,12 @@ class DrawingViewController : CAIMViewController
         // 円情報で頂点メッシュ情報を更新
         genCirclesMesh()
 
-        // renderer_circleをつかって、描画を開始
-        encoder.use( renderer_circle ) { encoder in
-            // 図形描画のためにエンコーダを設定
-            circles.encoder = encoder
+        // 準備したpipeline_circleを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
+        encoder.use( pipeline_circle ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            circles.setVertexBuffer( mat, at: 1 )
-            // 円描画用の四角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            circles.draw()
+            $0.setVertexBuffer( mat, at: 1 )
+            // 円データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
+            $0.drawShape( circles )
         }
         
         // リング情報の更新
@@ -212,14 +210,12 @@ class DrawingViewController : CAIMViewController
         // リング情報で頂点メッシュ情報を更新
         genRingsMesh()
         
-        // renderer_ringをつかって、描画を開始
-        encoder.use( renderer_ring ) { encoder in
-            // 図形描画のためにエンコーダを設定
-            rings.encoder = encoder
+        // 準備したpipeline_ringを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
+        encoder.use( pipeline_ring ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            rings.setVertexBuffer( mat, at: 1 )
-            // リング描画用の四角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            rings.draw()
+            $0.setVertexBuffer( mat, at: 1 )
+            // リングデータ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
+            $0.drawShape( rings )
         }
     }
 }

@@ -11,11 +11,6 @@
 //
 
 import UIKit
-import simd
-
-// バッファID番号
-let ID_VERTEX:Int     = 0
-let ID_PROJECTION:Int = 1
 
 // 1頂点情報の構造体
 struct Vertex {
@@ -23,20 +18,31 @@ struct Vertex {
 }
 
 // CAIM-Metalを使うビューコントローラ
-class DrawingViewController : CAIMMetalViewController
+class DrawingViewController : CAIMViewController
 {
-    // レンダラやメッシュ群の変数を作る
-    // ...
-    
-    
+
     // 準備関数
     override func setup() {
+        super.setup()
+
+        
+        // 形状データを作成する関数を呼ぶ
+        makeShapes()
+        
 
     }
     
-    // 繰り返し処理関数
-    override func update(metalView: CAIMMetalView) {
+    // 形状データを作成する関数
+    func makeShapes() {
+
+        
+        
+    }
+    
+    // Metalで実際に描画を指示する関数
+    func render( encoder:MTLRenderCommandEncoder ) {
+
+        
         
     }
 }
-
