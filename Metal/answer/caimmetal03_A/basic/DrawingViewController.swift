@@ -27,7 +27,6 @@ struct Particle {
     var life:Float = 0.0                // パーティクルの生存係数(1.0~0.0)
 }
 
-// CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
@@ -186,17 +185,23 @@ class DrawingViewController : CAIMViewController
     // 繰り返し処理関数
     override func update() {
         super.update()
+        
+        // 円情報の更新
+        updateCircles()
+        // 円情報で頂点メッシュ情報を更新
+        genCirclesMesh()
+        
+        // リング情報の更新
+        updateRings()
+        // リング情報で頂点メッシュ情報を更新
+        genRingsMesh()
+        
         // MetalViewのレンダリングを実行
         metal_view?.execute( renderFunc: self.render )
     }
     
     // Metalで実際に描画を指示する関数
     func render( encoder:MTLRenderCommandEncoder ) {
-        // 円情報の更新
-        updateCircles()
-        // 円情報で頂点メッシュ情報を更新
-        genCirclesMesh()
-
         // 準備したpipeline_circleを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_circle ) {
             // 頂点シェーダのバッファ1番に行列matをセット
@@ -204,11 +209,6 @@ class DrawingViewController : CAIMViewController
             // 円データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
             $0.drawShape( circles )
         }
-        
-        // リング情報の更新
-        updateRings()
-        // リング情報で頂点メッシュ情報を更新
-        genRingsMesh()
         
         // 準備したpipeline_ringを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_ring ) {

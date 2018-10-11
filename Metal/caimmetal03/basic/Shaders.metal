@@ -14,10 +14,6 @@
 
 using namespace metal;
 
-// バッファID番号
-constant int ID_VERTEX = 0;
-constant int ID_PROJECTION = 1;
-
 // 入力頂点情報
 struct VertexIn {
     float2 pos;

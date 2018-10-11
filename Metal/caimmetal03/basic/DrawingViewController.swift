@@ -12,9 +12,6 @@
 
 import UIKit
 
-// バッファID番号
-let ID_VERTEX:Int     = 0
-let ID_PROJECTION:Int = 1
 
 // 1頂点情報の構造体
 struct Vertex {
@@ -26,10 +23,9 @@ struct Particle {
 
 }
 
-// CAIM-Metalを使うビューコントローラ
-class DrawingViewController : CAIMMetalViewController
+class DrawingViewController : CAIMViewController
 {
-    // レンダラやメッシュ群の変数を作る
+    // Metalビュー、パイプライン、メッシュ群などの変数を作る
     // ...
 
     
@@ -49,20 +45,25 @@ class DrawingViewController : CAIMMetalViewController
     }
     
     // 繰り返し処理関数
-    override func update(metalView: CAIMMetalView) {
+    override func update() {
+        super.update()
         // 円情報の更新
 
         // 円情報から頂点メッシュ情報を生成
-
-        // 円の描画
-
         
         // リング情報の更新
 
         // リング情報から頂点メッシュ情報を生成
 
-        // リングの描画
+        // Metalビューのレンダリングを実行
 
+    }
+    
+    // Metalで実際に描画を指示する関数
+    func render( encoder:MTLRenderCommandEncoder ) {
+    
+        // encoderを使ってMetalの描画を実行
+        
     }
 }
 
