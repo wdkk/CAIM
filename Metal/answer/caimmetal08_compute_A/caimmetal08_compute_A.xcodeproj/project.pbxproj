@@ -91,7 +91,7 @@
 		5DDEABEC1E6FE18100E34118 /* CAIMMemory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMemory.swift; sourceTree = "<group>"; };
 		5DEECE8D1FD8E4BC00F2D5A4 /* CAIMColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+Ext.swift"; sourceTree = "<group>"; };
 		5DF9D3621C5BC6550056E506 /* DrawingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
-		FD1E8C251966407A0031E727 /* caimmetal_compute_A.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = caimmetal_compute_A.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD1E8C251966407A0031E727 /* caimmetal08_compute_A.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = caimmetal08_compute_A.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD3E807D19739A39007553FB /* README.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,7 +114,6 @@
 		5D27F4E01E5D7F1200199E32 /* CAIMMetal */ = {
 			isa = PBXGroup;
 			children = (
-				5D5840BE2170A0030097EB88 /* CAIMMetalVertexFormatter.swift */,
 				5D2BADA8216D211900C188D5 /* extensions */,
 				5D2BAD98216D203C00C188D5 /* CAIMMetal.swift */,
 				5D2BAD92216D203C00C188D5 /* CAIMMetalBuffer.swift */,
@@ -129,6 +128,7 @@
 				5D2BAD9A216D203C00C188D5 /* CAIMMetalTexture.swift */,
 				5D2BAD97216D203C00C188D5 /* CAIMMetalViewProtocol.swift */,
 				5D27F4EB1E5D7F1200199E32 /* CAIMMetalView.swift */,
+				5D5840BE2170A0030097EB88 /* CAIMMetalVertexFormatter.swift */,
 			);
 			path = CAIMMetal;
 			sourceTree = "<group>";
@@ -213,7 +213,7 @@
 		FD1E8C261966407A0031E727 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FD1E8C251966407A0031E727 /* caimmetal_compute_A.app */,
+				FD1E8C251966407A0031E727 /* caimmetal08_compute_A.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -229,9 +229,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FD1E8C241966407A0031E727 /* caimmetal_compute_A */ = {
+		FD1E8C241966407A0031E727 /* caimmetal08_compute_A */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal_compute_A" */;
+			buildConfigurationList = FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal08_compute_A" */;
 			buildPhases = (
 				FD1E8C211966407A0031E727 /* Sources */,
 				FD1E8C221966407A0031E727 /* Frameworks */,
@@ -241,9 +241,9 @@
 			);
 			dependencies = (
 			);
-			name = caimmetal_compute_A;
+			name = caimmetal08_compute_A;
 			productName = ios02_views_swift;
-			productReference = FD1E8C251966407A0031E727 /* caimmetal_compute_A.app */;
+			productReference = FD1E8C251966407A0031E727 /* caimmetal08_compute_A.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -264,7 +264,7 @@
 					};
 				};
 			};
-			buildConfigurationList = FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal_compute_A" */;
+			buildConfigurationList = FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal08_compute_A" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -276,7 +276,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FD1E8C241966407A0031E727 /* caimmetal_compute_A */,
+				FD1E8C241966407A0031E727 /* caimmetal08_compute_A */,
 			);
 		};
 /* End PBXProject section */
@@ -447,7 +447,7 @@
 				INFOPLIST_FILE = config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = caimmetal_compute_A;
+				PRODUCT_NAME = caimmetal08_compute_A;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CAIM/CAIMBridging.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
@@ -466,7 +466,7 @@
 				INFOPLIST_FILE = config/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.ac.teu.creapp.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = caimmetal_compute_A;
+				PRODUCT_NAME = caimmetal08_compute_A;
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/CAIM/CAIMBridging.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 4.0;
@@ -477,7 +477,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal_compute_A" */ = {
+		FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimmetal08_compute_A" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FD1E8C3A1966407A0031E727 /* Debug */,
@@ -486,7 +486,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal_compute_A" */ = {
+		FD1E8C3C1966407A0031E727 /* Build configuration list for PBXNativeTarget "caimmetal08_compute_A" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FD1E8C3D1966407A0031E727 /* Debug */,
