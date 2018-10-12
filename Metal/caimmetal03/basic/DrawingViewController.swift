@@ -10,9 +10,6 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import UIKit
-
-
 // 1頂点情報の構造体
 struct Vertex {
 

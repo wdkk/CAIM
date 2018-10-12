@@ -54,6 +54,11 @@ extension MTLRenderCommandEncoder
     public func drawShape( _ shape:CAIMMetalDrawable ) {
         shape.draw( with:self )
     }
+    
+    public func setDepthStencilDescriptor( _ desc:MTLDepthStencilDescriptor ) {
+        let depth_stencil_state = CAIMMetal.device?.makeDepthStencilState( descriptor: desc )
+        self.setDepthStencilState( depth_stencil_state )
+    }
 }
 
 #endif

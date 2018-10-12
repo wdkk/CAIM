@@ -24,11 +24,6 @@ public class CAIMMetalView: CAIMBaseView, CAIMMetalViewProtocol
     public private(set) var depthTexture:MTLTexture?
     // クリアカラー
     public var clearColor:CAIMColor = .white
-    // カリング
-    public var culling:MTLCullMode = .none
-    // デプス判定
-    public var depthCompare:MTLCompareFunction = .always
-    public var depthEnabled:Bool = false
     
     public override var bounds:CGRect {
         didSet { metalLayer.frame = self.bounds }
@@ -65,19 +60,6 @@ public class CAIMMetalView: CAIMBaseView, CAIMMetalViewProtocol
         self.layer.addSublayer( metalLayer )
     }
     
-    private func treatEncoder( _ encoder:inout MTLRenderCommandEncoder ) {
-        // エンコーダにカリングの設定
-        encoder.setFrontFacing( .counterClockwise )
-        encoder.setCullMode( culling )
-        
-        // エンコーダにデプスの設定
-        let depth_desc = MTLDepthStencilDescriptor()
-        depth_desc.depthCompareFunction = self.depthCompare
-        depth_desc.isDepthWriteEnabled = self.depthEnabled
-        let depth_stencil_state = CAIMMetal.device?.makeDepthStencilState( descriptor: depth_desc )
-        encoder.setDepthStencilState( depth_stencil_state )
-    }
-    
     // Metalコマンドの開始(CAIMMetalViewから呼び出せる簡易版。本体はCAIMMetal.execute)
     public func execute( preRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
                          renderFunc:( _ renderEncoder:MTLRenderCommandEncoder )->(),
@@ -90,32 +72,42 @@ public class CAIMMetalView: CAIMBaseView, CAIMMetalViewProtocol
         },
         post: postRenderFunc )
     }
+ 
+    // デプステクスチャの設定と再生成
+    private func updateDepthTexture( drawable:CAMetalDrawable ) {
+        // デプステクスチャディスクリプタの設定
+        let depth_desc:MTLTextureDescriptor = makeDepthTextureDescriptor( drawable:drawable, depthState:depthState )
+        // デプステクスチャの作成
+        makeDepthTexture( depthDesc:depth_desc, depthState:depthState )
+    }
+    
+    // エンコーダの設定と再生成
+    private func makeEncoder( commandBuffer command_buffer:MTLCommandBuffer, drawable:CAMetalDrawable ) -> MTLRenderCommandEncoder? {
+        // レンダーパスディスクリプタの設定
+        let r_pass_desc:MTLRenderPassDescriptor = makeRenderPassDescriptor( drawable:drawable, color:clearColor, depthTexture:depthTexture! )
+        // エンコーダ生成
+        return command_buffer.makeRenderCommandEncoder( descriptor: r_pass_desc )
+    }
     
     @discardableResult
     public func beginDraw( commandBuffer command_buffer:MTLCommandBuffer,
                            renderFunc:( _ renderEncoder:MTLRenderCommandEncoder )->() ) -> Bool {
         if( metalLayer.bounds.width < 1 || metalLayer.bounds.height < 1 ) { return false }
         
-        guard let drawable:CAMetalDrawable = metalLayer.nextDrawable() else {
-            print("cannot get Metal drawable.")
-            return false
-        }
+        guard let drawable:CAMetalDrawable = metalLayer.nextDrawable() else { print("cannot get Metal drawable."); return false }
         
-        // デプステクスチャディスクリプタの設定
-        let depth_desc:MTLTextureDescriptor = makeDepthTextureDescriptor( drawable:drawable, depthState:depthState )
-        // デプステクスチャの作成
-        makeDepthTexture( depthDesc:depth_desc, depthState:depthState )
-        // レンダーパスディスクリプタの設定
-        let r_pass_desc:MTLRenderPassDescriptor = makeRenderPassDescriptor( drawable:drawable, color:clearColor, depthTexture:depthTexture! )
+        updateDepthTexture( drawable: drawable )
+
+        guard let encoder = makeEncoder( commandBuffer: command_buffer, drawable: drawable ) else { print("don't get RenderCommandEncoder."); return false }
         
-        // エンコーダ生成
-        guard var encoder:MTLRenderCommandEncoder = command_buffer.makeRenderCommandEncoder( descriptor: r_pass_desc ) else {
-            print("don't get RenderCommandEncoder.")
-            return false
-        }
-        
-        // エンコーダの整備
-        treatEncoder( &encoder )
+        encoder.setFrontFacing( .counterClockwise )
+        // エンコーダにカリングの初期設定
+        encoder.setCullMode( .none )
+        // エンコーダにデプスとステンシルの初期設定
+        let depth_desc = MTLDepthStencilDescriptor()
+        depth_desc.depthCompareFunction = .always
+        depth_desc.isDepthWriteEnabled = false
+        encoder.setDepthStencilDescriptor( depth_desc )
         
         // 指定された関数オブジェクトの実行
         renderFunc( encoder )

@@ -28,6 +28,7 @@
 		5D3F7B18216D8B1F00047045 /* CAIMMetalBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F7B09216D8B1F00047045 /* CAIMMetalBuffer.swift */; };
 		5D3F7B19216D8B1F00047045 /* CAIMMetalViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F7B0A216D8B1F00047045 /* CAIMMetalViewProtocol.swift */; };
 		5D3F7B1A216D8B1F00047045 /* CAIMMetalTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F7B0B216D8B1F00047045 /* CAIMMetalTexture.swift */; };
+		5D58408821709B310097EB88 /* CAIMMetalVertexFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58408721709B310097EB88 /* CAIMMetalVertexFormatter.swift */; };
 		5D8249541E6BF7A400156E38 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8249531E6BF7A400156E38 /* libstdc++.tbd */; };
 		5D83CEDB216FB2DC00C37663 /* CAIMMetalComputePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83CED9216FB2DC00C37663 /* CAIMMetalComputePipeline.swift */; };
 		5D83CEDC216FB2DC00C37663 /* CAIMMetalRenderPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83CEDA216FB2DC00C37663 /* CAIMMetalRenderPipeline.swift */; };
@@ -68,6 +69,7 @@
 		5D3F7B09216D8B1F00047045 /* CAIMMetalBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalBuffer.swift; sourceTree = "<group>"; };
 		5D3F7B0A216D8B1F00047045 /* CAIMMetalViewProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalViewProtocol.swift; sourceTree = "<group>"; };
 		5D3F7B0B216D8B1F00047045 /* CAIMMetalTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalTexture.swift; sourceTree = "<group>"; };
+		5D58408721709B310097EB88 /* CAIMMetalVertexFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalVertexFormatter.swift; sourceTree = "<group>"; };
 		5D8249531E6BF7A400156E38 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		5D83CED9216FB2DC00C37663 /* CAIMMetalComputePipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputePipeline.swift; sourceTree = "<group>"; };
 		5D83CEDA216FB2DC00C37663 /* CAIMMetalRenderPipeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalRenderPipeline.swift; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 		5D27F4E01E5D7F1200199E32 /* CAIMMetal */ = {
 			isa = PBXGroup;
 			children = (
+				5D58408721709B310097EB88 /* CAIMMetalVertexFormatter.swift */,
 				5D83CED9216FB2DC00C37663 /* CAIMMetalComputePipeline.swift */,
 				5D83CEDA216FB2DC00C37663 /* CAIMMetalRenderPipeline.swift */,
 				5D3F7B00216D8B1F00047045 /* CAIMMetal.swift */,
@@ -320,6 +323,7 @@
 				5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */,
 				5D3F7B13216D8B1F00047045 /* CAIMMetalGeometrics.swift in Sources */,
 				5D3F7B0F216D8B1F00047045 /* CAIMMetal.swift in Sources */,
+				5D58408821709B310097EB88 /* CAIMMetalVertexFormatter.swift in Sources */,
 				5D3F7B19216D8B1F00047045 /* CAIMMetalViewProtocol.swift in Sources */,
 				5D984EA01E5BE74F000CA4E3 /* CAIMUtil.swift in Sources */,
 				5D3F7B11216D8B1F00047045 /* CAIMMetalComputer.swift in Sources */,

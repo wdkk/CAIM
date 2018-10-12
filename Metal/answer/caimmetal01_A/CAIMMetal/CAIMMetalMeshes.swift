@@ -17,7 +17,7 @@ public class CAIMMetalMesh : CAIMMetalDrawable
 {
     public var metalMesh: MTKMesh?
     public var metalVertexBuffer:MTLBuffer { return metalMesh!.vertexBuffers[0].buffer }
-    
+ 
     static func vertexDesc(at index:Int) -> MTLVertexDescriptor {
         let mtl_vertex = MTLVertexDescriptor()
         mtl_vertex.attributes[0].format = .float3
@@ -80,6 +80,9 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     }
     
     public func draw( with encoder:MTLRenderCommandEncoder ) {
+        // TODO: at indexの値
+        encoder.setVertexBuffer( metalVertexBuffer, at: 0 )
+        
         metalMesh?.submeshes.forEach {
             encoder.drawIndexedPrimitives(type: $0.primitiveType,
                                        indexCount: $0.indexCount,

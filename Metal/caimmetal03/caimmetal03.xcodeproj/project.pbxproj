@@ -14,6 +14,7 @@
 		5D27F5001E5D7FD200199E32 /* MetalKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */; };
 		5D27F5011E5D7FD200199E32 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */; };
 		5D47ABAC1FE252A000CD939C /* CAIMColor+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D47ABAA1FE252A000CD939C /* CAIMColor+Ext.swift */; };
+		5D58409221709BB50097EB88 /* CAIMMetalVertexFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58409121709BB50097EB88 /* CAIMMetalVertexFormatter.swift */; };
 		5D8249541E6BF7A400156E38 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8249531E6BF7A400156E38 /* libstdc++.tbd */; };
 		5D83CFA6216FE4B900C37663 /* MTLRenderCommandEncoder+Lily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83CF96216FE4B900C37663 /* MTLRenderCommandEncoder+Lily.swift */; };
 		5D83CFA7216FE4B900C37663 /* MTLComputeCommandEncoder+Lily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83CF97216FE4B900C37663 /* MTLComputeCommandEncoder+Lily.swift */; };
@@ -54,6 +55,7 @@
 		5D27F4FD1E5D7FD200199E32 /* MetalKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MetalKit.framework; path = System/Library/Frameworks/MetalKit.framework; sourceTree = SDKROOT; };
 		5D27F4FE1E5D7FD200199E32 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5D47ABAA1FE252A000CD939C /* CAIMColor+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+Ext.swift"; sourceTree = "<group>"; };
+		5D58409121709BB50097EB88 /* CAIMMetalVertexFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalVertexFormatter.swift; sourceTree = "<group>"; };
 		5D8249531E6BF7A400156E38 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		5D83CF96216FE4B900C37663 /* MTLRenderCommandEncoder+Lily.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLRenderCommandEncoder+Lily.swift"; sourceTree = "<group>"; };
 		5D83CF97216FE4B900C37663 /* MTLComputeCommandEncoder+Lily.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLComputeCommandEncoder+Lily.swift"; sourceTree = "<group>"; };
@@ -112,6 +114,7 @@
 		5D27F4E01E5D7F1200199E32 /* CAIMMetal */ = {
 			isa = PBXGroup;
 			children = (
+				5D58409121709BB50097EB88 /* CAIMMetalVertexFormatter.swift */,
 				5D83CFA4216FE4B900C37663 /* CAIMMetal.swift */,
 				5D83CF9C216FE4B900C37663 /* CAIMMetalBuffer.swift */,
 				5D83CF9A216FE4B900C37663 /* CAIMMetalComputePipeline.swift */,
@@ -320,6 +323,7 @@
 				5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */,
 				5D47ABAC1FE252A000CD939C /* CAIMColor+Ext.swift in Sources */,
 				5D83CFBB216FE4C600C37663 /* UIVIew+CAIM.swift in Sources */,
+				5D58409221709BB50097EB88 /* CAIMMetalVertexFormatter.swift in Sources */,
 				5D984EA01E5BE74F000CA4E3 /* CAIMUtil.swift in Sources */,
 				5DDEABED1E6FE18100E34118 /* CAIMMemory.swift in Sources */,
 				5D83CFAC216FE4B900C37663 /* CAIMMetalBuffer.swift in Sources */,

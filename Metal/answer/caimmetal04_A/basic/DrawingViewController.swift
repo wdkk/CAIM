@@ -10,8 +10,6 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import UIKit
-
 // 頂点情報の構造体
 struct Vertex {
     var pos:Float2  = Float2()

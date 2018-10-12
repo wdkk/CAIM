@@ -30,6 +30,7 @@
 		5D2BADAD216D211900C188D5 /* MTLRenderCommandEncoder+Lily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2BADA9216D211900C188D5 /* MTLRenderCommandEncoder+Lily.swift */; };
 		5D2BADAF216D211900C188D5 /* CAIMColor+LLMTLColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D2BADAB216D211900C188D5 /* CAIMColor+LLMTLColor.swift */; };
 		5D3F7B41216E77B800047045 /* CAIMBaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D3F7B40216E77B800047045 /* CAIMBaseView.swift */; };
+		5D58408621709B140097EB88 /* CAIMMetalVertexFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D58408521709B140097EB88 /* CAIMMetalVertexFormatter.swift */; };
 		5D8249541E6BF7A400156E38 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D8249531E6BF7A400156E38 /* libstdc++.tbd */; };
 		5D83CED6216F6EA900C37663 /* CAIMMetalComputer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83CED5216F6EA900C37663 /* CAIMMetalComputer.swift */; };
 		5D83CED8216F704600C37663 /* MTLComputeCommandEncoder+Lily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D83CED7216F704600C37663 /* MTLComputeCommandEncoder+Lily.swift */; };
@@ -70,6 +71,7 @@
 		5D2BADA9216D211900C188D5 /* MTLRenderCommandEncoder+Lily.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MTLRenderCommandEncoder+Lily.swift"; sourceTree = "<group>"; };
 		5D2BADAB216D211900C188D5 /* CAIMColor+LLMTLColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAIMColor+LLMTLColor.swift"; sourceTree = "<group>"; };
 		5D3F7B40216E77B800047045 /* CAIMBaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMBaseView.swift; sourceTree = "<group>"; };
+		5D58408521709B140097EB88 /* CAIMMetalVertexFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAIMMetalVertexFormatter.swift; sourceTree = "<group>"; };
 		5D8249531E6BF7A400156E38 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		5D83CED5216F6EA900C37663 /* CAIMMetalComputer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CAIMMetalComputer.swift; sourceTree = "<group>"; };
 		5D83CED7216F704600C37663 /* MTLComputeCommandEncoder+Lily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTLComputeCommandEncoder+Lily.swift"; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				5D2BAD9A216D203C00C188D5 /* CAIMMetalTexture.swift */,
 				5D2BAD97216D203C00C188D5 /* CAIMMetalViewProtocol.swift */,
 				5D27F4EB1E5D7F1200199E32 /* CAIMMetalView.swift */,
+				5D58408521709B140097EB88 /* CAIMMetalVertexFormatter.swift */,
 			);
 			path = CAIMMetal;
 			sourceTree = "<group>";
@@ -320,6 +323,7 @@
 				5D2BAD9F216D203C00C188D5 /* CAIMMetalBuffer.swift in Sources */,
 				5D27F4FA1E5D7F4300199E32 /* Shaders.metal in Sources */,
 				5DDEABEB1E6FDB5F00E34118 /* CAIMMemoryC.mm in Sources */,
+				5D58408621709B140097EB88 /* CAIMMetalVertexFormatter.swift in Sources */,
 				5D2BADAF216D211900C188D5 /* CAIMColor+LLMTLColor.swift in Sources */,
 				5D27F4F71E5D7F1200199E32 /* CAIMMetalView.swift in Sources */,
 				5D2BADA5216D203C00C188D5 /* CAIMMetal.swift in Sources */,

@@ -159,4 +159,89 @@ public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
     }
 }
 
+// パネル型キューブメモリクラス
+public struct CAIMPanelCubeParam
+{
+    // パネルの向き
+    public enum PanelSide {
+        case front
+        case back
+        case left
+        case right
+        case top
+        case bottom
+    }
+    public var side:PanelSide = .front
+    var pos:Float4 = Float4()
+    var uv:Float2 = Float2()
+}
+
+public class CAIMCubes<T> : CAIMMetalShape<T>
+{
+    init(count:Int = 0, at index:Int = 0, type:CAIMMetalBufferType = .alloc) {
+        super.init(span: MemoryLayout<T>.stride * 24, count: count, at: index, type:type)
+    }
+    
+    subscript(idx:Int) -> UnsafeMutablePointer<T> {
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 24))
+        return UnsafeMutablePointer<T>(opaqueptr)
+    }
+    
+    public override func draw( with encoder:MTLRenderCommandEncoder ) {
+        super.draw( with:encoder )
+        
+        // パネル1枚ずつ6枚で1キューブを描く
+        for j:Int in 0 ..< count {
+            for i:Int in 0 ..< 6 {
+                encoder.drawPrimitives(type: .triangleStrip, vertexStart: (i * 4) + (j * 24), vertexCount: 4)
+            }
+        }
+    }
+    
+    func set(idx:Int, pos:Float3, size:Float, iterator f: (Int,CAIMPanelCubeParam)->T) {
+        let cube = self[idx]
+        let sz = size / 2.0
+        let x = pos.x
+        let y = pos.y
+        let z = pos.z
+        
+        let v = [
+            // Front
+            CAIMPanelCubeParam(side: .front, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .front, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 0)),
+            // Back
+            CAIMPanelCubeParam(side: .back, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .back, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
+            // Left
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 0)),
+            // Right
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
+            // Top
+            CAIMPanelCubeParam(side: .top, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .top, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 0)),
+            // Bottom
+            CAIMPanelCubeParam(side: .bottom, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
+            ]
+        
+        for i:Int in 0 ..< 24 {
+            cube[i] = f(i, v[i])
+        }
+    }
+}
+
 #endif
