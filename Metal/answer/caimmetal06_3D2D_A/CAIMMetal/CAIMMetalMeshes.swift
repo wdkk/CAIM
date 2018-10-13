@@ -53,9 +53,15 @@ public class CAIMMetalMesh : CAIMMetalDrawable
         (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
         
         let allocator = MTKMeshBufferAllocator( device: CAIMMetal.device! )
+        #if LILY
+        let asset = MDLAsset(url: LLPath.bundle( path ).url,
+                             vertexDescriptor: modelDescriptor3D,
+                             bufferAllocator: allocator)
+        #else
         let asset = MDLAsset(url: URL(fileURLWithPath: CAIM.bundle( path ) ),
                              vertexDescriptor: modelDescriptor3D,
                              bufferAllocator: allocator)
+        #endif
         let new_mesh = try! MTKMesh.newMeshes(asset: asset, device: CAIMMetal.device! )
         if(add_normal) {
             new_mesh.modelIOMeshes.first!.addNormals(withAttributeNamed: MDLVertexAttributeNormal, creaseThreshold: normal_threshold)
@@ -79,9 +85,8 @@ public class CAIMMetalMesh : CAIMMetalDrawable
         return new_mesh
     }
     
-    public func draw( with encoder:MTLRenderCommandEncoder ) {
-        // TODO: at indexの値
-        encoder.setVertexBuffer( metalVertexBuffer, at: 0 )
+    public func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        encoder.setVertexBuffer( metalVertexBuffer, index: idx )
         
         metalMesh?.submeshes.forEach {
             encoder.drawIndexedPrimitives(type: $0.primitiveType,

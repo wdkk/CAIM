@@ -53,12 +53,12 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
         _mtlbuf = self.allocate( buf, length: _length )
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化
-    public init( vertice:CAIMMemory16 ) {
+    public init( vertice:LLAlignedMemory16 ) {
         _length = vertice.allocatedLength
         _mtlbuf = self.allocate( vertice.pointer!, length:_length )
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化(4Kアラインメントデータ)
-    public init( vertice:CAIMMemory4K ) {
+    public init( vertice:LLAlignedMemory4K ) {
         _length = vertice.allocatedLength
         _mtlbuf = self.allocate( vertice.pointer!, length:_length )
     }
@@ -82,7 +82,7 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
         memcpy( _mtlbuf!.contents(), buf, sz )
     }
     
-    public func update( vertice:CAIMMemory16 ) {
+    public func update( vertice:LLAlignedMemory16 ) {
         let sz:Int = vertice.allocatedLength
         if( _length != sz ) { _mtlbuf = self.allocate( sz ) }
         memcpy( _mtlbuf!.contents(), vertice.pointer, sz )
@@ -105,13 +105,13 @@ public class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     public var metalBuffer:MTLBuffer { return _mtlbuf! }
     
     // 指定したオブジェクト全体を共有して確保・初期化
-    public init( vertice:CAIMMemory4K ) {
+    public init( vertice:LLAlignedMemory4K ) {
         _length = vertice.allocatedLength
         _mtlbuf = self.nocopy( vertice.pointer!, length:_length )
     }
     
     // 更新関数は何もしない
-    public func update( vertice:CAIMMemory4K ) {
+    public func update( vertice:LLAlignedMemory4K ) {
         _mtlbuf = self.nocopy( vertice.pointer!, length: vertice.allocatedLength )
     }
     

@@ -23,7 +23,7 @@ let kImagePlaneVertexData: [Float] = [
 class CAIMARCapture {
     weak var ar_session:ARSession?
     let inFlightSemaphore = DispatchSemaphore(value: kMaxBuffersInFlight)
-    private var render_ar_capture:CAIMMetalRenderer?
+    private var ar_capture_pipeline = CAIMMetalRenderPipeline()
     var imagePlaneVertexBuffer: MTLBuffer!
     var capturedImageTextureCache: CVMetalTextureCache!
     var capturedImageTextureY: CVMetalTexture?
@@ -32,11 +32,12 @@ class CAIMARCapture {
     
     init(session:ARSession) {
         self.ar_session = session
-
-        let imagePlaneVertexDataCount = kImagePlaneVertexData.count * MemoryLayout<Float>.size
-        imagePlaneVertexBuffer = CAIMMetal.device.makeBuffer(bytes: kImagePlaneVertexData, length: imagePlaneVertexDataCount, options: [])
         
-        render_ar_capture = CAIMMetalRenderer(vertname: "capturedImageVertexTransform", fragname: "capturedImageFragmentShader")
+        let imagePlaneVertexDataCount = kImagePlaneVertexData.count * MemoryLayout<Float>.size
+        imagePlaneVertexBuffer = CAIMMetal.device!.makeBuffer(bytes: kImagePlaneVertexData, length: imagePlaneVertexDataCount, options: [])
+        
+        ar_capture_pipeline.vertexShader = CAIMMetalShader( "capturedImageVertexTransform" )
+        ar_capture_pipeline.fragmentShader = CAIMMetalShader( "capturedImageFragmentShader" )
         // 頂点ディスクリプタ
         let vert_desc = MTLVertexDescriptor()
         vert_desc.attributes[0].format = .float2
@@ -47,25 +48,17 @@ class CAIMARCapture {
         vert_desc.attributes[1].bufferIndex = 0
         vert_desc.layouts[0].stride = 16
         vert_desc.layouts[0].stepRate = 1
-        render_ar_capture?.vertexDesc = vert_desc
-        // デプス無効
-        render_ar_capture?.depthCompare = .always
-        render_ar_capture?.depthEnabled = false
+        ar_capture_pipeline.vertexDesc = vert_desc
         
         // テクスチャキャッシュ
         var textureCache: CVMetalTextureCache?
-        CVMetalTextureCacheCreate(nil, nil, CAIMMetal.device, nil, &textureCache)
+        CVMetalTextureCacheCreate(nil, nil, CAIMMetal.device!, nil, &textureCache)
         capturedImageTextureCache = textureCache
     }
     
-    func checkTextures(viewController:CAIMMetalViewController) {
-        let _ = inFlightSemaphore.wait(timeout: DispatchTime.distantFuture)
-        
-        var textures = [capturedImageTextureY, capturedImageTextureCbCr]
-        viewController.commandBufferCompletion = { [weak self] in
-            if let strongSelf = self { strongSelf.inFlightSemaphore.signal() }
-            textures.removeAll()
-        }
+    func clearTextures() {
+        capturedImageTextureY = nil
+        capturedImageTextureCbCr = nil
     }
     
     func updateCapturedImageTextures(frame: ARFrame) {
@@ -105,15 +98,25 @@ class CAIMARCapture {
         }
     }
     
-    func drawCapturedImage(on metalView:CAIMMetalView) {
+    func drawCapturedImage( encoder:MTLRenderCommandEncoder ) {
         guard let textureY = capturedImageTextureY, let textureCbCr = capturedImageTextureCbCr else { return }
+      
+        // カリングなし
+        encoder.setCullMode( .none )
+        // エンコーダにデプスの設定
+        let depth_desc = MTLDepthStencilDescriptor()
+        // デプスを無効にする
+        depth_desc.depthCompareFunction = .always
+        depth_desc.isDepthWriteEnabled = false
+        encoder.setDepthStencilDescriptor( depth_desc )
         
-        render_ar_capture?.beginDrawing(on: metalView)
+        encoder.use( ar_capture_pipeline ) {
+            $0.setVertexBuffer( imagePlaneVertexBuffer, offset:0, index: 0)
+            $0.setFragmentTexture(CVMetalTextureGetTexture(textureY)!, index: 1)
+            $0.setFragmentTexture(CVMetalTextureGetTexture(textureCbCr)!, index: 2)
         
-        render_ar_capture?.link(imagePlaneVertexBuffer, to: .vertex, at: 0)
-        render_ar_capture?.linkFragmentTexture(CVMetalTextureGetTexture(textureY)!, at: 1)
-        render_ar_capture?.linkFragmentTexture(CVMetalTextureGetTexture(textureCbCr)!, at: 2)
-        
-        render_ar_capture?.currentEncoder?.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+            $0.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+        }
     }
 }
+

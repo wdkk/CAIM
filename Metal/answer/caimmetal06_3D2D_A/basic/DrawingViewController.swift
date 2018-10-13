@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+import simd
+
 // 1頂点情報の構造体(VertexDescriptorを使うため、CAIMMetalVertexFormatterプロトコルを使用する)
 struct Vertex : CAIMMetalVertexFormatter {
     var pos:Float2 = Float2()
@@ -56,8 +58,8 @@ class DrawingViewController : CAIMViewController
     private var pipeline_ring:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
     
     private var mat:Matrix4x4 = .identity                                   // 変換行列
-    private var circles = CAIMMetalQuadrangles<Vertex>(count: 100, at:0 )     // 円用４頂点メッシュ群
-    private var rings = CAIMMetalQuadrangles<Vertex>(count: 100, at:0 )       // リング用４頂点メッシュ群
+    private var circles = CAIMMetalQuadrangles<Vertex>(count: 100 )     // 円用４頂点メッシュ群
+    private var rings = CAIMMetalQuadrangles<Vertex>(count: 100 )       // リング用４頂点メッシュ群
     
     private var circle_parts = [Particle]()     // 円用パーティクル情報
     private var ring_parts   = [Particle]()     // リング用パーティクル情報
@@ -259,16 +261,16 @@ class DrawingViewController : CAIMViewController
         // 準備したpipeline_3dを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_3d ) {
             // 頂点シェーダのバッファ1番に行列uniformをセット
-            $0.setVertexBuffer( uniform, at: 1 )
+            $0.setVertexBuffer( uniform, index: 1 )
             // 頂点シェーダのバッファ2番にユニフォーム行列shared_uniformをセット
-            $0.setVertexBuffer( shared_uniform, at: 2 )
+            $0.setVertexBuffer( shared_uniform, index: 2 )
             // フラグメントシェーダのサンプラ0番にデフォルトのサンプラを設定
             $0.setFragmentSamplerState( CAIMMetalSampler.default, index: 0 )
             // フラグメントシェーダのテクスチャ0番にtextureを設定
             $0.setFragmentTexture( texture.metalTexture, index: 0 )
             
-            // モデルデータ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( mesh )
+            // モデルのメッシュ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( mesh, index:0 )
         }
 
         // エンコーダにカリングの設定
@@ -283,17 +285,17 @@ class DrawingViewController : CAIMViewController
         // 準備したpipeline_circleを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_circle ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            $0.setVertexBuffer( mat, at: 1 )
-            // 円データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( circles )
+            $0.setVertexBuffer( mat, index:1 )
+            // 円用の四角形データ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( circles, index:0 )
         }
         
         // 準備したpipeline_ringを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_ring ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            $0.setVertexBuffer( mat, at: 1 )
-            // リングデータ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( rings )
+            $0.setVertexBuffer( mat, index:1 )
+            // リング用の四角形データ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( rings, index:0 )
         }
     }
 }

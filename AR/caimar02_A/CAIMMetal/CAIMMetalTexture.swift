@@ -18,12 +18,20 @@ public class CAIMMetalTexture {
     public init( with path:String ) {
         // テクスチャの読み込み
         let tex_loader:MTKTextureLoader = MTKTextureLoader(device: CAIMMetal.device! )
+        #if LILY
+        let img:LLImage = LLImage( LLPath.bundle(path) )
+        guard let cgimg:CGImage = LCImage2CGImage( img.imagec )?.takeUnretainedValue() else {
+            print( "cannot read texture file." )
+            return
+        }
+        #else
         let img:UIImage? = UIImage(contentsOfFile: CAIM.bundle( path ) )
         guard let cgimg:CGImage = img?.cgImage else {
             print( "cannot read texture file." )
             return
         }
-
+        #endif
+        
         self.metalTexture = try! tex_loader.newTexture( cgImage: cgimg, options: nil )
     }
 }

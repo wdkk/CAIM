@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+import simd
+
 // 1頂点情報の構造体
 struct Vertex {
     var pos:Float2  = Float2()
@@ -23,7 +25,7 @@ class DrawingViewController : CAIMViewController
     private var metal_view:CAIMMetalView?       // Metalビュー
     private var pipeline = CAIMMetalRenderPipeline()  // Metalレンダパイプライン
     private var mat:Matrix4x4 = .identity       // 変換行列
-    private var quads = CAIMMetalQuadrangles<Vertex>( count: 100, at:0 )    // ４頂点メッシュ群
+    private var quads = CAIMMetalQuadrangles<Vertex>( count: 100 )    // ４頂点メッシュ群
     
     // 準備関数
     override func setup() {
@@ -79,9 +81,9 @@ class DrawingViewController : CAIMViewController
         // 準備したpipelineを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            $0.setVertexBuffer( mat, at: 1 )
-            // 四角形データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( quads )
+            $0.setVertexBuffer( mat, index: 1 )
+            // 四角形データ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( quads, index: 0 )
         }
     }
 }

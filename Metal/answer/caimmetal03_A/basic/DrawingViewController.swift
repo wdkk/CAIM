@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+import simd
+
 // 1頂点情報の構造体
 struct Vertex {
     var pos:Float2 = Float2()
@@ -33,8 +35,8 @@ class DrawingViewController : CAIMViewController
     private var pipeline_ring:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
     
     private var mat:Matrix4x4 = .identity                         // 変換行列
-    private var circles = CAIMMetalQuadrangles<Vertex>( count: 100, at:0 )   // 円用４頂点メッシュ群
-    private var rings = CAIMMetalQuadrangles<Vertex>( count: 100, at:0 )     // リング用４頂点メッシュ群
+    private var circles = CAIMMetalQuadrangles<Vertex>( count: 100 )   // 円用４頂点メッシュ群
+    private var rings = CAIMMetalQuadrangles<Vertex>( count: 100 )     // リング用４頂点メッシュ群
     
     // パーティクル情報配列
     private var circle_parts = [Particle]()     // 円用パーティクル情報
@@ -203,17 +205,17 @@ class DrawingViewController : CAIMViewController
         // 準備したpipeline_circleを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_circle ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            $0.setVertexBuffer( mat, at: 1 )
-            // 円データ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( circles )
+            $0.setVertexBuffer( mat, index:1 )
+            // 円用の四角形データ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( circles, index:0 )
         }
         
         // 準備したpipeline_ringを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_ring ) {
             // 頂点シェーダのバッファ1番に行列matをセット
-            $0.setVertexBuffer( mat, at: 1 )
-            // リングデータ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( rings )
+            $0.setVertexBuffer( mat, index:1 )
+            // リング用の四角形データ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( rings, index:0 )
         }
     }
 }

@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+import simd
+
 // 1頂点情報の構造体(VertexDescriptorを使うため、CAIMMetalVertexFormatterプロトコルを使用する)
 struct Vertex : CAIMMetalVertexFormatter {
     var pos:Float2 = Float2()
@@ -77,7 +79,7 @@ class DrawingViewController : CAIMViewController
         
         uniform.modelMatrix = trans * rotate_y
         
-        shared_uniform.viewMatrix = Matrix4x4.translate(0.0, 0.0, -10.0)
+        shared_uniform.viewMatrix = Matrix4x4.translate(0.0, 0.0, -5.0)
         shared_uniform.projectionMatrix = Matrix4x4.perspective(aspect: aspect, fieldOfViewY: 60.0, near: 0.01, far: 1000.0)
         
         // MetalViewのレンダリングを実行
@@ -98,15 +100,15 @@ class DrawingViewController : CAIMViewController
         // 準備したpipeline_3dを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_3d ) {
             // 頂点シェーダのバッファ1番に行列uniformをセット
-            $0.setVertexBuffer( uniform, at: 1 )
+            $0.setVertexBuffer( uniform, index:1 )
             // 頂点シェーダのバッファ2番にユニフォーム行列shared_uniformをセット
-            $0.setVertexBuffer( shared_uniform, at: 2 )
+            $0.setVertexBuffer( shared_uniform, index:2 )
             // フラグメントシェーダのサンプラ0番にデフォルトのサンプラを設定
-            $0.setFragmentSamplerState( CAIMMetalSampler.default, index: 0 )
+            $0.setFragmentSamplerState( CAIMMetalSampler.default, index:0 )
             // フラグメントシェーダのテクスチャ0番にtextureを設定
-            $0.setFragmentTexture( texture.metalTexture, index: 0 )
-            // モデルデータ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( mesh )
+            $0.setFragmentTexture( texture.metalTexture, index:0 )
+            // メッシュデータ群の頂点をバッファ0番にセットし描画を実行
+            $0.drawShape( mesh, index:0 )
         }
     }
 }

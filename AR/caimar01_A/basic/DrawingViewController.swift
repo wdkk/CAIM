@@ -10,17 +10,16 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import UIKit
 import ARKit
 
 // The max number anchors our uniform buffer will hold
-let kMaxAnchorInstanceCount: Int = 64
+let kMaxAnchorinstance_count: Int = 64
 // バッファID番号
 let ID_VERTEX:Int = 0
 let ID_SHARED_UNIFORMS:Int = 1
 let ID_UNIFORMS:Int = 2
 
-struct SharedUniforms : CAIMBufferAllocatable {
+struct SharedUniforms : CAIMMetalBufferAllocatable {
     var projectionMatrix:Matrix4x4 = .identity
     var viewMatrix:Matrix4x4 = .identity
     // Lighting Properties
@@ -30,50 +29,46 @@ struct SharedUniforms : CAIMBufferAllocatable {
     var materialShininess:Float = 0.0
 }
 
-struct InstanceUniforms : CAIMBufferAllocatable {
+struct InstanceUniforms : CAIMMetalBufferAllocatable {
     var model:Matrix4x4 = .identity
 }
 
-// CAIM-Metalを使うビューコントローラ
-class DrawingViewController : CAIMMetalViewController, ARSessionDelegate
+class DrawingViewController : CAIMViewController, ARSessionDelegate
 {
-    private var render_3d:CAIMMetalRenderer?
+    private var metal_view:CAIMMetalView?       // Metalビュー
+    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
     
     private var uniforms:[InstanceUniforms] = [InstanceUniforms].init(repeating: InstanceUniforms(), count: 64)
     private var mesh = CAIMMetalMesh(with:"realship.obj", at:ID_VERTEX)
     private var texture:CAIMMetalTexture = CAIMMetalTexture(with:"shipDiffuse.png")
-    private var instanceCount: Int = 0
+    private var instance_count: Int = 0
+    
+    // 準備関数
+    override func setup() {
+        super.setup()
+        
+        // Metalを使うビューを作成してViewControllerに追加
+        metal_view = CAIMMetalView( frame: view.bounds )
+        self.view.addSubview( metal_view! )
+        
+        metal_view?.touchPressed = self.touchPressed
+        
+        setupAR()
+        setup3D()
+    }
+    
+    // ビューコントローラから去る時の処理
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ar_session?.pause()
+    }
     
     private func setup3D() {
         // シェーダを指定してパイプラインレンダラの作成
-        render_3d = CAIMMetalRenderer(vertname:"vert3dAR", fragname:"frag3dAR")
+        pipeline_3d.vertexShader = CAIMMetalShader( "vert3dAR" )
+        pipeline_3d.fragmentShader = CAIMMetalShader( "frag3dAR" )
         // 頂点ディスクリプタの設定
-        render_3d?.vertexDesc = CAIMMetalMesh.vertexDesc(at: ID_VERTEX)
-        // カリングの設定
-        render_3d?.culling = .front
-    }
-    
-    // 3D情報の描画
-    private func draw3D(on metalView:CAIMMetalView) {
-        guard instanceCount > 0 else { return }
-        
-        // パイプラインレンダラで描画開始
-        render_3d?.beginDrawing(on: metalView)
-        // テクスチャの読み込みと設定・サンプラの設定
-        render_3d?.linkFragmentSampler(CAIMMetalSampler.default, at: 0)
-        render_3d?.linkFragmentTexture(texture.metalTexture, at: 0)
-        
-        // 使用するバッファと番号をリンク(頂点シェーダ)
-        render_3d?.link(mesh.metalVertexBuffer, to:.vertex, at: ID_VERTEX)
-        render_3d?.link(sharedUniforms.metalBuffer, to:.vertex, at: ID_SHARED_UNIFORMS)
-        // 使用するバッファと番号をリンク(フラグメントシェーダ)
-        render_3d?.link(sharedUniforms.metalBuffer, to:.fragment, at: ID_SHARED_UNIFORMS)
-        
-        for i in 0 ..< instanceCount {
-            render_3d?.link(uniforms[i].metalBuffer, to:.vertex, at:ID_UNIFORMS)
-            // GPU描画実行
-            render_3d?.draw(mesh)
-        }
+        pipeline_3d.vertexDesc = CAIMMetalMesh.vertexDesc( at:0 )
     }
     
     //////
@@ -93,7 +88,7 @@ class DrawingViewController : CAIMMetalViewController, ARSessionDelegate
     
     func updateSharedUniforms(frame: ARFrame) {
         sharedUniforms.viewMatrix = frame.camera.viewMatrix(for: .portrait)
-        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait, viewportSize: CAIM.screenPoint, zNear: 0.001, zFar: 1000)
+        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait, viewportSize: metal_view!.bounds.size, zNear: 0.001, zFar: 1000)
         
         var ambientIntensity: Float = 1.0
         if let lightEstimate = frame.lightEstimate {
@@ -108,14 +103,14 @@ class DrawingViewController : CAIMMetalViewController, ARSessionDelegate
     
     func updateAnchors(frame: ARFrame) {
         // Update the anchor uniform buffer with transforms of the current frame's anchors
-        instanceCount = min(frame.anchors.count, kMaxAnchorInstanceCount)
+        instance_count = min(frame.anchors.count, kMaxAnchorinstance_count)
         
         var anchorOffset: Int = 0
-        if instanceCount == kMaxAnchorInstanceCount {
-            anchorOffset = max(frame.anchors.count - kMaxAnchorInstanceCount, 0)
+        if instance_count == kMaxAnchorinstance_count {
+            anchorOffset = max(frame.anchors.count - kMaxAnchorinstance_count, 0)
         }
         
-        for index in 0 ..< instanceCount {
+        for index in 0 ..< instance_count {
             let anchor = frame.anchors[index + anchorOffset]
             
             // Flip Z axis to convert geometry from right handed to left handed
@@ -128,40 +123,57 @@ class DrawingViewController : CAIMMetalViewController, ARSessionDelegate
         }
     }
     
-    /////////////////
-    // ビューコントローラから去る時の処理
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        ar_session?.pause()
-    }
-    
-    // 準備関数
-    override func setup() {
-        setupAR()
-        setup3D()
-    }
-    
     // 繰り返し処理関数
-    override func update(metalView:CAIMMetalView) {
+    override func update() {
         // ARフレームの取得
         guard let currentFrame = ar_session?.currentFrame else { return }
     
         // カメラキャプチャの更新と設定、描画
-        ar_capture?.checkTextures(viewController: self)
         ar_capture?.updateCapturedImageTextures(frame: currentFrame)
         ar_capture?.updateImagePlane(frame: currentFrame)
-        ar_capture?.drawCapturedImage(on: metalView)
-  
         // ARKitからの共通の変換行列を更新
         updateSharedUniforms(frame: currentFrame)
         // 各ARアンカーの変換行列を更新
         updateAnchors(frame: currentFrame)
-
-        // 3Dモデルの描画
-        draw3D(on:metalView)
+        
+        // MetalViewのレンダリングを実行
+        metal_view?.execute( renderFunc: self.render )
+        
+        // カメラデータのクリア
+        ar_capture?.clearTextures()
     }
     
-    override func touchPressed() {
+    // Metalで実際に描画を指示する関数
+    func render( encoder:MTLRenderCommandEncoder ) {
+        // ar_captureにエンコーダを渡して描画してもらう
+        ar_capture?.drawCapturedImage( encoder: encoder )
+        
+        encoder.setCullMode( .front )
+        // エンコーダにデプスの設定
+        let depth_desc2 = MTLDepthStencilDescriptor()
+        // デプスを有効にする
+        depth_desc2.depthCompareFunction = .less
+        depth_desc2.isDepthWriteEnabled = true
+        encoder.setDepthStencilDescriptor( depth_desc2 )
+        
+        // 準備したpipeline_3dを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
+        encoder.use( pipeline_3d ) {
+            guard instance_count > 0 else { return }
+            
+            $0.setFragmentSamplerState( CAIMMetalSampler.default, index:0 )
+            $0.setFragmentTexture( texture.metalTexture, index:0 )
+            $0.setFragmentBuffer( sharedUniforms, index: 1 )
+            
+            $0.setVertexBuffer( sharedUniforms, index: 1 )
+            
+            for i in 0 ..< instance_count {
+                $0.setVertexBuffer( uniforms[i], index: 2 )
+                $0.drawShape( mesh, index:0 )
+            }
+        }
+    }
+    
+    func touchPressed() {
         // Create anchor using the camera's current position
         if let currentFrame = ar_session?.currentFrame {
             // Create a transform with a translation of 0.2 meters in front of the camera

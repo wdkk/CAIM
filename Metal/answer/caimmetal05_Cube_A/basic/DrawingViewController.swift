@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+import simd
+
 // 1頂点情報の構造体
 struct Vertex {
     var pos:Float4 = Float4()
@@ -97,13 +99,13 @@ class DrawingViewController : CAIMViewController
         // 準備したpipeline_3dを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_3d ) {
             // 頂点シェーダのバッファ1番に行列uniformをセット
-            $0.setVertexBuffer( uniforms, at: 1 )
+            $0.setVertexBuffer( uniforms, index: 1 )
             // フラグメントシェーダのサンプラ0番にデフォルトのサンプラを設定
             $0.setFragmentSamplerState( CAIMMetalSampler.default, index: 0 )
             // フラグメントシェーダのテクスチャ0番にtextureを設定
             $0.setFragmentTexture( texture.metalTexture, index: 0 )
-            // モデルデータ群の描画実行(※バッファ0番に頂点情報が自動セットされる)
-            $0.drawShape( cubes )
+            // モデルデータ群の頂点をバッファ0番にセットして描画を実行
+            $0.drawShape( cubes, index: 0 )
         }
     }
 }

@@ -248,27 +248,3 @@ extension Matrix4x4 : CAIMMetalBufferAllocatable {
         return mat
     }
 }
-
-public func + ( left:Matrix4x4, right:Matrix4x4 ) -> Matrix4x4 {
-    return simd_add(left, right)
-}
-
-public func - ( left:Matrix4x4, right:Matrix4x4 ) -> Matrix4x4 {
-    return simd_sub(left, right)
-}
-
-public func * ( left:Matrix4x4, right:Matrix4x4 ) -> Matrix4x4 {
-    return simd_mul(left, right)
-}
-
-public func += ( left:Matrix4x4, right:Matrix4x4 ) -> Matrix4x4 {
-    return simd_add(left, right)
-}
-
-public func -= ( left:Matrix4x4, right:Matrix4x4 ) -> Matrix4x4 {
-    return simd_sub(left, right)
-}
-
-public func *= ( left:Matrix4x4, right:Matrix4x4 ) -> Matrix4x4 {
-    return simd_mul(left, right)
-}

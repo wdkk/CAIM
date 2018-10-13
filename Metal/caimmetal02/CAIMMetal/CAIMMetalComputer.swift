@@ -15,8 +15,7 @@ import Metal
 open class CAIMMetalComputer
 {
     private init() {}
-    
-    
+
     // Metalコマンドの開始(CAIMMetalComputerから呼び出せる簡易版。本体はCAIMMetal.execute)
     public static func execute(
                          preCompute:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },

@@ -17,20 +17,18 @@ import Metal
 
 public protocol CAIMMetalDrawable
 {
-    func draw( with encoder:MTLRenderCommandEncoder )
+    func draw( with encoder:MTLRenderCommandEncoder, index idx:Int )
 }
 // Metal向け形状メモリクラス
-public class CAIMMetalShape<T> : CAIMMemory4K, CAIMMetalDrawable
+public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
 {
     public var encoder:MTLRenderCommandEncoder?
     
     fileprivate var _buffer:CAIMMetalBufferBase?
     fileprivate var _type:CAIMMetalBufferType
-    fileprivate var _buffer_index:Int
     
-    public init( span:Int, count:Int, at index:Int, type:CAIMMetalBufferType = .alloc ) {
+    public init( span:Int, count:Int, type:CAIMMetalBufferType = .alloc ) {
         _type = type
-        _buffer_index = index
         super.init( span: span, count: count )
         _buffer = _type == .alloc ? CAIMMetalAllocatedBuffer( vertice: self ) : CAIMMetalSharedBuffer( vertice: self )
     }
@@ -44,16 +42,16 @@ public class CAIMMetalShape<T> : CAIMMemory4K, CAIMMetalDrawable
         return UnsafeMutablePointer<T>( OpaquePointer( self.pointer! ) )
     }
     
-    public func draw( with encoder:MTLRenderCommandEncoder ) {
-        encoder.setVertexBuffer( self.metalBuffer, at: _buffer_index )
+    public func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        encoder.setVertexBuffer( self.metalBuffer, index: idx )
     }
 }
 
 // 点メモリクラス
 public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 {
-    public init( count:Int = 0, at index:Int = 0, type:CAIMMetalBufferType = .alloc ) {
-        super.init(span: MemoryLayout<T>.stride * 1, count: count, at:index, type:type)
+    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init(span: MemoryLayout<T>.stride * 1, count: count, type:type)
     }
     
     public subscript(idx:Int) -> UnsafeMutablePointer<T> {
@@ -61,8 +59,8 @@ public class CAIMMetalPoints<T> : CAIMMetalShape<T>
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    public override func draw( with encoder:MTLRenderCommandEncoder ) {
-        super.draw( with:encoder )
+    public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        super.draw( with:encoder, index:idx )
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: count )
     }
 }
@@ -70,8 +68,8 @@ public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 // ライン形状メモリクラス
 public class CAIMMetalLines<T> : CAIMMetalShape<T>
 {
-    public init(count:Int = 0, at index:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.stride * 2, count: count, at:index, type: type)
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
+        super.init(span: MemoryLayout<T>.stride * 2, count: count, type: type)
     }
     
     public subscript(idx:Int) -> UnsafeMutablePointer<T> {
@@ -79,8 +77,8 @@ public class CAIMMetalLines<T> : CAIMMetalShape<T>
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
-    public override func draw( with encoder:MTLRenderCommandEncoder ) {
-        super.draw( with:encoder )
+    public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        super.draw( with:encoder, index: idx )
         encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * 2)
     }
 }
@@ -96,8 +94,8 @@ public struct CAIMMetalTriangleVertice<T> {
 // 三角形メッシュ形状メモリクラス
 public class CAIMMetalTriangles<T> : CAIMMetalShape<T>
 {
-    public init( count:Int = 0, at index:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init( span: MemoryLayout<T>.stride * 3, count: count, at:index, type: type )
+    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc) {
+        super.init( span: MemoryLayout<T>.stride * 3, count: count, type: type )
     }
     
     public subscript(idx:Int) -> CAIMMetalTriangleVertice<T> {
@@ -115,8 +113,8 @@ public class CAIMMetalTriangles<T> : CAIMMetalShape<T>
         }
     }
     
-    public override func draw( with encoder:MTLRenderCommandEncoder ) {
-        super.draw( with:encoder )
+    public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        super.draw( with:encoder, index:idx )
         encoder.drawPrimitives( type: .triangle, vertexStart: 0, vertexCount: count * 3 )
     }
 }
@@ -131,8 +129,8 @@ public struct CAIMMetalQuadrangleVertice<T> {
 // 四角形メッシュ形状メモリクラス
 public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
 {
-    public init(count:Int = 0, at index:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.stride * 4, count: count, at:index, type: type)
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
+        super.init(span: MemoryLayout<T>.stride * 4, count: count, type: type)
     }
     
     public subscript(idx:Int) -> CAIMMetalQuadrangleVertice<T> {
@@ -151,10 +149,95 @@ public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
         }
     }
     
-    public override func draw( with encoder:MTLRenderCommandEncoder ) {
-        super.draw( with:encoder )
+    public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        super.draw( with:encoder, index: idx )
         for i:Int in 0 ..< self.count {
             encoder.drawPrimitives( type: .triangleStrip, vertexStart: i*4, vertexCount: 4 )
+        }
+    }
+}
+
+// パネル型キューブメモリクラス
+public struct CAIMPanelCubeParam
+{
+    // パネルの向き
+    public enum PanelSide {
+        case front
+        case back
+        case left
+        case right
+        case top
+        case bottom
+    }
+    public var side:PanelSide = .front
+    var pos:Float4 = Float4()
+    var uv:Float2 = Float2()
+}
+
+public class CAIMCubes<T> : CAIMMetalShape<T>
+{
+    init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
+        super.init( span: MemoryLayout<T>.stride * 24, count: count, type:type )
+    }
+    
+    subscript(idx:Int) -> UnsafeMutablePointer<T> {
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 24))
+        return UnsafeMutablePointer<T>(opaqueptr)
+    }
+    
+    public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
+        super.draw( with:encoder, index:idx )
+        
+        // パネル1枚ずつ6枚で1キューブを描く
+        for j:Int in 0 ..< count {
+            for i:Int in 0 ..< 6 {
+                encoder.drawPrimitives(type: .triangleStrip, vertexStart: (i * 4) + (j * 24), vertexCount: 4)
+            }
+        }
+    }
+    
+    func set(idx:Int, pos:Float3, size:Float, iterator f: (Int,CAIMPanelCubeParam)->T) {
+        let cube = self[idx]
+        let sz = size / 2.0
+        let x = pos.x
+        let y = pos.y
+        let z = pos.z
+        
+        let v = [
+            // Front
+            CAIMPanelCubeParam(side: .front, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .front, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .front, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 0)),
+            // Back
+            CAIMPanelCubeParam(side: .back, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .back, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .back, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
+            // Left
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .left, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 0)),
+            // Right
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .right, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
+            // Top
+            CAIMPanelCubeParam(side: .top, pos: Float4(-sz+x, sz+y,-sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4( sz+x, sz+y,-sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .top, pos: Float4(-sz+x, sz+y, sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .top, pos: Float4( sz+x, sz+y, sz+z, 1.0), uv:Float2(1, 0)),
+            // Bottom
+            CAIMPanelCubeParam(side: .bottom, pos: Float4(-sz+x,-sz+y, sz+z, 1.0), uv:Float2(0, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4( sz+x,-sz+y, sz+z, 1.0), uv:Float2(1, 1)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4(-sz+x,-sz+y,-sz+z, 1.0), uv:Float2(0, 0)),
+            CAIMPanelCubeParam(side: .bottom, pos: Float4( sz+x,-sz+y,-sz+z, 1.0), uv:Float2(1, 0)),
+            ]
+        
+        for i:Int in 0 ..< 24 {
+            cube[i] = f(i, v[i])
         }
     }
 }

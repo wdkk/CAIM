@@ -11,4 +11,4 @@
 //
 
 #import "CAIMImageC.h"
-#import "CAIMMemoryC.h"
+#import "LCAlignedMemory.h"

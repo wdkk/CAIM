@@ -54,6 +54,7 @@ fragment float4 frag3d(VertexOut in [[ stage_in ]],
                       constant SharedUniform& shared_uniform [[ buffer(2) ]],
                       sampler tex_sampler [[ sampler(0) ]],
                       texture2d<half> diffuseTexture [[ texture(0) ]]) {
+    
     float lt = saturate(dot(in.normal, lightDirection));
     if (lt < 0.1) lt = 0.1;
     half4 color = diffuseTexture.sample(tex_sampler, float2(in.texcoord)) * lt;

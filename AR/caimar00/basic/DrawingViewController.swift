@@ -10,17 +10,12 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import UIKit
 import ARKit
 
 // The max number anchors our uniform buffer will hold
-let kMaxAnchorInstanceCount: Int = 64
-// バッファID番号
-let ID_VERTEX:Int = 0
-let ID_SHARED_UNIFORMS:Int = 1
-let ID_UNIFORMS:Int = 2
+let kMaxAnchorinstance_count: Int = 64
 
-struct SharedUniforms : CAIMBufferAllocatable {
+struct SharedUniforms : CAIMMetalBufferAllocatable {
     var projectionMatrix:Matrix4x4 = .identity
     var viewMatrix:Matrix4x4 = .identity
     // Lighting Properties
@@ -30,28 +25,41 @@ struct SharedUniforms : CAIMBufferAllocatable {
     var materialShininess:Float = 0.0
 }
 
-struct InstanceUniforms : CAIMBufferAllocatable {
+struct InstanceUniforms : CAIMMetalBufferAllocatable {
     var model:Matrix4x4 = .identity
 }
 
 // CAIM-Metalを使うビューコントローラ
-class DrawingViewController : CAIMMetalViewController, ARSessionDelegate
+class DrawingViewController : CAIMViewController, ARSessionDelegate
 {
-    private var render_3d:CAIMMetalRenderer?
+    private var metal_view:CAIMMetalView?       // Metalビュー
+    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
     
     private var uniforms:[InstanceUniforms] = [InstanceUniforms].init(repeating: InstanceUniforms(), count: 64)
-    private var mesh = CAIMMetalMesh(with:"realship.obj", at:ID_VERTEX)
+    private var mesh = CAIMMetalMesh(with:"realship.obj", at:0)
     private var texture:CAIMMetalTexture = CAIMMetalTexture(with:"shipDiffuse.png")
-    private var instanceCount: Int = 0
+    
+    /////////////////
+    // ビューコントローラから去る時の処理
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        ar_session?.pause()
+    }
+    
+    // 準備関数
+    override func setup() {
+        super.setup()
+        
+        // Metalを使うビューを作成してViewControllerに追加
+        metal_view = CAIMMetalView( frame: view.bounds )
+        self.view.addSubview( metal_view! )
+        
+        setupAR()
+        setup3D()
+    }
     
     private func setup3D() {
 
-    }
-    
-    // 3D情報の描画
-    private func draw3D(on metalView:CAIMMetalView) {
-        guard instanceCount > 0 else { return }
-        
     }
     
     //////
@@ -60,36 +68,58 @@ class DrawingViewController : CAIMMetalViewController, ARSessionDelegate
     var sharedUniforms:SharedUniforms = SharedUniforms()
     
     func setupAR() {
-
+        ar_session = ARSession()
+        ar_session?.delegate = self
+        
+        let configuration = ARWorldTrackingConfiguration()
+        ar_session?.run(configuration)
+        
+        ar_capture = CAIMARCapture(session: ar_session!)
     }
     
     func updateSharedUniforms(frame: ARFrame) {
-
+        sharedUniforms.viewMatrix = frame.camera.viewMatrix(for: .portrait)
+        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait, viewportSize: metal_view!.bounds.size, zNear: 0.001, zFar: 1000)
+        
+        var ambientIntensity: Float = 1.0
+        if let lightEstimate = frame.lightEstimate {
+            ambientIntensity = Float(lightEstimate.ambientIntensity) / 1000.0
+        }
+        
+        sharedUniforms.ambientLightColor = Float3(0.5, 0.5, 0.5) * ambientIntensity
+        sharedUniforms.directionalLightDirection = simd_normalize(Float3(0.0, 0.0, -1.0))
+        sharedUniforms.directionalLightColor = Float3(0.6, 0.6, 0.6) * ambientIntensity
+        sharedUniforms.materialShininess = 10
     }
     
     func updateAnchors(frame: ARFrame) {
 
     }
     
-    /////////////////
-    // ビューコントローラから去る時の処理
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-    }
-    
-    // 準備関数
-    override func setup() {
-
-    }
-    
     // 繰り返し処理関数
-    override func update(metalView:CAIMMetalView) {
-
+    override func update() {
+        // ARフレームの取得
+        guard let currentFrame = ar_session?.currentFrame else { return }
+        
+        // カメラキャプチャの更新と設定、描画
+        ar_capture?.updateCapturedImageTextures(frame: currentFrame)
+        ar_capture?.updateImagePlane(frame: currentFrame)
+        // ARKitからの共通の変換行列を更新
+        updateSharedUniforms(frame: currentFrame)
+        // 各ARアンカーの変換行列を更新
+        updateAnchors(frame: currentFrame)
+        
+        // MetalViewのレンダリングを実行
+        metal_view?.execute( renderFunc: self.render )
+        
+        // カメラデータのクリア
+        ar_capture?.clearTextures()
     }
     
-    override func touchPressed() {
-
+    // Metalで実際に描画を指示する関数
+    func render( encoder:MTLRenderCommandEncoder ) {
+        // ar_captureにエンコーダを渡して描画してもらう
+        ar_capture?.drawCapturedImage( encoder: encoder )
     }
 }
 
