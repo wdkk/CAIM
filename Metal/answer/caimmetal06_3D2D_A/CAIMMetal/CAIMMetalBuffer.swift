@@ -23,14 +23,14 @@ public enum CAIMMetalBufferType : Int
 
 public protocol CAIMMetalBufferBase
 {
-    var metalBuffer:MTLBuffer { get }
+    var metalBuffer:MTLBuffer? { get }
 }
 
 public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
 {
     private var _length:Int
     private var _mtlbuf:MTLBuffer?
-    public var metalBuffer:MTLBuffer { return _mtlbuf! }
+    public var metalBuffer:MTLBuffer? { return _mtlbuf }
     
     // 指定したオブジェクトのサイズで確保＆初期化
     public init<T>( _ obj:T ) {
@@ -72,13 +72,15 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
     
     public func update<T>( elements:[T] ) {
         let sz:Int = MemoryLayout<T>.stride * elements.count
-        if( _length != sz ) { _mtlbuf = self.allocate( sz ) }
+        if _length != sz { _mtlbuf = self.allocate( sz ) }
+        if sz == 0 { return }
         memcpy( _mtlbuf!.contents(), UnsafeMutablePointer( mutating: elements ), sz )
     }
     
     public func update( _ buf:UnsafeRawPointer, length:Int ) {
         let sz:Int = length
-        if( _length != sz ) { _mtlbuf = self.allocate( sz ) }
+        if _length != sz { _mtlbuf = self.allocate( sz ) }
+        if sz == 0 { return }
         memcpy( _mtlbuf!.contents(), buf, sz )
     }
     
@@ -89,12 +91,14 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
     }
     
     //// メモリ確保
-    private func allocate( _ buf:UnsafeRawPointer, length:Int ) -> MTLBuffer {
-        return CAIMMetal.device!.makeBuffer( bytes: buf, length: length, options: .storageModeShared )!
+    private func allocate( _ buf:UnsafeRawPointer, length:Int ) -> MTLBuffer? {
+        if length == 0 { return nil }
+        return CAIMMetal.device!.makeBuffer( bytes: buf, length: length, options: .storageModeShared )
     }
     
-    private func allocate( _ length:Int ) -> MTLBuffer {
-        return CAIMMetal.device!.makeBuffer( length: length, options: .storageModeShared )!
+    private func allocate( _ length:Int ) -> MTLBuffer? {
+        if length == 0 { return nil }
+        return CAIMMetal.device!.makeBuffer( length: length, options: .storageModeShared )
     }
 }
 
@@ -102,7 +106,7 @@ public class CAIMMetalSharedBuffer : CAIMMetalBufferBase
 {
     private var _length:Int
     private var _mtlbuf:MTLBuffer?
-    public var metalBuffer:MTLBuffer { return _mtlbuf! }
+    public var metalBuffer:MTLBuffer? { return _mtlbuf }
     
     // 指定したオブジェクト全体を共有して確保・初期化
     public init( vertice:LLAlignedMemory4K ) {

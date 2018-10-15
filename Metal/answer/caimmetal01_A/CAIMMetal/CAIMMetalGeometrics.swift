@@ -16,12 +16,12 @@ import simd
 // Metalバッファを出力できるようにするプロトコル
 public protocol CAIMMetalBufferAllocatable {
     #if os(macOS) || (os(iOS) && !arch(x86_64))
-    var metalBuffer:MTLBuffer { get }
+    var metalBuffer:MTLBuffer? { get }
     #endif
 }
 public extension CAIMMetalBufferAllocatable {
     #if os(macOS) || (os(iOS) && !arch(x86_64))
-    public var metalBuffer:MTLBuffer { return CAIMMetalAllocatedBuffer( self ).metalBuffer }
+    public var metalBuffer:MTLBuffer? { return CAIMMetalAllocatedBuffer( self ).metalBuffer }
     #endif
 }
 

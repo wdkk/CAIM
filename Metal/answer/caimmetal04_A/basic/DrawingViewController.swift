@@ -31,8 +31,8 @@ class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?                   // Metalビュー
     private var pipeline_circle:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()  // Metalレンダパイプライン
-    private var mat:Matrix4x4 = .identity                              // 変換行列
-    private var circles = CAIMMetalQuadrangles<Vertex>( count: 100 )   // 円用４頂点メッシュ群
+    private var mat:Matrix4x4 = .identity                            // 変換行列
+    private var circles = CAIMMetalQuadrangles<Vertex>()             // 円用４頂点メッシュ群
     
     // パーティクル情報配列
     private var circle_parts = [Particle]()     // 円用パーティクル情報
@@ -132,8 +132,8 @@ class DrawingViewController : CAIMViewController
         // 不要な円パーティクルの削除
         trashParticles( in: &circle_parts )
         
-        // パーティクル情報がない場合処理しない
-        if( circle_parts.count > 0 ) {
+        // パーティクル情報がない場合のみ描画処理を実行
+        if circle_parts.count > 0 {
             // パーティクル情報からメッシュ情報を更新
             genCirclesMesh( particles:circle_parts )
             // MetalViewのレンダリングを実行

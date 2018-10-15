@@ -16,7 +16,7 @@ import MetalKit
 public class CAIMMetalMesh : CAIMMetalDrawable
 {
     public var metalMesh: MTKMesh?
-    public var metalVertexBuffer:MTLBuffer { return metalMesh!.vertexBuffers[0].buffer }
+    public var metalVertexBuffer:MTLBuffer? { return metalMesh?.vertexBuffers[0].buffer }
  
     static func vertexDesc(at index:Int) -> MTLVertexDescriptor {
         let mtl_vertex = MTLVertexDescriptor()
@@ -86,7 +86,8 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     }
     
     public func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
-        encoder.setVertexBuffer( metalVertexBuffer, index: idx )
+        if metalVertexBuffer == nil { return }
+        encoder.setVertexBuffer( metalVertexBuffer!, index: idx )
         
         metalMesh?.submeshes.forEach {
             encoder.drawIndexedPrimitives(type: $0.primitiveType,

@@ -33,7 +33,7 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
         _buffer = _type == .alloc ? CAIMMetalAllocatedBuffer( vertice: self ) : CAIMMetalSharedBuffer( vertice: self )
     }
     
-    public var metalBuffer:MTLBuffer {
+    public var metalBuffer:MTLBuffer? {
         if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( self.pointer!, length: self.length ) }
         return _buffer!.metalBuffer
     }
@@ -43,7 +43,8 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
     }
     
     public func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
-        encoder.setVertexBuffer( self.metalBuffer, index: idx )
+        if self.metalBuffer == nil { return }
+        encoder.setVertexBuffer( self.metalBuffer!, index: idx )
     }
 }
 
