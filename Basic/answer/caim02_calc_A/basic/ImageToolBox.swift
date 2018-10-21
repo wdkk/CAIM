@@ -146,7 +146,7 @@ class ImageToolBox
                 let dx = Float(x-cx)
                 let dy = Float(y-cy)
                 let dist = sqrt(dx * dx + dy * dy)  // 中心との距離(単位はピクセル)
-                let cosv  = cos(dist/Float(wid/2) * Float(Double.pi*0.5)) // 画面の端でcos(0.5π)になるようにする
+                let cosv  = cos(dist/Float(wid/2) * Float.pi*0.5) // 画面の端でcos(0.5π)になるようにする
                 let alpha = min(1.0-cosv, 1.0)          // α = 1.0(cos0) ~ 0.0(cos0.5π)
                 
                 // C = A(1.0-α) + Bα

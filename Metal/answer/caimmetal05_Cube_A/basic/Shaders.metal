@@ -37,13 +37,13 @@ struct Uniforms {
 // 頂点シェーダー(透視投影変換)
 vertex VertexOut vertPers(device VertexIn *vin [[ buffer(0) ]],
                         constant Uniforms &uniforms [[ buffer(1) ]],
-                        uint vid [[vertex_id]])
+                        uint idx [[vertex_id]])
 {
     VertexOut vout;
     float4x4 matrix = uniforms.projection_matrix * uniforms.view_matrix * uniforms.model_matrix;
-    vout.pos = matrix * float4(vin[vid].pos);
-    vout.rgba = vin[vid].rgba;
-    vout.tex_coord = vin[vid].tex_coord;
+    vout.pos = matrix * float4(vin[idx].pos);
+    vout.rgba = vin[idx].rgba;
+    vout.tex_coord = vin[idx].tex_coord;
     
     return vout;
 }

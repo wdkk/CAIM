@@ -31,10 +31,12 @@ class DrawingViewController : CAIMViewController
    
     // 60FPSで繰り返し呼ばれる関数
     override func update() {
-        // タッチしているかどうかを判定 = view_all.touchPixelPos.countが1以上のときはタッチがある
-        if(view_all.touchPixelPos.count > 0) {
+        // タッチ数のカウントをcountにとる
+        let count:Int = view_all.touchPixelPos.count
+        // タッチしているかどうかを判定 => countが1以上のときはタッチがある
+        if count > 0 {
             // タッチしている指の数分繰り返す
-            for i in 0 ..< view_all.touchPixelPos.count {
+            for i in 0 ..< count {
                 // i本目の指のタッチ位置のピクセル座標posを取得
                 let pos = view_all.touchPixelPos[i]
                 // posの位置に薄い赤円を描く

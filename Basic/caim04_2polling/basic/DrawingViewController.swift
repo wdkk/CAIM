@@ -32,7 +32,6 @@ class DrawingViewController : CAIMViewController
     // 60FPSで繰り返し呼ばれる関数
     override func update() {
      
-    
     }
 }
 

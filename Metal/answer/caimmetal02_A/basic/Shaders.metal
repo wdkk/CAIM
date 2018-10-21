@@ -31,13 +31,13 @@ struct VertexOut {
 // 頂点シェーダー(2Dピクセル座標系へ変換)
 vertex VertexOut vert2d(device VertexIn *vin [[ buffer(0) ]],
                         constant float4x4 &proj_matrix [[ buffer(1) ]],
-                        uint vid [[vertex_id]])
+                        uint idx [[vertex_id]])
 {
     VertexOut vout;
     // float2に、z=0,w=1を追加 → float4を作成し、行列を使って座標変換
-    vout.pos  = proj_matrix * float4(vin[vid].pos, 0, 1);
-    vout.uv   = vin[vid].uv;
-    vout.rgba = vin[vid].rgba;
+    vout.pos  = proj_matrix * float4(vin[idx].pos, 0, 1);
+    vout.uv   = vin[idx].uv;
+    vout.rgba = vin[idx].rgba;
     return vout;
 }
 
