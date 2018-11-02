@@ -2,11 +2,8 @@
 // LCAlignedMemory.cxx
 // Lily Library
 //
-// Copyright(c) 2017- Watanabe-DENKI Inc.
+// Copyright (c) 2017- Watanabe-DENKI Inc.
 //   https://wdkk.co.jp/
-//
-// Reference:
-//   http://koturn.hatenablog.com/entry/2016/08/12/010000
 //
 
 #include "LCAlignedMemory.h"

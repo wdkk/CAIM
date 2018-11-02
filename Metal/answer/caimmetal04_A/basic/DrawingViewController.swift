@@ -74,8 +74,6 @@ class DrawingViewController : CAIMViewController
         for i in 0 ..< particles.count {
             // パーティクルのライフを減らす(60FPSで1.5秒間保つようにする)
             particles[i].life -= 1.0 / (1.5 * 60.0)
-            // ライフが0は下回らないようにする
-            particles[i].life = max( 0.0, particles[i].life )
         }
     }
     
