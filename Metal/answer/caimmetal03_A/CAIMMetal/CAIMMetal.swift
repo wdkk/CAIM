@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import Foundation
 import Metal
 
@@ -44,3 +46,5 @@ open class CAIMMetal
         post( command_buffer )
     }
 }
+
+#endif

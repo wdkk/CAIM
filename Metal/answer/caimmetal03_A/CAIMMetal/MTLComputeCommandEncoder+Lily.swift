@@ -10,9 +10,10 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import Foundation
-
 #if os(macOS) || (os(iOS) && !arch(x86_64))
+
+import Foundation
+import Metal
 
 extension MTLComputeCommandEncoder
 {

@@ -49,7 +49,7 @@ public class CAIMView : CAIMBaseView
         // parameter of CAIMImage
         let wid:Int = image.width
         let hgt:Int = image.height
-        let mem:UnsafeMutablePointer<UInt8> = image.pointer
+        let mem = image.memory
         
         // 画像データがない場合、サイズが変更された場合のみメモリを確保する
         if(buf == nil || wid != bufwid || hgt != bufhgt) {

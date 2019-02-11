@@ -10,7 +10,7 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import simd
+import Metal
 
 // 1頂点情報の構造体
 struct Vertex {

@@ -5,6 +5,7 @@
 // Copyright (c) 2017- Watanabe-DENKI Inc.
 //   https://wdkk.co.jp/
 //
+
 import Foundation
 
 // アラインメントを考慮したメモリクラス

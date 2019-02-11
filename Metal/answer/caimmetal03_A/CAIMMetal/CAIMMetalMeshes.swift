@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import Metal
 import MetalKit
 
@@ -99,5 +101,4 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     }
 }
 
-
-
+#endif
