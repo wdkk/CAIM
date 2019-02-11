@@ -10,5 +10,4 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-#import "CAIMImageC.h"
 #import "LCAlignedMemory.h"

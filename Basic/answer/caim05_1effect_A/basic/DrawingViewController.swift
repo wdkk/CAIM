@@ -101,6 +101,7 @@ class DrawingViewController : CAIMViewController
         
         // 画像が更新されている可能性があるので、view_allを再描画して結果を表示
         view_all.redraw()
+
     }
 }
 
