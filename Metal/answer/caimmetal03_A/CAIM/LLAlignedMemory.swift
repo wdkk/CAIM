@@ -8,138 +8,159 @@
 
 import Foundation
 
-// アラインメントを考慮したメモリクラス
-public class LLAlignedMemory4K {
-    fileprivate var _mem:LCAlignedMemory4KPtr?
-    public fileprivate(set) var span:Int = 1
-    public fileprivate(set) var length:Int = 0
-    public fileprivate(set) var count:Int = 0
+public class LLAlignedAllocator {
+    fileprivate var _memory:UnsafeMutableRawPointer?
+    public var pointer:UnsafeMutableRawPointer? { return _memory }
     
-    public init(span:Int, count:Int = 0) {
-        _mem = LCAlignedMemory4KNew()
-        self.span = span
-        self.resize(count: count)
+    public private(set) var alignment:Int
+    public private(set) var length:Int
+    public private(set) var allocatedLength:Int
+    
+    // アラインメントを含んだメモリ確保量を計算
+    private func calcAlignedSize( length:Int ) -> Int {
+        let mod = length % alignment
+        return length + ( mod > 0 ? alignment - mod : 0 )
     }
     
-    deinit { LCAlignedMemory4KDelete(_mem) }
-    
-    // C実装オブジェクトの取得
-    public var memoryc:LCAlignedMemory4KPtr? { return _mem }
-    
-    // ポインタ(オブジェクト型)の取得
-    public fileprivate(set) var pointer:UnsafeMutableRawPointer?
-    
-    // ポインタの更新
-    private func updatePointer() {
-        let cptr = LCAlignedMemory4KPointer(_mem)
-        let opaqueptr = OpaquePointer(cptr)
-        self.pointer = UnsafeMutableRawPointer(opaqueptr)
+    // メモリの確保
+    private func allocate( length:Int ) {
+        if( length == 0 ) {
+            self.length = 0
+            self.allocatedLength = 0
+            _memory?.deallocate()
+            _memory = nil
+            return
+        }
+        
+        if( calcAlignedSize( length: length ) <= self.allocatedLength ) { return }
+        
+        let copy_length = min( self.length, length )
+        self.length = length
+        self.allocatedLength = calcAlignedSize( length: self.length )
+        let tmp_memory = UnsafeMutableRawPointer.allocate( byteCount: self.allocatedLength, alignment: alignment )
+        if _memory != nil {
+            memcpy( tmp_memory, _memory, copy_length )
+            _memory?.deallocate()
+            _memory = nil
+        }
+        _memory = tmp_memory
     }
     
-    // アラインメント含め確保したメモリ容量
-    public var allocatedCapacity:Int { return LCAlignedMemory4KCapacity(_mem) }
-    // アラインメント含め確保したメモリサイズ
-    public var allocatedLength:Int { return LCAlignedMemory4KLength(_mem) }
-  
-    // メモリのクリア
-    public func clear() { self.resize(count: 0) }
-    
-    // メモリのリサイズ
-    public func resize(count:Int) {
-        self.count  = count
-        self.length = count * self.span
-        LCAlignedMemory4KResize(_mem, self.length)
-        LCAlignedMemory4KReserve(_mem, self.length)
-        self.updatePointer()
+    public init( alignment:Int, length:Int ) {
+        self.alignment = alignment
+        self.length = 0
+        self.allocatedLength = 0
+        allocate( length: length )
     }
     
-    // メモリの追加
-    public func append(_ src:LLAlignedMemory4K) {
-        self.count  += src.count
-        self.length += src.length
-        LCAlignedMemory4KAppend(_mem, src._mem)
-        self.updatePointer()
+    deinit {
+        clear()
     }
-    // メモリの追加
-    public func append<T>(_ element:T) {
-        self.count  += 1
-        self.length += MemoryLayout<T>.size
-        LCAlignedMemory4KAppendC(_mem, UnsafeMutablePointer<T>(mutating:[element]), MemoryLayout<T>.size)
-        self.updatePointer()
+    
+    public func resize( length:Int ) {
+        allocate( length: length )
     }
-    // メモリの追加
-    public func append<T>(_ elements:[T]) {
-        self.count  += 1
-        self.length += MemoryLayout<T>.size * elements.count
-        LCAlignedMemory4KAppendC(_mem, UnsafeMutablePointer<T>(mutating:elements), MemoryLayout<T>.size * elements.count)
-        self.updatePointer()
+    
+    public func clear() {
+        allocate( length: 0 )
+    }
+    
+    private func appendAllocate( length newleng:Int ) {
+        // もし余分も含めてオーバーした場合メモリの再確保
+        if( self.allocatedLength < calcAlignedSize( length: newleng ) ) {
+            allocate( length: newleng )
+        }
+    }
+
+    public func append<T>( _ element: T ) {
+        let add_length = MemoryLayout<T>.stride
+        let new_length = self.length + add_length
+        let last_ptr = self.length
+        
+        appendAllocate( length: new_length )
+        memcpy( _memory! + last_ptr, UnsafeMutablePointer<T>(mutating:[element]), add_length )
+    }
+    
+    public func append<T>( _ elements:[T] ) {
+        let add_length = MemoryLayout<T>.stride * elements.count
+        let new_length = self.length + add_length
+        let last_ptr = self.length
+        
+        appendAllocate( length: new_length )
+        memcpy( _memory! + last_ptr, UnsafeMutablePointer<T>(mutating:elements), add_length )
     }
 }
 
 // アラインメントを考慮したメモリクラス
-public class LLAlignedMemory16 {
-    fileprivate var _mem:LCAlignedMemory16Ptr?
-    public fileprivate(set) var span:Int = 1
-    public fileprivate(set) var length:Int = 0
-    public fileprivate(set) var count:Int = 0
+public class LLAlignedMemory4K<T> {
+    fileprivate var _allocator:LLAlignedAllocator?
+    public private(set) var count:Int = 0
+    public private(set) var unit:Int = 0
     
-    public init(span:Int, count:Int = 0) {
-        _mem = LCAlignedMemory16New()
-        self.span = span
-        self.resize(count: count)
+    public var length:Int { return _allocator!.length }
+    public var allocatedLength:Int { return _allocator!.allocatedLength }
+    public var pointer:UnsafeMutableRawPointer? { return _allocator?.pointer }
+    
+    public init( unit:Int, count:Int = 0 ) {
+        _allocator = LLAlignedAllocator( alignment: 4096, length: 0 )
+        self.unit = unit
+        self.resize( count: count )
     }
-    
-    deinit { LCAlignedMemory16Delete(_mem) }
-    
-    // C実装オブジェクトの取得
-    public var memoryc:LCAlignedMemory16Ptr? { return _mem }
-    
-    // ポインタ(オブジェクト型)の取得
-    public fileprivate(set) var pointer:UnsafeMutableRawPointer?
-    
-    // ポインタの更新
-    private func updatePointer() {
-        let cptr = LCAlignedMemory16Pointer(_mem)
-        let opaqueptr = OpaquePointer(cptr)
-        self.pointer = UnsafeMutableRawPointer(opaqueptr)
-    }
-    
-    // アラインメント含め確保したメモリ容量
-    public var allocatedCapacity:Int { return LCAlignedMemory16Capacity(_mem) }
-    // アラインメント含め確保したメモリサイズ
-    public var allocatedLength:Int { return LCAlignedMemory16Length(_mem) }
     
     // メモリのクリア
-    public func clear() { self.resize(count: 0) }
+    public func clear() { _allocator?.clear() }
     
     // メモリのリサイズ
-    public func resize(count:Int) {
-        self.count  = count
-        self.length = count * self.span
-        LCAlignedMemory16Resize(_mem, self.length)
-        LCAlignedMemory16Reserve(_mem, self.length)
-        self.updatePointer()
+    public func resize( count:Int ) {
+        self.count = count
+        _allocator?.resize( length: count * MemoryLayout<T>.stride * unit )
     }
     
     // メモリの追加
-    public func append(_ src:LLAlignedMemory16) {
-        self.count  += src.count
-        self.length += src.length
-        LCAlignedMemory16Append(_mem, src._mem)
-        self.updatePointer()
+    public func append( _ element:T ) {
+        self.count += 1
+        _allocator?.append( element )
     }
     // メモリの追加
-    public func append<T>(_ element:T) {
-        self.count  += 1
-        self.length += MemoryLayout<T>.size
-        LCAlignedMemory16AppendC(_mem, UnsafeMutablePointer<T>(mutating:[element]), MemoryLayout<T>.size)
-        self.updatePointer()
+    public func append( _ elements:[T] ) {
+        self.count += elements.count
+        _allocator?.append( elements )
+    }
+}
+
+// アラインメントを考慮したメモリクラス
+public class LLAlignedMemory16<T> {
+    fileprivate var _allocator:LLAlignedAllocator?
+    public private(set) var count:Int = 0
+    public private(set) var unit:Int = 0
+    
+    public var length:Int { return _allocator!.length }
+    public var allocatedLength:Int { return _allocator!.allocatedLength }
+    public var pointer:UnsafeMutableRawPointer? { return _allocator?.pointer }
+    
+    public init( unit:Int, count:Int = 0 ) {
+        _allocator = LLAlignedAllocator( alignment: 16, length: 0 )
+        self.unit = unit
+        self.resize( count: count )
+    }
+    
+    // メモリのクリア
+    public func clear() { _allocator?.clear() }
+    
+    // メモリのリサイズ
+    public func resize( count:Int ) {
+        self.count  = count
+        _allocator?.resize( length: count * MemoryLayout<T>.stride * unit )
+    }
+    
+    // メモリの追加
+    public func append( _ element:T ) {
+        self.count += 1
+        _allocator?.append( element )
     }
     // メモリの追加
-    public func append<T>(_ elements:[T]) {
-        self.count  += 1
-        self.length += MemoryLayout<T>.size * elements.count
-        LCAlignedMemory16AppendC(_mem, UnsafeMutablePointer<T>(mutating:elements), MemoryLayout<T>.size * elements.count)
-        self.updatePointer()
+    public func append( _ elements:[T] ) {
+        self.count += elements.count
+        _allocator?.append( elements )
     }
 }

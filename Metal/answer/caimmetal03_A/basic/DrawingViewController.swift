@@ -185,7 +185,7 @@ class DrawingViewController : CAIMViewController
     // 繰り返し処理関数
     override func update() {
         super.update()
-        
+
         // 円情報の更新
         updateCircles()
         // 円情報で頂点メッシュ情報を更新
@@ -202,6 +202,7 @@ class DrawingViewController : CAIMViewController
     
     // Metalで実際に描画を指示する関数
     func render( encoder:MTLRenderCommandEncoder ) {
+      
         // 準備したpipeline_circleを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_circle ) {
             // 頂点シェーダのバッファ1番に行列matをセット
