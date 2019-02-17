@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import MetalKit
 import Metal
 
@@ -82,3 +84,5 @@ public extension CAIMMetalVertexFormatter {
         return desc
     }
 }
+
+#endif

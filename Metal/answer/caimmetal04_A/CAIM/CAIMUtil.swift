@@ -10,8 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-
 import Foundation
+import UIKit
 
 // init()を必ず持つようにするためのプロトコル
 protocol Initializable

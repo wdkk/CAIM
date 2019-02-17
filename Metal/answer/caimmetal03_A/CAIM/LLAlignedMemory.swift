@@ -72,22 +72,11 @@ public class LLAlignedAllocator {
         }
     }
 
-    public func append<T>( _ element: T ) {
-        let add_length = MemoryLayout<T>.stride
+    public func append( _ buf:UnsafeMutableRawPointer, length add_length:Int ) {
         let new_length = self.length + add_length
         let last_ptr = self.length
-        
         appendAllocate( length: new_length )
-        memcpy( _memory! + last_ptr, UnsafeMutablePointer<T>(mutating:[element]), add_length )
-    }
-    
-    public func append<T>( _ elements:[T] ) {
-        let add_length = MemoryLayout<T>.stride * elements.count
-        let new_length = self.length + add_length
-        let last_ptr = self.length
-        
-        appendAllocate( length: new_length )
-        memcpy( _memory! + last_ptr, UnsafeMutablePointer<T>(mutating:elements), add_length )
+        memcpy( _memory! + last_ptr, buf, add_length )
     }
 }
 
@@ -119,12 +108,14 @@ public class LLAlignedMemory4K<T> {
     // メモリの追加
     public func append( _ element:T ) {
         self.count += 1
-        _allocator?.append( element )
+        let ptr = unsafeBitCast( element, to: UnsafeMutableRawPointer.self )
+        _allocator?.append( ptr, length: MemoryLayout<T>.stride )
     }
     // メモリの追加
     public func append( _ elements:[T] ) {
         self.count += elements.count
-        _allocator?.append( elements )
+        let ptr = unsafeBitCast( elements, to: UnsafeMutableRawPointer.self )
+        _allocator?.append( ptr, length: MemoryLayout<T>.stride * elements.count )
     }
 }
 
@@ -156,11 +147,14 @@ public class LLAlignedMemory16<T> {
     // メモリの追加
     public func append( _ element:T ) {
         self.count += 1
-        _allocator?.append( element )
+        let ptr = unsafeBitCast( element, to: UnsafeMutableRawPointer.self )
+        _allocator?.append( ptr, length: MemoryLayout<T>.stride )
     }
+    
     // メモリの追加
     public func append( _ elements:[T] ) {
         self.count += elements.count
-        _allocator?.append( elements )
+        let ptr = unsafeBitCast( elements, to: UnsafeMutableRawPointer.self )
+        _allocator?.append( ptr, length: MemoryLayout<T>.stride * elements.count )
     }
 }

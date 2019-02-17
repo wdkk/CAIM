@@ -15,26 +15,26 @@
 import Foundation
 import Metal
 
+// Metal描画プロトコル
 public protocol CAIMMetalDrawable
 {
     func draw( with encoder:MTLRenderCommandEncoder, index idx:Int )
 }
+
 // Metal向け形状メモリクラス
-public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
+public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
 {
-    public var encoder:MTLRenderCommandEncoder?
-    
     fileprivate var _buffer:CAIMMetalBufferBase?
     fileprivate var _type:CAIMMetalBufferType
     
-    public init( span:Int, count:Int, type:CAIMMetalBufferType = .alloc ) {
+    public init( unit:Int, count:Int, type:CAIMMetalBufferType = .alloc ) {
         _type = type
-        super.init( span: span, count: count )
+        super.init( unit:unit, count: count )
         _buffer = _type == .alloc ? CAIMMetalAllocatedBuffer( vertice: self ) : CAIMMetalSharedBuffer( vertice: self )
     }
     
     public var metalBuffer:MTLBuffer? {
-        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( self.pointer!, length: self.length ) }
+        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( self.pointer, length: self.length ) }
         return _buffer!.metalBuffer
     }
     
@@ -51,8 +51,8 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
 // 点メモリクラス
 public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 {
-    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
-        super.init(span: MemoryLayout<T>.stride * 1, count: count, type:type)
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit:1, count: count, type: type )
     }
     
     public subscript(idx:Int) -> UnsafeMutablePointer<T> {
@@ -69,12 +69,12 @@ public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 // ライン形状メモリクラス
 public class CAIMMetalLines<T> : CAIMMetalShape<T>
 {
-    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.stride * 2, count: count, type: type)
+    public init(count:Int = 0, type: CAIMMetalBufferType = .alloc ) {
+        super.init( unit: 2, count: count, type: type )
     }
     
     public subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 2))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 2) )
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     
@@ -95,8 +95,8 @@ public struct CAIMMetalTriangleVertice<T> {
 // 三角形メッシュ形状メモリクラス
 public class CAIMMetalTriangles<T> : CAIMMetalShape<T>
 {
-    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init( span: MemoryLayout<T>.stride * 3, count: count, type: type )
+    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit:3, count: count, type: type )
     }
     
     public subscript(idx:Int) -> CAIMMetalTriangleVertice<T> {
@@ -130,8 +130,8 @@ public struct CAIMMetalQuadrangleVertice<T> {
 // 四角形メッシュ形状メモリクラス
 public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
 {
-    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.stride * 4, count: count, type: type)
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit: 4, count: count, type: type )
     }
     
     public subscript(idx:Int) -> CAIMMetalQuadrangleVertice<T> {
@@ -177,8 +177,8 @@ public struct CAIMPanelCubeParam
 
 public class CAIMCubes<T> : CAIMMetalShape<T>
 {
-    init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init( span: MemoryLayout<T>.stride * 24, count: count, type:type )
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit:24, count: count, type: type )
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {

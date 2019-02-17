@@ -10,7 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
-import simd
+import Metal
+import QuartzCore
 
 // 頂点情報の構造体
 struct Vertex {
@@ -116,7 +117,7 @@ class DrawingViewController : CAIMViewController
         super.update()
         
         // タッチ位置にパーティクル発生
-        for pos:CGPoint in metal_view!.touchPixelPos {
+        for pos in metal_view!.touchPixelPos {
             // 新しいパーティクルを生成
             let p = genParticle(pos: pos,
                                 color: CAIMColor(CAIM.random(), CAIM.random(), CAIM.random(), CAIM.random()),

@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import Metal
 
 open class CAIMMetalComputePipeline
@@ -30,3 +32,5 @@ open class CAIMMetalComputePipeline
         }
     }
 }
+
+#endif

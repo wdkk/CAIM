@@ -10,6 +10,8 @@
 //   http://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import MetalKit
 
 public class CAIMMetalTexture {
@@ -36,3 +38,4 @@ public class CAIMMetalTexture {
     }
 }
 
+#endif
