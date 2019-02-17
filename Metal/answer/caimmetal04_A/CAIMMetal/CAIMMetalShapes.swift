@@ -34,8 +34,9 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
     }
     
     public var metalBuffer:MTLBuffer? {
-        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( self.pointer, length: self.length ) }
-        return _buffer!.metalBuffer
+        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( vertice: self ) }
+        else if( _type == .shared ) { ( _buffer as! CAIMMetalSharedBuffer).update( vertice: self ) }
+        return _buffer?.metalBuffer
     }
     
     public var memory:UnsafeMutablePointer<T> {

@@ -84,6 +84,12 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
         if sz == 0 { return }
         memcpy( _mtlbuf!.contents(), buf, sz )
     }
+
+    public func update<T>( vertice:LLAlignedMemory4K<T> ) {
+        let sz:Int = vertice.allocatedLength
+        if( _length != sz ) { _mtlbuf = self.allocate( sz ) }
+        memcpy( _mtlbuf!.contents(), vertice.pointer, sz )
+    }
     
     public func update<T>( vertice:LLAlignedMemory16<T> ) {
         let sz:Int = vertice.allocatedLength
@@ -113,10 +119,10 @@ public class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     // 指定したオブジェクト全体を共有して確保・初期化
     public init<T>( vertice:LLAlignedMemory4K<T> ) {
         _length = vertice.allocatedLength
-        _mtlbuf = self.nocopy( vertice.pointer!, length:_length )
+        if( _length == 0 ) { _mtlbuf = nil }
+        else { _mtlbuf = self.nocopy( vertice.pointer!, length:_length ) }
     }
     
-    // 更新関数は何もしない
     public func update<T>( vertice:LLAlignedMemory4K<T> ) {
         _mtlbuf = self.nocopy( vertice.pointer!, length: vertice.allocatedLength )
     }

@@ -47,8 +47,18 @@ public class LLAlignedAllocator {
         else {
             _memory = UnsafeMutableRawPointer.allocate( byteCount: self.allocatedLength, alignment: alignment )
         }
-        
-        print( "\(self.length), \(self.allocatedLength)" )
+    }
+    
+    // メモリの追加
+    private func allocateAppending( length newleng:Int ) {
+        let new_aligned_length = calcAlignedSize( length: newleng )
+        // もし余分も含めてオーバーした場合メモリの再確保
+        var next_length = self.allocatedLength
+        while(true) {
+            if( new_aligned_length <= next_length ) { break }
+            next_length *= 2
+        }
+        allocate( length: next_length )
     }
     
     public init( alignment:Int, length:Int ) {
@@ -70,21 +80,10 @@ public class LLAlignedAllocator {
         allocate( length: 0 )
     }
     
-    private func appendAllocate( length newleng:Int ) {
-        let new_aligned_length = calcAlignedSize( length: newleng )
-        // もし余分も含めてオーバーした場合メモリの再確保
-        var next_length = self.allocatedLength
-        while(true) {
-            if( new_aligned_length <= next_length ) { break }
-            next_length *= 2
-        }
-        allocate( length: next_length )
-    }
-
     public func append( _ buf:UnsafeRawPointer, length add_length:Int ) {
         let new_length = self.length + add_length
         let last_ptr = self.length
-        appendAllocate( length: new_length )
+        allocateAppending( length: new_length )
         memcpy( _memory! + last_ptr, buf, add_length )
     }
 }

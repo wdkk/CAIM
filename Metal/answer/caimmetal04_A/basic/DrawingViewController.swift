@@ -32,8 +32,8 @@ class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?                   // Metalビュー
     private var pipeline_circle:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()  // Metalレンダパイプライン
-    private var mat:Matrix4x4 = .identity                            // 変換行列
-    private var circles = CAIMMetalQuadrangles<Vertex>()             // 円用４頂点メッシュ群
+    private var mat:Matrix4x4 = .identity                        // 変換行列
+    private var circles = CAIMMetalQuadrangles<Vertex>()         // 円用４頂点メッシュ群
     
     // パーティクル情報配列
     private var circle_parts = [Particle]()     // 円用パーティクル情報
