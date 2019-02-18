@@ -43,6 +43,7 @@ fragment float4 fragStandard(VertexOut vout [[ stage_in ]]) {
     return vout.rgba;
 }
 
+// コンピュートシェーダー関数
 kernel void kernelTest( const device VertexIn *in [[ buffer(0) ]],
                         device VertexIn *out [[ buffer(1) ]],
                         uint group_pos [[ threadgroup_position_in_grid ]],
@@ -51,6 +52,7 @@ kernel void kernelTest( const device VertexIn *in [[ buffer(0) ]],
                        )
 {
     uint idx = (group_pos * threads_per_threadgroup + thread_pos);
+    // 座標値を２倍にする
     out[idx].pos = in[idx].pos * 2.0;
     out[idx].rgba = in[idx].rgba;
 }

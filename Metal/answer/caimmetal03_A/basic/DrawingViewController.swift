@@ -31,8 +31,8 @@ class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
 
-    private var pipeline_circle:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
-    private var pipeline_ring:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
+    private var pipeline_circle = CAIMMetalRenderPipeline()
+    private var pipeline_ring = CAIMMetalRenderPipeline()
     
     private var mat:Matrix4x4 = .identity                         // 変換行列
     private var circles = CAIMMetalQuadrangles<Vertex>( count: 100 )   // 円用４頂点メッシュ群
@@ -60,9 +60,12 @@ class DrawingViewController : CAIMViewController
     
     // 円描画の準備関数
     private func setupCircles() {
-        // シェーダを指定してパイプラインレンダラの作成
-        pipeline_circle.vertexShader = CAIMMetalShader( "vert2d" )
-        pipeline_circle.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        // パイプラインの作成($0 = パイプライン設定オブジェクト)
+        pipeline_circle.make {
+            // シェーダの指定
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            $0.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        }
         
         // 円のパーティクル情報配列を作る
         let wid = Float( metal_view!.pixelBounds.width )
@@ -81,9 +84,12 @@ class DrawingViewController : CAIMViewController
     
     // リング描画の準備関数
     private func setupRings() {
-        // リング用のレンダラの作成
-        pipeline_ring.vertexShader = CAIMMetalShader( "vert2d" )
-        pipeline_ring.fragmentShader = CAIMMetalShader( "fragRing" )
+        // リング用パイプラインの作成($0 = パイプライン設定オブジェクト)
+        pipeline_ring.make {
+            // シェーダの指定
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            $0.fragmentShader = CAIMMetalShader( "fragRing" )
+        }
         
         // リング用のパーティクル情報を作る
         let wid = Float( metal_view!.pixelBounds.width )
@@ -202,7 +208,6 @@ class DrawingViewController : CAIMViewController
     
     // Metalで実際に描画を指示する関数
     func render( encoder:MTLRenderCommandEncoder ) {
-      
         // 準備したpipeline_circleを使って、描画を開始(クロージャの$0は引数省略表記。$0 = encoder)
         encoder.use( pipeline_circle ) {
             // 頂点シェーダのバッファ1番に行列matをセット

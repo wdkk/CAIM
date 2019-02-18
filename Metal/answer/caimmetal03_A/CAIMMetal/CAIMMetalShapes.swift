@@ -57,13 +57,20 @@ public class CAIMMetalPoints<T> : CAIMMetalShape<T>
     }
     
     public subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 1))
-        return UnsafeMutablePointer<T>(opaqueptr)
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * self.unit ) )
+        return UnsafeMutablePointer<T>( opaqueptr )
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index:idx )
         encoder.drawPrimitives(type: .point, vertexStart: 0, vertexCount: count )
+    }
+}
+
+public struct CAIMMetalLineVertice<T> {
+    public var p1:T, p2:T
+    public init( _ p1:T, _ p2:T ) {
+        self.p1 = p1; self.p2 = p2
     }
 }
 
@@ -74,14 +81,20 @@ public class CAIMMetalLines<T> : CAIMMetalShape<T>
         super.init( unit: 2, count: count, type: type )
     }
     
-    public subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 2) )
-        return UnsafeMutablePointer<T>(opaqueptr)
+    public subscript(idx:Int) -> CAIMMetalLineVertice<T> {
+        get {
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            return UnsafeMutablePointer<CAIMMetalLineVertice<T>>( opaqueptr )[0]
+        }
+        set {
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            UnsafeMutablePointer<CAIMMetalLineVertice<T>>( opaqueptr )[0] = newValue
+        }
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index: idx )
-        encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * 2)
+        encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * self.unit )
     }
 }
 
@@ -102,22 +115,18 @@ public class CAIMMetalTriangles<T> : CAIMMetalShape<T>
     
     public subscript(idx:Int) -> CAIMMetalTriangleVertice<T> {
         get {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 3) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            return CAIMMetalTriangleVertice<T>( t_ptr[0], t_ptr[1], t_ptr[2] )
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            return UnsafeMutablePointer<CAIMMetalTriangleVertice<T>>( opaqueptr )[0]
         }
         set {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 3) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            t_ptr[0] = newValue.p1
-            t_ptr[1] = newValue.p2
-            t_ptr[2] = newValue.p3
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            UnsafeMutablePointer<CAIMMetalTriangleVertice<T>>( opaqueptr )[0] = newValue
         }
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index:idx )
-        encoder.drawPrimitives( type: .triangle, vertexStart: 0, vertexCount: count * 3 )
+        encoder.drawPrimitives( type: .triangle, vertexStart: 0, vertexCount: count * self.unit )
     }
 }
 
@@ -137,24 +146,19 @@ public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
     
     public subscript(idx:Int) -> CAIMMetalQuadrangleVertice<T> {
         get {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 4) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            return CAIMMetalQuadrangleVertice<T>( t_ptr[0], t_ptr[1], t_ptr[2], t_ptr[3] )
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            return UnsafeMutablePointer<CAIMMetalQuadrangleVertice<T>>( opaqueptr )[0]
         }
         set {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 4) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            t_ptr[0] = newValue.p1
-            t_ptr[1] = newValue.p2
-            t_ptr[2] = newValue.p3
-            t_ptr[3] = newValue.p4
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            UnsafeMutablePointer<CAIMMetalQuadrangleVertice<T>>( opaqueptr )[0] = newValue
         }
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index: idx )
         for i:Int in 0 ..< self.count {
-            encoder.drawPrimitives( type: .triangleStrip, vertexStart: i*4, vertexCount: 4 )
+            encoder.drawPrimitives( type: .triangleStrip, vertexStart: i * self.unit, vertexCount: self.unit )
         }
     }
 }
@@ -183,7 +187,7 @@ public class CAIMCubes<T> : CAIMMetalShape<T>
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 24))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * self.unit))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     

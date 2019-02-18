@@ -54,9 +54,12 @@ class DrawingViewController : CAIMViewController
     
     // 円描画シェーダの準備関数
     private func setupCircleEffect() {
-        // シェーダを指定してパイプラインレンダラの作成
-        pipeline_circle.vertexShader = CAIMMetalShader( "vert2d" )
-        pipeline_circle.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        // パイプラインの作成
+        pipeline_circle.make {
+            // シェーダを指定
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            $0.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        }
     }
     
     // パーティクルを生成する関数

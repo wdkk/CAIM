@@ -44,15 +44,13 @@ extension MTLRenderCommandEncoder
     
     // MARK: - pipeline function
     public func use( _ pipeline:CAIMMetalRenderPipeline, _ drawFunc:( MTLRenderCommandEncoder )->() ) {
-        // パイプラインを準備
-        pipeline.readyPipeline()
         // エンコーダにパイプラインを指定
         self.setRenderPipelineState( pipeline.state! )
         // 描画関数を実行
         drawFunc( self )
     }
     
-    public func drawShape( _ shape:CAIMMetalDrawable, index idx:Int=0 ) {
+    public func drawShape( _ shape:CAIMMetalDrawable, index idx:Int = 0 ) {
         shape.draw( with:self, index:idx )
     }
     

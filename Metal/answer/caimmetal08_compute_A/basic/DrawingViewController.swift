@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import simd
 
 // 1頂点情報の構造体
@@ -38,21 +39,30 @@ class DrawingViewController : CAIMViewController
         metal_view = CAIMMetalView( frame: view.bounds )
         self.view.addSubview( metal_view! )
         
-        // パイプラインで使用する頂点シェーダを設定
-        pipeline.vertexShader = CAIMMetalShader( "vert2d" )
-        // パイプラインで使用するフラグメントシェーダを設定
-        pipeline.fragmentShader = CAIMMetalShader( "fragStandard" )
+        // レンダパイプラインを作成
+        pipeline.make {
+            // シェーダを指定
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            $0.fragmentShader = CAIMMetalShader( "fragStandard" )
+        }
         
-        pl_compute.computeShader = CAIMMetalShader( "kernelTest" )
+        // コンピュートパイプラインを作成
+        pl_compute.make {
+            // シェーダを指定
+            $0.computeShader = CAIMMetalShader( "kernelTest" )
+        }
         
         // 形状データを作成する関数を呼ぶ
         makeShapes()
     
         // MetalViewのレンダリングを実行
         metal_view?.execute(
+            // 描画前事前処理
             preRenderFunc: { command_buffer in
+                // コンピュートシェーダを処理
                 CAIMMetalComputer.beginCompute( commandBuffer: command_buffer, compute: self.compute )
             },
+            // 描画処理
             renderFunc: self.render )
     }
     
@@ -97,9 +107,10 @@ class DrawingViewController : CAIMViewController
         }
     }
 
-    // Metalで実際に描画を指示する関数
+    // コンピュートシェーダの実行
     func compute( encoder:MTLComputeCommandEncoder ) {
         encoder.use( pl_compute ) {
+            // 三角形の頂点バッファを処理する(座標値が２倍になる -> Shaders.metal: kernelTest関数を参照)
             $0.setBuffer( tris, index:0 )
             $0.setBuffer( tris2, index:1 )
             $0.dispatch( dataCount:tris2.count * 3 )

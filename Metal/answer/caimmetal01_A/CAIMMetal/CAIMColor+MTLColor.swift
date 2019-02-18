@@ -1,5 +1,5 @@
 //
-// CAIMColor+CAIMMetalColor.swift
+// CAIMColor+MTLColor.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
 //

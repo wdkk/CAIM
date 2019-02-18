@@ -53,14 +53,14 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
         _mtlbuf = self.allocate( buf, length: _length )
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化
-    public init( vertice:LLAlignedMemory16 ) {
+    public init<T>( vertice:LLAlignedMemory16<T> ) {
         _length = vertice.allocatedLength
-        _mtlbuf = self.allocate( vertice.pointer!, length:_length )
+        _mtlbuf = self.allocate( vertice.pointer, length:_length )
     }
     // 指定した頂点プールの内容とサイズで確保＆初期化(4Kアラインメントデータ)
-    public init( vertice:LLAlignedMemory4K ) {
+    public init<T>( vertice:LLAlignedMemory4K<T> ) {
         _length = vertice.allocatedLength
-        _mtlbuf = self.allocate( vertice.pointer!, length:_length )
+        _mtlbuf = self.allocate( vertice.pointer, length:_length )
     }
     
     // 更新
@@ -77,23 +77,31 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
         memcpy( _mtlbuf!.contents(), UnsafeMutablePointer( mutating: elements ), sz )
     }
     
-    public func update( _ buf:UnsafeRawPointer, length:Int ) {
+    public func update( _ buf:UnsafeRawPointer?, length:Int ) {
         let sz:Int = length
         if _length != sz { _mtlbuf = self.allocate( sz ) }
+        if buf == nil { return }
         if sz == 0 { return }
         memcpy( _mtlbuf!.contents(), buf, sz )
     }
+
+    public func update<T>( vertice:LLAlignedMemory4K<T> ) {
+        let sz:Int = vertice.allocatedLength
+        if( _length != sz ) { _mtlbuf = self.allocate( sz ) }
+        memcpy( _mtlbuf!.contents(), vertice.pointer, sz )
+    }
     
-    public func update( vertice:LLAlignedMemory16 ) {
+    public func update<T>( vertice:LLAlignedMemory16<T> ) {
         let sz:Int = vertice.allocatedLength
         if( _length != sz ) { _mtlbuf = self.allocate( sz ) }
         memcpy( _mtlbuf!.contents(), vertice.pointer, sz )
     }
     
     //// メモリ確保
-    private func allocate( _ buf:UnsafeRawPointer, length:Int ) -> MTLBuffer? {
+    private func allocate( _ buf:UnsafeRawPointer?, length:Int ) -> MTLBuffer? {
         if length == 0 { return nil }
-        return CAIMMetal.device!.makeBuffer( bytes: buf, length: length, options: .storageModeShared )
+        if buf == nil { return nil }
+        return CAIMMetal.device!.makeBuffer( bytes: buf!, length: length, options: .storageModeShared )
     }
     
     private func allocate( _ length:Int ) -> MTLBuffer? {
@@ -109,13 +117,13 @@ public class CAIMMetalSharedBuffer : CAIMMetalBufferBase
     public var metalBuffer:MTLBuffer? { return _mtlbuf }
     
     // 指定したオブジェクト全体を共有して確保・初期化
-    public init( vertice:LLAlignedMemory4K ) {
+    public init<T>( vertice:LLAlignedMemory4K<T> ) {
         _length = vertice.allocatedLength
-        _mtlbuf = self.nocopy( vertice.pointer!, length:_length )
+        if( _length == 0 ) { _mtlbuf = nil }
+        else { _mtlbuf = self.nocopy( vertice.pointer!, length:_length ) }
     }
     
-    // 更新関数は何もしない
-    public func update( vertice:LLAlignedMemory4K ) {
+    public func update<T>( vertice:LLAlignedMemory4K<T> ) {
         _mtlbuf = self.nocopy( vertice.pointer!, length: vertice.allocatedLength )
     }
     

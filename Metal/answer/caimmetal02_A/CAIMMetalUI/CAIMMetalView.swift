@@ -15,6 +15,10 @@
 import Metal
 import QuartzCore
 
+#if os(iOS)
+import UIKit
+#endif
+
 public class CAIMMetalView: CAIMBaseView, CAIMMetalViewProtocol
 {
     // UI

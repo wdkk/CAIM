@@ -11,6 +11,8 @@
 //
 
 import Foundation
+import CoreGraphics
+import Metal
 import simd
 
 // Metalバッファを出力できるようにするプロトコル

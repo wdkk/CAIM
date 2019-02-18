@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import simd
 
 // 1頂点情報の構造体
@@ -34,10 +35,13 @@ class DrawingViewController : CAIMViewController
         metal_view = CAIMMetalView( frame: view.bounds )
         self.view.addSubview( metal_view! )
         
-        // レンダパイプラインで使用する頂点シェーダを設定
-        pipeline.vertexShader = CAIMMetalShader( "vert2d" )
-        // レンダパイプラインで使用するフラグメントシェーダを設定
-        pipeline.fragmentShader = CAIMMetalShader( "fragRing" )
+        // パイプラインの作成($0 = パイプライン設定オブジェクト)
+        pipeline.make {
+            // 頂点シェーダの指定
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            // フラグメントシェーダの指定
+            $0.fragmentShader = CAIMMetalShader( "fragRing" )
+        }
         
         // 形状データを作成する関数を呼ぶ
         makeShapes()

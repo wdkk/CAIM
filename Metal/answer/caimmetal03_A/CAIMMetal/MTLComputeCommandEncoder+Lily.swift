@@ -33,8 +33,6 @@ extension MTLComputeCommandEncoder
     
     // MARK: - pipeline function
     public func use( _ pipeline:CAIMMetalComputePipeline, _ computeFunc:( MTLComputeCommandEncoder )->() ) {
-        // パイプラインを準備
-        pipeline.readyPipeline()
         // エンコーダにパイプラインを指定
         self.setComputePipelineState( pipeline.state! )
         // 関数を実行

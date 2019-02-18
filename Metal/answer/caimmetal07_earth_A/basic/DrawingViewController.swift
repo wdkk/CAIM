@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import simd
 
 // 1頂点情報の構造体(VertexDescriptorを使うため、CAIMMetalVertexFormatterプロトコルを使用する)
@@ -37,11 +38,11 @@ class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
     
-    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
+    private var pipeline_3d = CAIMMetalRenderPipeline()
     private var shared_uniform = SharedUniform()
     private var uniform = Uniform()
     private var mesh = CAIMMetalMesh.sphere(at: 0)
-    private var texture:CAIMMetalTexture = CAIMMetalTexture(with:"earth.jpg")
+    private var texture = CAIMMetalTexture(with:"earth.jpg")
     
     // 準備関数
     override func setup() {
@@ -56,13 +57,17 @@ class DrawingViewController : CAIMViewController
     }
     
     private func setup3D() {
-        // シェーダを指定してパイプライン作成
-        pipeline_3d.vertexShader = CAIMMetalShader( "vert3d" )
-        pipeline_3d.fragmentShader = CAIMMetalShader( "frag3d" )
-        // 頂点をどのように使うのかを設定
-        pipeline_3d.vertexDesc = CAIMMetalMesh.vertexDesc( at: 0 )
-        // カリングの設定
-        pipeline_3d.blendType = .alphaBlend
+        // パイプライン作成
+        pipeline_3d.make {
+            // シェーダを指定
+            $0.vertexShader = CAIMMetalShader( "vert3d" )
+            $0.fragmentShader = CAIMMetalShader( "frag3d" )
+            // 頂点をどのように使うのかを設定
+            $0.vertexDesc = CAIMMetalMesh.defaultVertexDesc( at: 0 )
+            // 合成設定
+            $0.colorAttachment.composite(type: .alphaBlend )
+        }
+ 
     }
     
     // 繰り返し処理関数

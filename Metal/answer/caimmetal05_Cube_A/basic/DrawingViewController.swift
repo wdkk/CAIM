@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import simd
 
 // 1頂点情報の構造体
@@ -29,10 +30,10 @@ class DrawingViewController : CAIMViewController
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
     
-    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
-    private var uniforms:Uniforms = Uniforms()   // 行列群
-    private let texture:CAIMMetalTexture = CAIMMetalTexture(with:"LilyNoAlpha.png")
-    private var cubes = CAIMCubes<Vertex>(count: 1)
+    private var pipeline_3d = CAIMMetalRenderPipeline()
+    private var uniforms = Uniforms()   // 行列群
+    private let texture = CAIMMetalTexture( with:"LilyNoAlpha.png" )
+    private var cubes = CAIMCubes<Vertex>( count: 1 )
     
     // 準備関数
     override func setup() {
@@ -55,9 +56,12 @@ class DrawingViewController : CAIMViewController
     }
     
     private func setup3D() {
-        // シェーダを指定してパイプライン作成
-        pipeline_3d.vertexShader = CAIMMetalShader( "vertPers" )
-        pipeline_3d.fragmentShader = CAIMMetalShader( "fragStandard" )
+        // パイプラインを作成
+        pipeline_3d.make {
+            // シェーダを指定
+            $0.vertexShader = CAIMMetalShader( "vertPers" )
+            $0.fragmentShader = CAIMMetalShader( "fragStandard" )
+        }
         
         let red   = CAIMColor(1, 0, 0, 1).float4
         let green = CAIMColor(0, 1, 0, 1).float4
