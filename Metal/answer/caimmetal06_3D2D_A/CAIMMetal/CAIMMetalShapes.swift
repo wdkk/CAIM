@@ -1,13 +1,13 @@
 //
 //  CAIMMetalShapes.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 #if os(macOS) || (os(iOS) && !arch(x86_64))
@@ -15,27 +15,28 @@
 import Foundation
 import Metal
 
+// Metal描画プロトコル
 public protocol CAIMMetalDrawable
 {
     func draw( with encoder:MTLRenderCommandEncoder, index idx:Int )
 }
+
 // Metal向け形状メモリクラス
-public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
+public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
 {
-    public var encoder:MTLRenderCommandEncoder?
-    
     fileprivate var _buffer:CAIMMetalBufferBase?
     fileprivate var _type:CAIMMetalBufferType
     
-    public init( span:Int, count:Int, type:CAIMMetalBufferType = .alloc ) {
+    public init( unit:Int, count:Int, type:CAIMMetalBufferType = .alloc ) {
         _type = type
-        super.init( span: span, count: count )
+        super.init( unit:unit, count: count )
         _buffer = _type == .alloc ? CAIMMetalAllocatedBuffer( vertice: self ) : CAIMMetalSharedBuffer( vertice: self )
     }
     
     public var metalBuffer:MTLBuffer? {
-        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( self.pointer!, length: self.length ) }
-        return _buffer!.metalBuffer
+        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( vertice: self ) }
+        else if( _type == .shared ) { ( _buffer as! CAIMMetalSharedBuffer).update( vertice: self ) }
+        return _buffer?.metalBuffer
     }
     
     public var memory:UnsafeMutablePointer<T> {
@@ -51,13 +52,13 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K, CAIMMetalDrawable
 // 点メモリクラス
 public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 {
-    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
-        super.init(span: MemoryLayout<T>.stride * 1, count: count, type:type)
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit:1, count: count, type: type )
     }
     
     public subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 1))
-        return UnsafeMutablePointer<T>(opaqueptr)
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * self.unit ) )
+        return UnsafeMutablePointer<T>( opaqueptr )
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
@@ -66,21 +67,34 @@ public class CAIMMetalPoints<T> : CAIMMetalShape<T>
     }
 }
 
+public struct CAIMMetalLineVertice<T> {
+    public var p1:T, p2:T
+    public init( _ p1:T, _ p2:T ) {
+        self.p1 = p1; self.p2 = p2
+    }
+}
+
 // ライン形状メモリクラス
 public class CAIMMetalLines<T> : CAIMMetalShape<T>
 {
-    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.stride * 2, count: count, type: type)
+    public init(count:Int = 0, type: CAIMMetalBufferType = .alloc ) {
+        super.init( unit: 2, count: count, type: type )
     }
     
-    public subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 2))
-        return UnsafeMutablePointer<T>(opaqueptr)
+    public subscript(idx:Int) -> CAIMMetalLineVertice<T> {
+        get {
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            return UnsafeMutablePointer<CAIMMetalLineVertice<T>>( opaqueptr )[0]
+        }
+        set {
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            UnsafeMutablePointer<CAIMMetalLineVertice<T>>( opaqueptr )[0] = newValue
+        }
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index: idx )
-        encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * 2)
+        encoder.drawPrimitives(type: .line, vertexStart: 0, vertexCount: count * self.unit )
     }
 }
 
@@ -95,28 +109,24 @@ public struct CAIMMetalTriangleVertice<T> {
 // 三角形メッシュ形状メモリクラス
 public class CAIMMetalTriangles<T> : CAIMMetalShape<T>
 {
-    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init( span: MemoryLayout<T>.stride * 3, count: count, type: type )
+    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit:3, count: count, type: type )
     }
     
     public subscript(idx:Int) -> CAIMMetalTriangleVertice<T> {
         get {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 3) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            return CAIMMetalTriangleVertice<T>( t_ptr[0], t_ptr[1], t_ptr[2] )
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            return UnsafeMutablePointer<CAIMMetalTriangleVertice<T>>( opaqueptr )[0]
         }
         set {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 3) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            t_ptr[0] = newValue.p1
-            t_ptr[1] = newValue.p2
-            t_ptr[2] = newValue.p3
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            UnsafeMutablePointer<CAIMMetalTriangleVertice<T>>( opaqueptr )[0] = newValue
         }
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index:idx )
-        encoder.drawPrimitives( type: .triangle, vertexStart: 0, vertexCount: count * 3 )
+        encoder.drawPrimitives( type: .triangle, vertexStart: 0, vertexCount: count * self.unit )
     }
 }
 
@@ -130,30 +140,25 @@ public struct CAIMMetalQuadrangleVertice<T> {
 // 四角形メッシュ形状メモリクラス
 public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
 {
-    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init(span: MemoryLayout<T>.stride * 4, count: count, type: type)
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit: 4, count: count, type: type )
     }
     
     public subscript(idx:Int) -> CAIMMetalQuadrangleVertice<T> {
         get {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 4) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            return CAIMMetalQuadrangleVertice<T>( t_ptr[0], t_ptr[1], t_ptr[2], t_ptr[3] )
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            return UnsafeMutablePointer<CAIMMetalQuadrangleVertice<T>>( opaqueptr )[0]
         }
         set {
-            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * 4) )
-            let t_ptr = UnsafeMutablePointer<T>( opaqueptr )
-            t_ptr[0] = newValue.p1
-            t_ptr[1] = newValue.p2
-            t_ptr[2] = newValue.p3
-            t_ptr[3] = newValue.p4
+            let opaqueptr = OpaquePointer( self.pointer! + (idx * MemoryLayout<T>.stride * self.unit) )
+            UnsafeMutablePointer<CAIMMetalQuadrangleVertice<T>>( opaqueptr )[0] = newValue
         }
     }
     
     public override func draw( with encoder:MTLRenderCommandEncoder, index idx:Int ) {
         super.draw( with:encoder, index: idx )
         for i:Int in 0 ..< self.count {
-            encoder.drawPrimitives( type: .triangleStrip, vertexStart: i*4, vertexCount: 4 )
+            encoder.drawPrimitives( type: .triangleStrip, vertexStart: i * self.unit, vertexCount: self.unit )
         }
     }
 }
@@ -177,12 +182,12 @@ public struct CAIMPanelCubeParam
 
 public class CAIMCubes<T> : CAIMMetalShape<T>
 {
-    init(count:Int = 0, type:CAIMMetalBufferType = .alloc) {
-        super.init( span: MemoryLayout<T>.stride * 24, count: count, type:type )
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
+        super.init( unit:24, count: count, type: type )
     }
     
     subscript(idx:Int) -> UnsafeMutablePointer<T> {
-        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * 24))
+        let opaqueptr = OpaquePointer(self.pointer! + (idx * MemoryLayout<T>.stride * self.unit))
         return UnsafeMutablePointer<T>(opaqueptr)
     }
     

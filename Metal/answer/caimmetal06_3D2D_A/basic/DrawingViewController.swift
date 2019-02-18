@@ -1,15 +1,16 @@
 //
 // DrawingViewController.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import simd
 
 // 1頂点情報の構造体(VertexDescriptorを使うため、CAIMMetalVertexFormatterプロトコルを使用する)
@@ -51,13 +52,13 @@ class DrawingViewController : CAIMViewController
     private var uniform = Uniform()
     private var shared_uniform = SharedUniform()
     private var mesh = CAIMMetalMesh( with:"realship.obj", at:0 )
-    private var texture:CAIMMetalTexture = CAIMMetalTexture( with:"shipDiffuse.png")
+    private var texture = CAIMMetalTexture( with:"shipDiffuse.png" )
   
-    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
-    private var pipeline_circle:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
-    private var pipeline_ring:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
+    private var pipeline_3d = CAIMMetalRenderPipeline()
+    private var pipeline_circle = CAIMMetalRenderPipeline()
+    private var pipeline_ring = CAIMMetalRenderPipeline()
     
-    private var mat:Matrix4x4 = .identity                                   // 変換行列
+    private var mat:Matrix4x4 = .identity                               // 変換行列
     private var circles = CAIMMetalQuadrangles<Vertex>(count: 100 )     // 円用４頂点メッシュ群
     private var rings = CAIMMetalQuadrangles<Vertex>(count: 100 )       // リング用４頂点メッシュ群
     
@@ -83,20 +84,26 @@ class DrawingViewController : CAIMViewController
     
     
     private func setup3D() {
-        // シェーダを指定してパイプライン作成
-        pipeline_3d.vertexShader = CAIMMetalShader( "vert3d" )
-        pipeline_3d.fragmentShader = CAIMMetalShader( "frag3d" )
-        // 頂点をどのように使うのかを設定
-        pipeline_3d.vertexDesc = CAIMMetalMesh.vertexDesc( at: 0 )
-        // パイプラインのアルファ設定を無効にする
-        pipeline_3d.blendType = .none
+        // パイプライン作成
+        pipeline_3d.make {
+            // シェーダを指定
+            $0.vertexShader = CAIMMetalShader( "vert3d" )
+            $0.fragmentShader = CAIMMetalShader( "frag3d" )
+            // 頂点をどのように使うのかを設定
+            $0.vertexDesc = CAIMMetalMesh.defaultVertexDesc( at: 0 )
+            // パイプラインのアルファ設定を無効にする
+            $0.colorAttachment.composite( type: .none )
+        }
     }
     
     // 円描画の準備関数
     private func setupCircles() {
-        // シェーダを指定してパイプラインレンダラの作成
-        pipeline_circle.vertexShader = CAIMMetalShader( "vert2d" )
-        pipeline_circle.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        // パイプライン作成
+        pipeline_circle.make {
+            // シェーダを指定
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            $0.fragmentShader = CAIMMetalShader( "fragCircleCosCurve" )
+        }
         
         // 円のパーティクル情報配列を作る
         let wid = Float( metal_view!.pixelBounds.width )
@@ -115,9 +122,11 @@ class DrawingViewController : CAIMViewController
     
     // リング描画の準備関数
     private func setupRings() {
-        // リング用のレンダラの作成
-        pipeline_ring.vertexShader = CAIMMetalShader( "vert2d" )
-        pipeline_ring.fragmentShader = CAIMMetalShader( "fragRing" )
+        // リング用のパイプライン作成
+        pipeline_ring.make {
+            $0.vertexShader = CAIMMetalShader( "vert2d" )
+            $0.fragmentShader = CAIMMetalShader( "fragRing" )
+        }
         
         // リング用のパーティクル情報を作る
         let wid = Float( metal_view!.pixelBounds.width )
@@ -143,7 +152,7 @@ class DrawingViewController : CAIMViewController
             // パーティクルのライフを減らす(3秒間)
             circle_parts[i].life -= 1.0 / (3.0 * 60.0)
             // ライフが0以下になったら、新たなパーティクル情報を設定する
-            if( circle_parts[i].life <= 0.0 ) {
+            if circle_parts[i].life <= 0.0 {
                 circle_parts[i].pos = Float2( CAIM.random(wid), CAIM.random(hgt) )
                 circle_parts[i].rgba = CAIMColor(CAIM.random(), CAIM.random(), CAIM.random(), CAIM.random())
                 circle_parts[i].radius = CAIM.random(100.0)
@@ -184,7 +193,7 @@ class DrawingViewController : CAIMViewController
             // パーティクルのライフを減らす(3秒間)
             ring_parts[i].life -= 1.0 / (3.0 * 60.0)
             // ライフが0以下になったら、新たなパーティクル情報を設定する
-            if(ring_parts[i].life <= 0.0) {
+            if ring_parts[i].life <= 0.0 {
                 ring_parts[i].pos = Float2(CAIM.random(wid), CAIM.random(hgt))
                 ring_parts[i].rgba = CAIMColor(CAIM.random(), CAIM.random(), CAIM.random(), CAIM.random())
                 ring_parts[i].radius = CAIM.random(100.0)

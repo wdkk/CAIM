@@ -1,14 +1,16 @@
 //
 // CAIMMetalMeshes.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
+
+#if os(macOS) || (os(iOS) && !arch(x86_64))
 
 import Metal
 import MetalKit
@@ -18,7 +20,7 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     public var metalMesh: MTKMesh?
     public var metalVertexBuffer:MTLBuffer? { return metalMesh?.vertexBuffers[0].buffer }
  
-    static func vertexDesc(at index:Int) -> MTLVertexDescriptor {
+    static func defaultVertexDesc( at index:Int ) -> MTLVertexDescriptor {
         let mtl_vertex = MTLVertexDescriptor()
         mtl_vertex.attributes[0].format = .float3
         mtl_vertex.attributes[0].offset = 0
@@ -47,7 +49,7 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     }
     
     private func load(with path: String, at index:Int = 0, addNormal add_normal:Bool, normalThreshold normal_threshold:Float) -> MTKMesh {
-        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal( CAIMMetalMesh.vertexDesc(at:index) )
+        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal( CAIMMetalMesh.defaultVertexDesc(at:index) )
         (modelDescriptor3D.attributes[0] as! MDLVertexAttribute).name = MDLVertexAttributePosition
         (modelDescriptor3D.attributes[1] as! MDLVertexAttribute).name = MDLVertexAttributeNormal
         (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
@@ -74,7 +76,7 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     }
     
     private func makeSphere(at index:Int) -> MTKMesh {
-        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal( CAIMMetalMesh.vertexDesc(at:index) )
+        let modelDescriptor3D = MTKModelIOVertexDescriptorFromMetal( CAIMMetalMesh.defaultVertexDesc( at:index ) )
         (modelDescriptor3D.attributes[0] as! MDLVertexAttribute).name = MDLVertexAttributePosition
         (modelDescriptor3D.attributes[1] as! MDLVertexAttribute).name = MDLVertexAttributeNormal
         (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
@@ -99,5 +101,4 @@ public class CAIMMetalMesh : CAIMMetalDrawable
     }
 }
 
-
-
+#endif

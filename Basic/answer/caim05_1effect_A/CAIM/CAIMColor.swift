@@ -1,13 +1,13 @@
 //
 // CAIMColor+CAIM.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 import Foundation
@@ -15,6 +15,10 @@ import Foundation
 public struct CAIMColor {
     var R, G, B, A:Float
 
+    init() {
+        self.R = 0.0; self.G = 0.0; self.B = 0.0; self.A = 1.0;
+    }
+    
     init(R:Float, G:Float, B:Float, A:Float) {
         self.R = R; self.G = G; self.B = B; self.A = A;
     }

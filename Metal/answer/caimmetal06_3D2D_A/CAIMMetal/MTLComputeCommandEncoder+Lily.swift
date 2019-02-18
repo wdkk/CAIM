@@ -1,18 +1,19 @@
 //
 // MTLRenderCommandEncoder+Lily.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
-import Foundation
-
 #if os(macOS) || (os(iOS) && !arch(x86_64))
+
+import Foundation
+import Metal
 
 extension MTLComputeCommandEncoder
 {
@@ -32,8 +33,6 @@ extension MTLComputeCommandEncoder
     
     // MARK: - pipeline function
     public func use( _ pipeline:CAIMMetalComputePipeline, _ computeFunc:( MTLComputeCommandEncoder )->() ) {
-        // パイプラインを準備
-        pipeline.readyPipeline()
         // エンコーダにパイプラインを指定
         self.setComputePipelineState( pipeline.state! )
         // 関数を実行

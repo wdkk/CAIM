@@ -3,7 +3,7 @@ CAIM Project
 
 The MIT License (MIT)
 
-Copyright (c) 2015- Watanabe-DENKI Inc.　(http://wdkk.co.jp/)
+Copyright (c) 2015- Watanabe-DENKI Inc.　(https://wdkk.co.jp/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@ THE SOFTWARE.
 
 ----
 The MIT License
-Copyright (c) 2015- 渡辺電気株式会社 (http://wdkk.co.jp/)
+Copyright (c) 2015- 渡辺電気株式会社 (https://wdkk.co.jp/)
 
 以下に定める条件に従い、本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）の複製を取得するすべての人に対し、
 ソフトウェアを無制限に扱うことを無償で許可します。これには、ソフトウェアの複製を使用、複写、変更、結合、掲載、頒布、

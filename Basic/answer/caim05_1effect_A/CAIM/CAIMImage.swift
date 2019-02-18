@@ -1,13 +1,13 @@
 //
 // CAIMImage.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 import Foundation
@@ -49,7 +49,7 @@ class CAIMImage
         self.scale       = Float( UIScreen.main.scale )
         
         self.memory      = CAIMBytePtr( OpaquePointer( malloc( all_size ) ) )
-        self.matrix      = CAIMColorMatrix( OpaquePointer( malloc( height * MemoryLayout<CAIMColorPtr>.size ) ) )
+        self.matrix      = CAIMColorMatrix( OpaquePointer( malloc( height * MemoryLayout<CAIMColorPtr>.stride ) ) )
         
         treatArray()
     }
@@ -99,7 +99,7 @@ class CAIMImage
         self.scale       = Float( UIScreen.main.scale )
         
         self.memory      = CAIMBytePtr( OpaquePointer( malloc( all_size ) ) )
-        self.matrix      = CAIMColorMatrix( OpaquePointer( malloc( hgt * MemoryLayout<CAIMColorPtr>.size ) ) )
+        self.matrix      = CAIMColorMatrix( OpaquePointer( malloc( hgt * MemoryLayout<CAIMColorPtr>.stride ) ) )
         
         treatArray()
     }
@@ -141,11 +141,11 @@ class CAIMImage
     
     func fillColor( _ c:CAIMColor ) {
         var color = c
-        memsetex( self.memory, &color, MemoryLayout<CAIMColor>.size, self.width * self.height )
+        memsetex( self.memory, &color, MemoryLayout<CAIMColor>.stride, self.width * self.height )
     }
     
     private func treatArray() {
-        let step = width * self.channel * MemoryLayout<Float>.size
+        let step = width * self.channel * MemoryLayout<Float>.stride
         
         let mat = self.matrix
         for y in 0 ..< height {

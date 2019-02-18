@@ -1,13 +1,13 @@
 //
 // CAIMMetalRenderPipeline.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 #if os(macOS) || (os(iOS) && !arch(x86_64))
@@ -27,70 +27,84 @@ public struct CAIMMetalDepthState
     var depthFormat:MTLPixelFormat = .depth32Float_stencil8
 }
 
+public extension MTLRenderPipelineColorAttachmentDescriptor {
+    public func composite( type:CAIMMetalBlendType ) {
+        switch( type ) {
+        case .none:
+            self.isBlendingEnabled = false
+            break
+        case .alphaBlend:
+            self.isBlendingEnabled = true
+            // 2値の加算方法
+            self.rgbBlendOperation           = .add
+            self.alphaBlendOperation         = .add
+            // 入力データ = α
+            self.sourceRGBBlendFactor        = .sourceAlpha
+            self.sourceAlphaBlendFactor      = .sourceAlpha
+            // 合成先データ = 1-α
+            self.destinationRGBBlendFactor   = .oneMinusSourceAlpha
+            self.destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        }
+    }
+}
+
+public struct CAIMMetalRenderSetting
+{
+    // 深度ステート
+    public var depthState = CAIMMetalDepthState()
+    // 頂点シェーダー
+    public var vertexShader:CAIMMetalShader?
+    // フラグメントシェーダー
+    public var fragmentShader:CAIMMetalShader?
+    // カラーアタッチメント
+    public var colorAttachment = MTLRenderPipelineColorAttachmentDescriptor()
+    // 頂点ディスクリプタ
+    public var vertexDesc:MTLVertexDescriptor? = nil
+    
+    public init() {
+        colorAttachment.pixelFormat = .bgra8Unorm
+        colorAttachment.composite(type: .alphaBlend )
+    }
+}
+
 // Metalパイプライン
 public class CAIMMetalRenderPipeline
 {
     // エンコーダー
     public private(set) var state:MTLRenderPipelineState?
-    private var _depth_state:CAIMMetalDepthState
-    // 頂点シェーダー
-    public var vertexShader:CAIMMetalShader?
-    // フラグメントシェーダー
-    public var fragmentShader:CAIMMetalShader?
-    // 合成タイプ
-    public var blendType:CAIMMetalBlendType = .alphaBlend
-    // 頂点ディスクリプタ
-    var vertexDesc:MTLVertexDescriptor? = nil
-
-    public init() {
-        _depth_state = CAIMMetalDepthState()
+    
+    // パイプラインの作成関数
+    public func make( _ f:( inout CAIMMetalRenderSetting )->() ) {
+        // 設定オブジェクトの作成
+        var setting = CAIMMetalRenderSetting()
+        // コールバックで設定を行う
+        f( &setting )
+        // 設定を用いてパイプライン記述を作成
+        let rpd = makeRenderPipelineDesc( setting:setting )
+        // パイプラインの作成
+        self.makePipeline( rpd )
     }
     
-    public init( depthState dstate:CAIMMetalDepthState ) {
-        _depth_state = dstate
+    public func makeRenderPipelineDesc( setting:CAIMMetalRenderSetting ) -> MTLRenderPipelineDescriptor {
+        // パイプラインディスクリプタの作成
+        let rpd = MTLRenderPipelineDescriptor()
+        rpd.vertexFunction = setting.vertexShader!.function
+        rpd.fragmentFunction = setting.fragmentShader!.function
+        // パイプラインディスクリプタのデプス・ステンシル情報を設定
+        rpd.vertexDescriptor = setting.vertexDesc
+        rpd.sampleCount = setting.depthState.sampleCount
+        rpd.depthAttachmentPixelFormat = setting.depthState.depthFormat
+        rpd.stencilAttachmentPixelFormat = setting.depthState.depthFormat
+        // 色設定
+        rpd.colorAttachments[0] = setting.colorAttachment
+        
+        return rpd
     }
     
-    private func makeRenderPipelineDesc() -> MTLRenderPipelineDescriptor {
-        // パイプラインディスクリプター
-        let r_pipeline_desc:MTLRenderPipelineDescriptor = MTLRenderPipelineDescriptor()
-        r_pipeline_desc.vertexFunction = vertexShader!.function
-        r_pipeline_desc.fragmentFunction = fragmentShader!.function
-        // パイプラインdescのデプス・ステンシル情報を設定
-        r_pipeline_desc.vertexDescriptor = vertexDesc
-        r_pipeline_desc.sampleCount = _depth_state.sampleCount
-        r_pipeline_desc.depthAttachmentPixelFormat = _depth_state.depthFormat
-        r_pipeline_desc.stencilAttachmentPixelFormat = _depth_state.depthFormat
-        
-        let color_attachment:MTLRenderPipelineColorAttachmentDescriptor = r_pipeline_desc.colorAttachments[0]
-        color_attachment.pixelFormat = .bgra8Unorm
-        
-        switch( self.blendType ) {
-        case .none:
-            color_attachment.isBlendingEnabled = false
-            break
-        case .alphaBlend:
-            color_attachment.isBlendingEnabled = true
-            // 2値の加算方法
-            color_attachment.rgbBlendOperation           = .add
-            color_attachment.alphaBlendOperation         = .add
-            // 入力データ = α
-            color_attachment.sourceRGBBlendFactor        = .sourceAlpha
-            color_attachment.sourceAlphaBlendFactor      = .sourceAlpha
-            // 合成先データ = 1-α
-            color_attachment.destinationRGBBlendFactor   = .oneMinusSourceAlpha
-            color_attachment.destinationAlphaBlendFactor = .oneMinusSourceAlpha
-        }
-        
-        return r_pipeline_desc
-    }
-    
-    public func readyPipeline() {
-        if state != nil { return }
+    public func makePipeline( _ rpd:MTLRenderPipelineDescriptor ) {
         // パイプラインの生成
         do {
-            // パイプラインディスクリプタの準備
-            let r_pipeline_desc = makeRenderPipelineDesc()
-            state = try CAIMMetal.device?.makeRenderPipelineState( descriptor: r_pipeline_desc )
+            state = try CAIMMetal.device?.makeRenderPipelineState( descriptor: rpd )
         }
         catch {
             print( error.localizedDescription )

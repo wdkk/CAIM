@@ -1,14 +1,16 @@
 //
 // CAIMMetal.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
+
+#if os(macOS) || (os(iOS) && !arch(x86_64))
 
 import Foundation
 import Metal
@@ -44,3 +46,5 @@ open class CAIMMetal
         post( command_buffer )
     }
 }
+
+#endif

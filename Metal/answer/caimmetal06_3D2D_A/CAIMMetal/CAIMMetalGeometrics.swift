@@ -1,16 +1,18 @@
 //
 // CAIMMetalGeometrics.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 import Foundation
+import CoreGraphics
+import Metal
 import simd
 
 // Metalバッファを出力できるようにするプロトコル

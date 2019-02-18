@@ -1,13 +1,13 @@
 //
 // CAIMView.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 import UIKit
@@ -49,7 +49,7 @@ public class CAIMView : CAIMBaseView
         // parameter of CAIMImage
         let wid:Int = image.width
         let hgt:Int = image.height
-        let mem:UnsafeMutablePointer<UInt8> = image.pointer
+        let mem = image.memory
         
         // 画像データがない場合、サイズが変更された場合のみメモリを確保する
         if(buf == nil || wid != bufwid || hgt != bufhgt) {

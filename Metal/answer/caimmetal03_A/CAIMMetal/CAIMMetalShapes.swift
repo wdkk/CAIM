@@ -1,13 +1,13 @@
 //
 //  CAIMMetalShapes.swift
 // CAIM Project
-//   http://kengolab.net/CreApp/wiki/
+//   https://kengolab.net/CreApp/wiki/
 //
 // Copyright (c) Watanabe-DENKI Inc.
-//   http://wdkk.co.jp/
+//   https://wdkk.co.jp/
 //
 // This software is released under the MIT License.
-//   http://opensource.org/licenses/mit-license.php
+//   https://opensource.org/licenses/mit-license.php
 //
 
 #if os(macOS) || (os(iOS) && !arch(x86_64))
@@ -34,8 +34,9 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
     }
     
     public var metalBuffer:MTLBuffer? {
-        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( self.pointer, length: self.length ) }
-        return _buffer!.metalBuffer
+        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( vertice: self ) }
+        else if( _type == .shared ) { ( _buffer as! CAIMMetalSharedBuffer).update( vertice: self ) }
+        return _buffer?.metalBuffer
     }
     
     public var memory:UnsafeMutablePointer<T> {
@@ -51,7 +52,7 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
 // 点メモリクラス
 public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 {
-    public init(count: Int, type: CAIMMetalBufferType = .alloc ) {
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
         super.init( unit:1, count: count, type: type )
     }
     
@@ -69,7 +70,7 @@ public class CAIMMetalPoints<T> : CAIMMetalShape<T>
 // ライン形状メモリクラス
 public class CAIMMetalLines<T> : CAIMMetalShape<T>
 {
-    public init(count: Int, type: CAIMMetalBufferType = .alloc ) {
+    public init(count:Int = 0, type: CAIMMetalBufferType = .alloc ) {
         super.init( unit: 2, count: count, type: type )
     }
     
@@ -95,7 +96,7 @@ public struct CAIMMetalTriangleVertice<T> {
 // 三角形メッシュ形状メモリクラス
 public class CAIMMetalTriangles<T> : CAIMMetalShape<T>
 {
-    public init( count: Int, type: CAIMMetalBufferType = .alloc ) {
+    public init( count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
         super.init( unit:3, count: count, type: type )
     }
     
@@ -130,7 +131,7 @@ public struct CAIMMetalQuadrangleVertice<T> {
 // 四角形メッシュ形状メモリクラス
 public class CAIMMetalQuadrangles<T> : CAIMMetalShape<T>
 {
-    public init(count: Int, type: CAIMMetalBufferType = .alloc ) {
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
         super.init( unit: 4, count: count, type: type )
     }
     
@@ -177,7 +178,7 @@ public struct CAIMPanelCubeParam
 
 public class CAIMCubes<T> : CAIMMetalShape<T>
 {
-    public init(count: Int, type: CAIMMetalBufferType = .alloc ) {
+    public init(count:Int = 0, type:CAIMMetalBufferType = .alloc ) {
         super.init( unit:24, count: count, type: type )
     }
     
