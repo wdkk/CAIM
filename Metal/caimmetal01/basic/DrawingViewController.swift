@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import simd
 
 // 1頂点情報の構造体
@@ -20,14 +21,14 @@ struct Vertex {
 // CAIM-Metalを使うビューコントローラ
 class DrawingViewController : CAIMViewController
 {
-    // MetalView、レンダラ、メッシュ群、行列などの変数を作る
+    // MetalView、パイプライン、メッシュ群、行列などの変数を作る
     // ...
     
     // 準備関数
     override func setup() {
         super.setup()
         
-        // ... ビューの生成、レンダラの生成 ... //
+        // ... ビューの生成、パイプラインの生成 ... //
         
         // 形状データを作成する関数を呼ぶ
         makeShapes()

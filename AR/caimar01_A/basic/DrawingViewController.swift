@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import ARKit
 
 // The max number anchors our uniform buffer will hold
@@ -36,11 +37,11 @@ struct InstanceUniforms : CAIMMetalBufferAllocatable {
 class DrawingViewController : CAIMViewController, ARSessionDelegate
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
-    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
+    private var pipeline_3d = CAIMMetalRenderPipeline()
     
-    private var uniforms:[InstanceUniforms] = [InstanceUniforms].init(repeating: InstanceUniforms(), count: 64)
+    private var uniforms = [InstanceUniforms](repeating: InstanceUniforms(), count: 64)
     private var mesh = CAIMMetalMesh(with:"realship.obj", at:ID_VERTEX)
-    private var texture:CAIMMetalTexture = CAIMMetalTexture(with:"shipDiffuse.png")
+    private var texture = CAIMMetalTexture(with:"shipDiffuse.png")
     private var instance_count: Int = 0
     
     // 準備関数
@@ -65,10 +66,12 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
     
     private func setup3D() {
         // シェーダを指定してパイプラインレンダラの作成
-        pipeline_3d.vertexShader = CAIMMetalShader( "vert3dAR" )
-        pipeline_3d.fragmentShader = CAIMMetalShader( "frag3dAR" )
-        // 頂点ディスクリプタの設定
-        pipeline_3d.vertexDesc = CAIMMetalMesh.vertexDesc( at:0 )
+        pipeline_3d.make {
+            $0.vertexShader = CAIMMetalShader( "vert3dAR" )
+            $0.fragmentShader = CAIMMetalShader( "frag3dAR" )
+            // 頂点ディスクリプタの設定
+            $0.vertexDesc = CAIMMetalMesh.defaultVertexDesc( at:0 )
+        }
     }
     
     //////

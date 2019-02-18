@@ -11,6 +11,7 @@
 //
 
 import Metal
+import simd
 import QuartzCore
 
 // 頂点情報の構造体

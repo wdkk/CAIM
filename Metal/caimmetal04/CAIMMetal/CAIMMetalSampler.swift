@@ -10,6 +10,8 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+#if os(macOS) || (os(iOS) && !arch(x86_64))
+
 import Metal
 import MetalKit
 
@@ -32,3 +34,5 @@ public class CAIMMetalSampler
         return CAIMMetal.device!.makeSamplerState(descriptor: sampler)!
     }
 }
+
+#endif

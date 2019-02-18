@@ -36,20 +36,22 @@ class CAIMARCapture {
         let imagePlaneVertexDataCount = kImagePlaneVertexData.count * MemoryLayout<Float>.size
         imagePlaneVertexBuffer = CAIMMetal.device!.makeBuffer(bytes: kImagePlaneVertexData, length: imagePlaneVertexDataCount, options: [])
         
-        ar_capture_pipeline.vertexShader = CAIMMetalShader( "capturedImageVertexTransform" )
-        ar_capture_pipeline.fragmentShader = CAIMMetalShader( "capturedImageFragmentShader" )
-        // 頂点ディスクリプタ
-        let vert_desc = MTLVertexDescriptor()
-        vert_desc.attributes[0].format = .float2
-        vert_desc.attributes[0].offset = 0
-        vert_desc.attributes[0].bufferIndex = 0
-        vert_desc.attributes[1].format = .float2
-        vert_desc.attributes[1].offset = 8
-        vert_desc.attributes[1].bufferIndex = 0
-        vert_desc.layouts[0].stride = 16
-        vert_desc.layouts[0].stepRate = 1
-        ar_capture_pipeline.vertexDesc = vert_desc
-        
+        ar_capture_pipeline.make {
+            $0.vertexShader = CAIMMetalShader( "capturedImageVertexTransform" )
+            $0.fragmentShader = CAIMMetalShader( "capturedImageFragmentShader" )
+
+            // 頂点ディスクリプタ
+            let vert_desc = MTLVertexDescriptor()
+            vert_desc.attributes[0].format = .float2
+            vert_desc.attributes[0].offset = 0
+            vert_desc.attributes[0].bufferIndex = 0
+            vert_desc.attributes[1].format = .float2
+            vert_desc.attributes[1].offset = 8
+            vert_desc.attributes[1].bufferIndex = 0
+            vert_desc.layouts[0].stride = 16
+            vert_desc.layouts[0].stepRate = 1
+            $0.vertexDesc = vert_desc
+        }
         // テクスチャキャッシュ
         var textureCache: CVMetalTextureCache?
         CVMetalTextureCacheCreate(nil, nil, CAIMMetal.device!, nil, &textureCache)

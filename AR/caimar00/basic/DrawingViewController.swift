@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import ARKit
 
 // The max number anchors our uniform buffer will hold
@@ -33,11 +34,11 @@ struct InstanceUniforms : CAIMMetalBufferAllocatable {
 class DrawingViewController : CAIMViewController, ARSessionDelegate
 {
     private var metal_view:CAIMMetalView?       // Metalビュー
-    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
+    private var pipeline_3d = CAIMMetalRenderPipeline()
     
-    private var uniforms:[InstanceUniforms] = [InstanceUniforms].init(repeating: InstanceUniforms(), count: 64)
+    private var uniforms = [InstanceUniforms](repeating: InstanceUniforms(), count: 64)
     private var mesh = CAIMMetalMesh(with:"realship.obj", at:0)
-    private var texture:CAIMMetalTexture = CAIMMetalTexture(with:"shipDiffuse.png")
+    private var texture = CAIMMetalTexture(with:"shipDiffuse.png")
     
     /////////////////
     // ビューコントローラから去る時の処理
@@ -65,7 +66,7 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
     //////
     var ar_session:ARSession?
     var ar_capture:CAIMARCapture?
-    var sharedUniforms:SharedUniforms = SharedUniforms()
+    var sharedUniforms = SharedUniforms()
     
     func setupAR() {
         ar_session = ARSession()

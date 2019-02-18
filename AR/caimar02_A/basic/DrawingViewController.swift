@@ -10,6 +10,7 @@
 //   https://opensource.org/licenses/mit-license.php
 //
 
+import Metal
 import ARKit
 
 // 共有の行列・ベクトル情報
@@ -55,18 +56,18 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
     // ARKit背景データ
     var ar_capture:CAIMARCapture?
     // 共有行列・ベクトルデータ
-    var sharedUniforms:SharedUniforms = SharedUniforms()
+    var sharedUniforms = SharedUniforms()
     
     // ARKitで認識した平面データ
-    private var pipeline_plane:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
-    private var p_uniforms:[PlaneUniforms] = [PlaneUniforms](repeating: PlaneUniforms(), count: 1)
+    private var pipeline_plane = CAIMMetalRenderPipeline()
+    private var p_uniforms = [PlaneUniforms](repeating: PlaneUniforms(), count: 1)
     private var planes = CAIMMetalQuadrangles<Vertex>(count: 1)
     private var plane_count: Int = 0
  
     // AR平面に表示する実体データ(うさぎ)
-    private var pipeline_3d:CAIMMetalRenderPipeline = CAIMMetalRenderPipeline()
-    private var uniforms:[InstanceUniforms] = [InstanceUniforms](repeating: InstanceUniforms(), count: 1)
-    private var mesh = CAIMMetalMesh(with:"bunny.obj", at:0, addNormal:true, normalThreshold:0.0)
+    private var pipeline_3d = CAIMMetalRenderPipeline()
+    private var uniforms = [InstanceUniforms](repeating: InstanceUniforms(), count: 1)
+    private var mesh = CAIMMetalMesh( with:"bunny.obj", at:0, addNormal:true, normalThreshold:0.0 )
     private var instance_count: Int = 0
     
     /////////////////
@@ -91,20 +92,23 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
     }
     
     private func setupPlane() {
-        pipeline_plane.vertexShader = CAIMMetalShader( "vertPlane" )
-        pipeline_plane.fragmentShader = CAIMMetalShader( "fragPlane" )
-        // 頂点ディスクリプタの設定
-        pipeline_plane.vertexDesc = Vertex.vertexDescriptor(at: 0)
+        pipeline_plane.make {
+            $0.vertexShader = CAIMMetalShader( "vertPlane" )
+            $0.fragmentShader = CAIMMetalShader( "fragPlane" )
+            // 頂点ディスクリプタの設定
+            $0.vertexDesc = Vertex.vertexDescriptor(at: 0)
+        }
     }
     
     private func setup3D() {
-        // シェーダを指定してパイプラインレンダラの作成
-        pipeline_3d.vertexShader = CAIMMetalShader( "vert3DObject" )
-        pipeline_3d.fragmentShader = CAIMMetalShader( "frag3DObject" )
-        // 頂点ディスクリプタの設定
-        pipeline_3d.vertexDesc = CAIMMetalMesh.vertexDesc(at: 0)
-        // アルファブレンドを無効
-        pipeline_3d.blendType = .none
+        pipeline_3d.make {
+            $0.vertexShader = CAIMMetalShader( "vert3DObject" )
+            $0.fragmentShader = CAIMMetalShader( "frag3DObject" )
+            // 頂点ディスクリプタの設定
+            $0.vertexDesc = CAIMMetalMesh.defaultVertexDesc(at: 0)
+            // アルファブレンドを無効
+            $0.colorAttachment.composite(type: .none )
+        }
     }
     
     // ARKitの初期化
