@@ -86,7 +86,7 @@ class DrawingViewController : CAIMViewController
     private func trashParticles( in particles:inout [Particle] ) {
         // 配列を後ろからスキャンしながら、lifeが0になったものを配列から外していく
         for i in (0 ..< particles.count).reversed() {
-            if(particles[i].life <= 0.0) {
+            if particles[i].life <= 0.0 {
                 particles.remove(at: i)
             }
         }
