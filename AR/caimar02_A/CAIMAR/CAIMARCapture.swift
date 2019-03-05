@@ -22,7 +22,6 @@ let kImagePlaneVertexData: [Float] = [
 
 class CAIMARCapture {
     weak var ar_session:ARSession?
-    let inFlightSemaphore = DispatchSemaphore(value: kMaxBuffersInFlight)
     private var ar_capture_pipeline = CAIMMetalRenderPipeline()
     var imagePlaneVertexBuffer: MTLBuffer!
     var capturedImageTextureCache: CVMetalTextureCache!
@@ -30,7 +29,7 @@ class CAIMARCapture {
     var capturedImageTextureCbCr: CVMetalTexture?
     private var viewport_size:CGSize = .zero
     
-    init(session:ARSession) {
+    init( session:ARSession ) {
         self.ar_session = session
         
         let imagePlaneVertexDataCount = kImagePlaneVertexData.count * MemoryLayout<Float>.size

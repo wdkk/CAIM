@@ -24,14 +24,28 @@ open class CAIMMetal
         return CAIMMetal._command_queue
     }
     
+    // セマフォ
+    static let k_semaphore_max_count = 3
+    public static let semaphore = DispatchSemaphore( value: k_semaphore_max_count )
+    
     // コマンド実行
     public static func execute( prev:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
                                 main:( _ commandBuffer:MTLCommandBuffer )->(),
-                                post:( _ commandBuffer:MTLCommandBuffer )->() = { _ in } ) {
+                                post:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
+                                completion: (( _ commandBuffer:MTLCommandBuffer )->())? = nil ) {
+        // セマフォ待機のチェック
+        _ = semaphore.wait(timeout: DispatchTime.distantFuture )
+        
         // 描画コマンドエンコーダ
         guard let command_buffer:MTLCommandBuffer = CAIMMetal.commandQueue?.makeCommandBuffer() else {
             print("cannot get Metal command buffer.")
             return
+        }
+        
+        // 完了時の処理
+        command_buffer.addCompletedHandler { _ in
+            CAIMMetal.semaphore.signal()
+            completion?( command_buffer )
         }
         
         // 事前処理の実行(コンピュートシェーダなどで使える)

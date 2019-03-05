@@ -63,14 +63,15 @@ public class CAIMMetalView: CAIMBaseView, CAIMMetalViewProtocol
     // Metalコマンドの開始(CAIMMetalViewから呼び出せる簡易版。本体はCAIMMetal.execute)
     public func execute( preRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
                          renderFunc:( _ renderEncoder:MTLRenderCommandEncoder )->(),
-                         postRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in } )
-    {
+                         postRenderFunc:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
+                         completion: ((_ commandBuffer:MTLCommandBuffer )->())? = nil ) {
         CAIMMetal.execute(
         prev: preRenderFunc,
         main: { ( commandBuffer:MTLCommandBuffer ) in
             self.beginDraw( commandBuffer:commandBuffer, renderFunc:renderFunc )
         },
-        post: postRenderFunc )
+        post: postRenderFunc,
+        completion: completion )
     }
  
     // デプステクスチャの設定と再生成

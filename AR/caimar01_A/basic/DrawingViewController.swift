@@ -139,11 +139,14 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
         // 各ARアンカーの変換行列を更新
         updateAnchors(frame: currentFrame)
         
-        // MetalViewのレンダリングを実行
-        metal_view?.execute( renderFunc: self.render )
-        
-        // カメラデータのクリア
-        ar_capture?.clearTextures()
+        // MetalViewのレンダリングをself.renderで実行
+        // completionはMetalの処理が終了した時に行うクロージャ。テクスチャの解放を行う
+        metal_view?.execute(
+            renderFunc: self.render,
+            completion: { _ in
+                // カメラデータのクリア
+                self.ar_capture?.clearTextures()
+        })
     }
     
     // Metalで実際に描画を指示する関数
