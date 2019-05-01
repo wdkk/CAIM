@@ -1,4 +1,4 @@
-//
+﻿//
 // CAIMMetalComputePipeline.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
@@ -22,6 +22,8 @@ public struct CAIMMetalComputeSetting
 open class CAIMMetalComputePipeline
 {
     public private(set) var state:MTLComputePipelineState?
+    
+    public init() { }
     
     public func make( _ f:( inout CAIMMetalComputeSetting )->() ) {
         // 設定オブジェクトの作成

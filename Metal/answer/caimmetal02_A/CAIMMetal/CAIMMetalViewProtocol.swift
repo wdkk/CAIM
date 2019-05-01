@@ -24,7 +24,7 @@ public protocol CAIMMetalViewProtocol
 
 public extension CAIMMetalViewProtocol
 {
-    public func makeRenderPassDescriptor( drawable:CAMetalDrawable, color:CAIMColor, depthTexture depth_texture:MTLTexture ) -> MTLRenderPassDescriptor {
+    func makeRenderPassDescriptor( drawable:CAMetalDrawable, color:CAIMColor, depthTexture depth_texture:MTLTexture ) -> MTLRenderPassDescriptor {
         let r_pass_desc:MTLRenderPassDescriptor = MTLRenderPassDescriptor()
         // カラーアタッチメントの設定
         r_pass_desc.colorAttachments[0].texture = drawable.texture
@@ -46,7 +46,7 @@ public extension CAIMMetalViewProtocol
         return r_pass_desc
     }
     
-    public func makeDepthTextureDescriptor( drawable:CAMetalDrawable, depthState depth_state:CAIMMetalDepthState) -> MTLTextureDescriptor {
+    func makeDepthTextureDescriptor( drawable:CAMetalDrawable, depthState depth_state:CAIMMetalDepthState) -> MTLTextureDescriptor {
         // depthテクスチャの設定（デプスとステンシルを合わせもつテクスチャ）
         let depth_desc:MTLTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: depth_state.depthFormat,

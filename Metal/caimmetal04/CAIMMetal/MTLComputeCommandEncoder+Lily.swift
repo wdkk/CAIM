@@ -27,6 +27,9 @@ extension MTLComputeCommandEncoder
     public func setBuffer( _ mem:CAIMMetalBufferAllocatable, offset:Int=0, index idx:Int ) {
         self.setBuffer( mem.metalBuffer, offset: offset, index: idx )
     }
+    public func setBuffer<T:SIMD>( _ simd:T, offset:Int=0, index idx:Int ) {
+        self.setBuffer( simd.metalBuffer, offset: offset, index: idx )
+    }
     public func setBuffer<T>( _ shape:CAIMMetalShape<T>, index idx:Int ) {
         self.setBuffer( shape.metalBuffer, offset: 0, index: idx )
     }

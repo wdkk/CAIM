@@ -27,6 +27,9 @@ extension MTLRenderCommandEncoder
     public func setVertexBuffer( _ mem:CAIMMetalBufferAllocatable, offset:Int=0, index idx:Int ) {
         self.setVertexBuffer( mem.metalBuffer, offset: offset, index: idx )
     }
+    public func setVertexBuffer<T:SIMD>( _ simd:T, offset:Int=0, index idx:Int ) {
+        self.setVertexBuffer( simd.metalBuffer, offset: offset, index: idx )
+    }
     public func setVertexBuffer<T>( _ shape:CAIMMetalShape<T>, index idx:Int ) {
         self.setVertexBuffer( shape.metalBuffer, offset: 0, index: idx )
     }
@@ -40,6 +43,9 @@ extension MTLRenderCommandEncoder
     }
     public func setFragmentBuffer( _ mem:CAIMMetalBufferAllocatable, offset:Int=0, index idx:Int ) {
         self.setFragmentBuffer( mem.metalBuffer, offset: offset, index: idx )
+    }
+    public func setFragmentBuffer<T:SIMD>( _ simd:T, offset:Int=0, index idx:Int ) {
+        self.setFragmentBuffer( simd.metalBuffer, offset: offset, index: idx )
     }
     
     // MARK: - pipeline function

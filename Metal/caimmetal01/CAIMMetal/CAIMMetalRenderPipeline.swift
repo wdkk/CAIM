@@ -28,7 +28,7 @@ public struct CAIMMetalDepthState
 }
 
 public extension MTLRenderPipelineColorAttachmentDescriptor {
-    public func composite( type:CAIMMetalBlendType ) {
+    func composite( type:CAIMMetalBlendType ) {
         switch( type ) {
         case .none:
             self.isBlendingEnabled = false
@@ -72,6 +72,8 @@ public class CAIMMetalRenderPipeline
 {
     // エンコーダー
     public private(set) var state:MTLRenderPipelineState?
+    
+    public init() { }
     
     // パイプラインの作成関数
     public func make( _ f:( inout CAIMMetalRenderSetting )->() ) {

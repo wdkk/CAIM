@@ -15,4 +15,6 @@ This software is released under the MIT License, see LICENSE.txt.
 東京工科大学メディア学部クリエイティブアプリケーション演習に向けての学習用プログラムです。
 
 3. 開発環境
-XCode8.2.1, iOS10以降
+XCode10.1
+iOS12.1以降
+Swift4.2, 5.0
