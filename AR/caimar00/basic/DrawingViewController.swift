@@ -79,8 +79,11 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
     }
     
     func updateSharedUniforms(frame: ARFrame) {
-        sharedUniforms.viewMatrix = frame.camera.viewMatrix(for: .portrait)
-        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait, viewportSize: metal_view!.bounds.size, zNear: 0.001, zFar: 1000)
+        sharedUniforms.viewMatrix = frame.camera.viewMatrix(for: .portrait).matrix4x4
+        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait,
+                                                                        viewportSize: metal_view!.bounds.size,
+                                                                        zNear: 0.001,
+                                                                        zFar: 1000).matrix4x4
         
         var ambientIntensity: Float = 1.0
         if let lightEstimate = frame.lightEstimate {
@@ -88,7 +91,7 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
         }
         
         sharedUniforms.ambientLightColor = Float3(0.5, 0.5, 0.5) * ambientIntensity
-        sharedUniforms.directionalLightDirection = simd_normalize(Float3(0.0, 0.0, -1.0))
+        sharedUniforms.directionalLightDirection = Float3(0.0, 0.0, -1.0).normalize
         sharedUniforms.directionalLightColor = Float3(0.6, 0.6, 0.6) * ambientIntensity
         sharedUniforms.materialShininess = 10
     }

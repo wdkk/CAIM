@@ -49,22 +49,6 @@ class DrawingViewController : CAIMViewController
         metal_view = CAIMMetalView( frame: view.bounds )
         self.view.addSubview( metal_view! )
 
-        print( MemoryLayout<Float2>.stride )
-        print( MemoryLayout<Float2>.size )
-        print( MemoryLayout<Float2>.alignment )
-        print( MemoryLayout<Float3>.stride )
-        print( MemoryLayout<Float3>.size )
-        print( MemoryLayout<Float3>.alignment )
-        print( MemoryLayout<Float4>.stride )
-        print( MemoryLayout<Float4>.size )
-        print( MemoryLayout<Float4>.alignment )
-        print( MemoryLayout<Matrix3x3>.stride )
-        print( MemoryLayout<Matrix3x3>.size )
-        print( MemoryLayout<Matrix3x3>.alignment )
-        print( MemoryLayout<Matrix4x4>.stride )
-        print( MemoryLayout<Matrix4x4>.size )
-        print( MemoryLayout<Matrix4x4>.alignment )
-        
         // ピクセルプロジェクション行列バッファの作成(画面サイズに合わせる)
         mat = Matrix4x4.pixelProjection( metal_view!.pixelBounds.size )
         

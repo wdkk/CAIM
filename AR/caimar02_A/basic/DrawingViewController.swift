@@ -129,8 +129,11 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
     
     // 毎フレームのARの情報から共有行列・ベクトル情報を更新
     func updateSharedUniforms(frame: ARFrame) {
-        sharedUniforms.viewMatrix = frame.camera.viewMatrix(for: .portrait)
-        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait, viewportSize: metal_view!.bounds.size, zNear: 0.001, zFar: 1000)
+        sharedUniforms.viewMatrix = frame.camera.viewMatrix(for: .portrait).matrix4x4
+        sharedUniforms.projectionMatrix = frame.camera.projectionMatrix(for: .portrait,
+                                                                        viewportSize: metal_view!.bounds.size,
+                                                                        zNear: 0.001,
+                                                                        zFar: 1000).matrix4x4
         
         var ambientIntensity: Float = 1.0
         if let lightEstimate = frame.lightEstimate {
@@ -138,7 +141,7 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
         }
         
         sharedUniforms.ambientLightColor = Float3(1.0, 1.0, 1.0) * ambientIntensity
-        sharedUniforms.directionalLightDirection = simd_normalize(Float3(0.0, 0.0, 1.0))
+        sharedUniforms.directionalLightDirection = Float3(0.0, 0.0, 1.0).normalize
         sharedUniforms.directionalLightColor = Float3(0.6, 0.6, 0.6) * ambientIntensity
         sharedUniforms.materialShininess = 30
     }
@@ -174,7 +177,7 @@ class DrawingViewController : CAIMViewController, ARSessionDelegate
             planes[idx].p4 = Vertex( pos:Float3(co.x + ext_x, co.y, co.z + ext_z), uv:Float2(1.0, 1.0), rgba:Float4(0.0, 0.0, 1.0, 0.75) )
             
             // 平面用モデル行列の更新
-            p_uniforms[idx].model = p_anchor.transform
+            p_uniforms[idx].model = p_anchor.transform.matrix4x4
             
             //// 平面に乗せるオブジェクト（うさぎ）の情報更新
             var coord = Matrix4x4.identity

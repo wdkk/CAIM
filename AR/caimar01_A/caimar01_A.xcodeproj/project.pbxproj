@@ -314,10 +314,11 @@
 			};
 			buildConfigurationList = FD1E8C201966407A0031E727 /* Build configuration list for PBXProject "caimar01_A" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = FD1E8C1C1966407A0031E727;
 			productRefGroup = FD1E8C261966407A0031E727 /* Products */;
@@ -441,6 +442,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 				SYMROOT = ../_build;
 			};
 			name = Debug;
@@ -487,6 +489,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				METAL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_VERSION = 4.2;
 				SYMROOT = ../_build;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -507,7 +510,6 @@
 				PRODUCT_NAME = caimar01_A;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -528,7 +530,6 @@
 				PRODUCT_NAME = caimar01_A;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

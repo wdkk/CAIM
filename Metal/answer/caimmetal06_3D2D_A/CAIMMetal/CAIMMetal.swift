@@ -1,4 +1,4 @@
-﻿//
+//
 // CAIMMetal.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
@@ -25,17 +25,13 @@ open class CAIMMetal
     }
     
     // セマフォ
-    static let k_semaphore_max_count = 3
-    public static let semaphore = DispatchSemaphore( value: k_semaphore_max_count )
+    public static let semaphore = DispatchSemaphore( value: 0 )
     
     // コマンド実行
     public static func execute( prev:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
                                 main:( _ commandBuffer:MTLCommandBuffer )->(),
                                 post:( _ commandBuffer:MTLCommandBuffer )->() = { _ in },
                                 completion: (( _ commandBuffer:MTLCommandBuffer )->())? = nil ) {
-        // セマフォ待機のチェック
-        _ = semaphore.wait(timeout: DispatchTime.distantFuture )
-        
         // 描画コマンドエンコーダ
         guard let command_buffer:MTLCommandBuffer = CAIMMetal.commandQueue?.makeCommandBuffer() else {
             print("cannot get Metal command buffer.")
@@ -55,7 +51,9 @@ open class CAIMMetal
         
         // コマンドバッファの確定
         command_buffer.commit()
-        
+        // セマフォ待機のチェック
+        _ = CAIMMetal.semaphore.wait( timeout: DispatchTime.distantFuture )
+    
         // 事後処理の関数の実行(command_buffer.waitUntilCompletedの呼び出しなど)
         post( command_buffer )
     }
