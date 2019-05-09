@@ -1,4 +1,4 @@
-﻿//
+//
 // CAIMMetalMeshes.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
@@ -82,7 +82,9 @@ public class CAIMMetalMesh : CAIMMetalDrawable
         (modelDescriptor3D.attributes[2] as! MDLVertexAttribute).name = MDLVertexAttributeTextureCoordinate
         
         let allocator = MTKMeshBufferAllocator( device: CAIMMetal.device!)
-        let mesh = MDLMesh(sphereWithExtent: vector_float3(1.0), segments: vector_uint2(32), inwardNormals: true, geometryType: .triangles, allocator: allocator)
+        
+        let mesh = MDLMesh(sphereWithExtent: [ 1.0, 1.0, 1.0 ], segments: [ 32, 32 ], inwardNormals: true, geometryType: .triangles, allocator: allocator)
+        
         let new_mesh = try! MTKMesh( mesh: mesh, device: CAIMMetal.device! )
         return new_mesh
     }

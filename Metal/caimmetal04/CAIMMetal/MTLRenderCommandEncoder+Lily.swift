@@ -18,34 +18,23 @@ import Metal
 extension MTLRenderCommandEncoder
 {
     // MARK: - vertex buffer functions
+    #if os(macOS) || (os(iOS) && !arch(x86_64))
+    private func makeMetalBuffer<T>( from obj:T ) -> MTLBuffer? { return CAIMMetalAllocatedBuffer( T.self ).metalBuffer }
+    #endif
+    
     public func setVertexBuffer( _ buffer:MTLBuffer, index idx:Int ) {
         self.setVertexBuffer( buffer, offset: 0, index: idx )
     }
-    public func setVertexBuffer( _ buffer_base:CAIMMetalBufferBase, offset:Int=0, index idx:Int ) {
-        self.setVertexBuffer( buffer_base.metalBuffer, offset: offset, index: idx )
+    public func setVertexBuffer<T:CAIMMetalBufferAllocatable>( _ obj:T, offset:Int=0, index idx:Int ) {
+        self.setVertexBuffer( obj.metalBuffer, offset: offset, index: idx )
     }
-    public func setVertexBuffer( _ mem:CAIMMetalBufferAllocatable, offset:Int=0, index idx:Int ) {
-        self.setVertexBuffer( mem.metalBuffer, offset: offset, index: idx )
-    }
-    public func setVertexBuffer<T:SIMD>( _ simd:T, offset:Int=0, index idx:Int ) {
-        self.setVertexBuffer( simd.metalBuffer, offset: offset, index: idx )
-    }
-    public func setVertexBuffer<T>( _ shape:CAIMMetalShape<T>, index idx:Int ) {
-        self.setVertexBuffer( shape.metalBuffer, offset: 0, index: idx )
-    }
-    
+
     // MARK: - fragment buffer functions
     public func setFragmentBuffer( _ buffer:MTLBuffer, index idx:Int ) {
         self.setFragmentBuffer( buffer, offset: 0, index: idx )
     }
-    public func setFragmentBuffer( _ buffer_base:CAIMMetalBufferBase, offset:Int=0, index idx:Int ) {
-        self.setFragmentBuffer( buffer_base.metalBuffer, offset: offset, index: idx )
-    }
-    public func setFragmentBuffer( _ mem:CAIMMetalBufferAllocatable, offset:Int=0, index idx:Int ) {
-        self.setFragmentBuffer( mem.metalBuffer, offset: offset, index: idx )
-    }
-    public func setFragmentBuffer<T:SIMD>( _ simd:T, offset:Int=0, index idx:Int ) {
-        self.setFragmentBuffer( simd.metalBuffer, offset: offset, index: idx )
+    public func setFragmentBuffer<T:CAIMMetalBufferAllocatable>( _ obj:T, offset:Int=0, index idx:Int ) {
+        self.setFragmentBuffer( obj.metalBuffer, offset: offset, index: idx )
     }
     
     // MARK: - pipeline function

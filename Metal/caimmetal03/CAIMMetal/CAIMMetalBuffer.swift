@@ -1,4 +1,4 @@
-﻿//
+//
 // CAIMMetalGeometrics.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
@@ -21,12 +21,15 @@ public enum CAIMMetalBufferType : Int
     case shared
 }
 
-public protocol CAIMMetalBufferBase
-{
+// Metalバッファを出力できるようにするプロトコル
+public protocol CAIMMetalBufferAllocatable {
     var metalBuffer:MTLBuffer? { get }
 }
+public extension CAIMMetalBufferAllocatable {
+    var metalBuffer:MTLBuffer? { return CAIMMetalAllocatedBuffer( self ).metalBuffer }
+}
 
-public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
+public class CAIMMetalAllocatedBuffer : CAIMMetalBufferAllocatable
 {
     private var _length:Int
     private var _mtlbuf:MTLBuffer?
@@ -110,7 +113,7 @@ public class CAIMMetalAllocatedBuffer : CAIMMetalBufferBase
     }
 }
 
-public class CAIMMetalSharedBuffer : CAIMMetalBufferBase
+public class CAIMMetalSharedBuffer : CAIMMetalBufferAllocatable
 {
     private var _length:Int
     private var _mtlbuf:MTLBuffer?

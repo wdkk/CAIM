@@ -21,19 +21,10 @@ extension MTLComputeCommandEncoder
     public func setBuffer( _ buffer:MTLBuffer, index idx:Int ) {
         self.setBuffer( buffer, offset: 0, index: idx )
     }
-    public func setBuffer( _ buffer_base:CAIMMetalBufferBase, offset:Int=0, index idx:Int ) {
-        self.setBuffer( buffer_base.metalBuffer, offset: offset, index: idx )
+    public func setBuffer<T:CAIMMetalBufferAllocatable>( _ obj:T, offset:Int=0, index idx:Int ) {
+        self.setBuffer( obj.metalBuffer, offset: offset, index: idx )
     }
-    public func setBuffer( _ mem:CAIMMetalBufferAllocatable, offset:Int=0, index idx:Int ) {
-        self.setBuffer( mem.metalBuffer, offset: offset, index: idx )
-    }
-    public func setBuffer<T:SIMD>( _ simd:T, offset:Int=0, index idx:Int ) {
-        self.setBuffer( simd.metalBuffer, offset: offset, index: idx )
-    }
-    public func setBuffer<T>( _ shape:CAIMMetalShape<T>, index idx:Int ) {
-        self.setBuffer( shape.metalBuffer, offset: 0, index: idx )
-    }
-    
+
     // MARK: - pipeline function
     public func use( _ pipeline:CAIMMetalComputePipeline, _ computeFunc:( MTLComputeCommandEncoder )->() ) {
         // エンコーダにパイプラインを指定
@@ -53,20 +44,21 @@ extension MTLComputeCommandEncoder
     }
 
     // 2次元実行
-    public func dispatch2d( threadSize:Size2 = Size2(x: 16, y: 16) ) {
+    public func dispatch2d( threadSize:Size2 = Size2( 16, 16 ) ) {
         let th_size = calcThreadCount( threadSize:threadSize )
         // スレッド数
-        let thread_num:MTLSize = MTLSize(width: Int(th_size.w), height: Int(th_size.h), depth:1 )
+        let thread_num:MTLSize = MTLSize(width: Int(th_size.width), height: Int(th_size.height), depth:1 )
         // スレッドグループ数
-        let thread_groups:MTLSize = MTLSize(width: Int(threadSize.w / th_size.w), height: Int(threadSize.h / th_size.h), depth:1 )
+        let thread_groups:MTLSize = MTLSize(width: Int(threadSize.width / th_size.width),
+                                            height: Int(threadSize.height / th_size.height), depth:1 )
         
         self.dispatchThreadgroups(thread_groups, threadsPerThreadgroup: thread_num)
     }
     
     private func calcThreadCount( threadSize:Size2 ) -> Size2 {
         // 適用可能のスレッド数の計算
-        let wid:Int32 = threadSize.w
-        let hgt:Int32 = threadSize.h
+        let wid:Int32 = threadSize.width
+        let hgt:Int32 = threadSize.height
         var th_wid:Int32 = 1
         var th_hgt:Int32 = 1
         for w:Int32 in 0 ..< 16 {

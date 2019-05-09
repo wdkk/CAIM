@@ -15,107 +15,258 @@ import CoreGraphics
 import Metal
 import simd
 
-// Metalバッファを出力できるようにするプロトコル
-public protocol CAIMMetalBufferAllocatable {
-    #if os(macOS) || (os(iOS) && !arch(x86_64))
-    var metalBuffer:MTLBuffer? { get }
-    #endif
-}
-public extension CAIMMetalBufferAllocatable {
-    #if os(macOS) || (os(iOS) && !arch(x86_64))
-    var metalBuffer:MTLBuffer? { return CAIMMetalAllocatedBuffer( self ).metalBuffer }
-    #endif
-}
-
-public extension SIMD {
-    #if os(macOS) || (os(iOS) && !arch(x86_64))
-    var metalBuffer:MTLBuffer? { return CAIMMetalAllocatedBuffer( self ).metalBuffer }
-    #endif
-}
-
 // Int2(8バイト)
-public typealias Int2 = vector_int2
-extension Int2 {
-    public init( x:Int32=0, y:Int32=0 ) { self.init(); self.x = x; self.y = y }
+public struct Int2 : CAIMMetalBufferAllocatable {
+    public private(set) var simdv:vector_int2
+    public var x:Int32 { get { return simdv.x } set { simdv.x = newValue } }
+    public var y:Int32 { get { return simdv.y } set { simdv.y = newValue } }
+    public init( _ x:Int32 = 0, _ y:Int32 = 0 ) { simdv = [x, y] }
+    public init( _ vec:vector_int2 ) { simdv = vec }
     public static var zero:Int2 { return Int2() }
 }
+// vector_int2拡張
+public extension vector_int2 {
+    var int2:Int2 { return Int2( self ) }
+}
+// 演算子オーバーロード
+public func + ( _ left:Int2, _ right:Int2 ) -> Int2 {
+    return Int2( left.simdv &+ right.simdv )
+}
+public func - ( _ left:Int2, _ right:Int2 ) -> Int2 {
+    return Int2( left.simdv &- right.simdv )
+}
+public func * ( _ left:Int2, _ right:Int2 ) -> Int2 {
+    return Int2( left.simdv &* right.simdv )
+}
+public func / ( _ left:Int2, _ right:Int2 ) -> Int2 {
+    return Int2( left.simdv / right.simdv )
+}
+
 // Int3(16バイト)
-public typealias Int3 = vector_int3
-extension Int3 {
-    public init( x:Int32=0, y:Int32=0, z:Int32=0 ) { self.init(); self.x = x; self.y = y; self.z = z }
+public struct Int3 : CAIMMetalBufferAllocatable {
+    public private(set) var simdv:vector_int3
+    public var x:Int32 { get { return simdv.x } set { simdv.x = newValue } }
+    public var y:Int32 { get { return simdv.y } set { simdv.y = newValue } }
+    public var z:Int32 { get { return simdv.z } set { simdv.z = newValue } }
+    public init( _ x:Int32 = 0, _ y:Int32 = 0, _ z:Int32 = 0 ) { simdv = [x, y, z] }
+    public init( _ vec:vector_int3 ) { simdv = vec }
     public static var zero:Int3 { return Int3() }
 }
+// vector_int3拡張
+public extension vector_int3 {
+    var int3:Int3 { return Int3( self ) }
+}
+// 演算子オーバーロード
+public func + ( _ left:Int3, _ right:Int3 ) -> Int3 {
+    return Int3( left.simdv &+ right.simdv )
+}
+public func - ( _ left:Int3, _ right:Int3 ) -> Int3 {
+    return Int3( left.simdv &- right.simdv )
+}
+public func * ( _ left:Int3, _ right:Int3 ) -> Int3 {
+    return Int3( left.simdv &* right.simdv )
+}
+public func / ( _ left:Int3, _ right:Int3 ) -> Int3 {
+    return Int3( left.simdv / right.simdv )
+}
+
+
 // Int4(16バイト)
-public typealias Int4 = vector_int4
-extension Int4 {
-    public init( x:Int32=0, y:Int32=0, z:Int32=0, w:Int32=0 ) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
+public struct Int4 : CAIMMetalBufferAllocatable {
+    public private(set) var simdv:vector_int4
+    public var x:Int32 { get { return simdv.x } set { simdv.x = newValue } }
+    public var y:Int32 { get { return simdv.y } set { simdv.y = newValue } }
+    public var z:Int32 { get { return simdv.z } set { simdv.z = newValue } }
+    public var w:Int32 { get { return simdv.w } set { simdv.w = newValue } }
+    public init( _ x:Int32 = 0, _ y:Int32 = 0, _ z:Int32 = 0, _ w:Int32 = 0 ) { simdv = [x, y, z, w] }
+    public init( _ vec:vector_int4 ) { simdv = vec }
     public static var zero:Int4 { return Int4() }
+}
+// vector_int3拡張
+public extension vector_int4 {
+    var int4:Int4 { return Int4( self ) }
+}
+// 演算子オーバーロード
+public func + ( _ left:Int4, _ right:Int4 ) -> Int4 {
+    return Int4( left.simdv &+ right.simdv )
+}
+public func - ( _ left:Int4, _ right:Int4 ) -> Int4 {
+    return Int4( left.simdv &- right.simdv )
+}
+public func * ( _ left:Int4, _ right:Int4 ) -> Int4 {
+    return Int4( left.simdv &* right.simdv )
+}
+public func / ( _ left:Int4, _ right:Int4 ) -> Int4 {
+    return Int4( left.simdv / right.simdv )
 }
 
 // Size2(8バイト)
 public typealias Size2 = Int2
 extension Size2 {
-    public var w:Int32 { get { return self.x } set { self.x = newValue } }
-    public var h:Int32 { get { return self.y } set { self.y = newValue } }
+    public var width:Int32  { get { return self.x } set { self.x = newValue } }
+    public var height:Int32 { get { return self.y } set { self.y = newValue } }
 }
 // Size3(16バイト)
 public typealias Size3 = Int3
 extension Size3 {
-    public var w:Int32 { get { return self.x } set { self.x = newValue } }
-    public var h:Int32 { get { return self.y } set { self.y = newValue } }
-    public var d:Int32 { get { return self.z } set { self.z = newValue } }
+    public var width:Int32  { get { return self.x } set { self.x = newValue } }
+    public var height:Int32 { get { return self.y } set { self.y = newValue } }
+    public var depth:Int32  { get { return self.z } set { self.z = newValue } }
 }
 
 // Float2(8バイト)
-public typealias Float2 = vector_float2
-extension Float2 {
-    public init( x:Float=0.0, y:Float=0.0 ) { self.init(); self.x = x; self.y = y }
+public struct Float2 : CAIMMetalBufferAllocatable {
+    public private(set) var simdv:vector_float2
+    public var x:Float { get { return simdv.x } set { simdv.x = newValue } }
+    public var y:Float { get { return simdv.y } set { simdv.y = newValue } }
+    public init( _ x:Float=0.0, _ y:Float=0.0 ) { simdv = [x, y] }
+    public init( _ vec:vector_float2 ) { simdv = vec }
     public static var zero:Float2 { return Float2() }
 }
+// vector_float2拡張
+public extension vector_float2 {
+    var float2:Float2 { return Float2( self ) }
+}
+// 演算子オーバーロード
+public func + ( _ left:Float2, _ right:Float2 ) -> Float2 {
+    return Float2( left.simdv + right.simdv )
+}
+public func - ( _ left:Float2, _ right:Float2 ) -> Float2 {
+    return Float2( left.simdv - right.simdv )
+}
+public func * ( _ left:Float2, _ right:Float2 ) -> Float2 {
+    return Float2( left.simdv * right.simdv )
+}
+public func / ( _ left:Float2, _ right:Float2 ) -> Float2 {
+    return Float2( left.simdv / right.simdv )
+}
+
 // Float3(16バイト)
-public typealias Float3 = vector_float3
-extension Float3 {
-    public init( x:Float=0.0, y:Float=0.0, z:Float=0.0 ) { self.init(); self.x = x; self.y = y; self.z = z }
+public struct Float3 : CAIMMetalBufferAllocatable {
+    public private(set) var simdv:vector_float3
+    public var x:Float { get { return simdv.x } set { simdv.x = newValue } }
+    public var y:Float { get { return simdv.y } set { simdv.y = newValue } }
+    public var z:Float { get { return simdv.z } set { simdv.z = newValue } }
+    public init( _ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0 ) { simdv = [x, y, z] }
+    public init( _ vec:vector_float3 ) { simdv = vec }
     public static var zero:Float3 { return Float3() }
 }
+// vector_float3拡張
+public extension vector_float3 {
+    var float3:Float3 { return Float3( self ) }
+}
+// 演算子オーバーロード
+public func + ( _ left:Float3, _ right:Float3 ) -> Float3 {
+    return Float3( left.simdv + right.simdv )
+}
+public func - ( _ left:Float3, _ right:Float3 ) -> Float3 {
+    return Float3( left.simdv - right.simdv )
+}
+public func * ( _ left:Float3, _ right:Float3 ) -> Float3 {
+    return Float3( left.simdv * right.simdv )
+}
+public func / ( _ left:Float3, _ right:Float3 ) -> Float3 {
+    return Float3( left.simdv / right.simdv )
+}
+
 // Float4(16バイト)
-public typealias Float4 = vector_float4
-extension Float4 {
-    public init( x:Float=0.0, y:Float=0.0, z:Float=0.0, w:Float=1.0 ) { self.init(); self.x = x; self.y = y; self.z = z; self.w = w }
+public struct Float4 : CAIMMetalBufferAllocatable {
+    public private(set) var simdv:vector_float4
+    public var x:Float { get { return simdv.x } set { simdv.x = newValue } }
+    public var y:Float { get { return simdv.y } set { simdv.y = newValue } }
+    public var z:Float { get { return simdv.z } set { simdv.z = newValue } }
+    public var w:Float { get { return simdv.w } set { simdv.w = newValue } }
+    public init( _ x:Float=0.0, _ y:Float=0.0, _ z:Float=0.0, _ w:Float=0.0 ) { simdv = [x, y, z, w] }
+    public init( _ vec:vector_float4 ) { simdv = vec }
     public static var zero:Float4 { return Float4() }
+}
+// vector_float4拡張
+public extension vector_float4 {
+    var float4:Float4 { return Float4( self ) }
+}
+// 演算子オーバーロード
+public func + ( _ left:Float4, _ right:Float4 ) -> Float4 {
+    return Float4( left.simdv + right.simdv )
+}
+public func - ( _ left:Float4, _ right:Float4 ) -> Float4 {
+    return Float4( left.simdv - right.simdv )
+}
+public func * ( _ left:Float4, _ right:Float4 ) -> Float4 {
+    return Float4( left.simdv * right.simdv )
+}
+public func / ( _ left:Float4, _ right:Float4 ) -> Float4 {
+    return Float4( left.simdv / right.simdv )
 }
 
 // 3x3行列(48バイト)
-public typealias Matrix3x3 = matrix_float3x3
-extension Matrix3x3 : CAIMMetalBufferAllocatable {
+public struct Matrix3x3 : CAIMMetalBufferAllocatable {
+    public private(set) var matv:matrix_float3x3
+    
+    public var X:Float3 { get { return matv.columns.0.float3 } set { matv.columns.0 = newValue.simdv } }
+    public var Y:Float3 { get { return matv.columns.1.float3 } set { matv.columns.1 = newValue.simdv } }
+    public var Z:Float3 { get { return matv.columns.2.float3 } set { matv.columns.2 = newValue.simdv } }
+   
+    public init() {
+        matv = matrix_float3x3( 0.0 )
+    }
+    public init( _ columns:[float3] ) {
+        matv = matrix_float3x3( columns )
+    }
+    public init( _ simdv:matrix_float3x3 ) {
+        matv = simdv
+    }
+    
     // 単位行列
     public static var identity:Matrix3x3 {
-        var mat = Matrix3x3()
-        mat.columns.0 = Float3(1, 0, 0)
-        mat.columns.1 = Float3(0, 1, 0)
-        mat.columns.2 = Float3(0, 0, 1)
-        return mat
+         return Matrix3x3([
+            [ 1.0, 0.0, 0.0 ],
+            [ 0.0, 1.0, 0.0 ],
+            [ 0.0, 0.0, 1.0 ]
+        ])
     }
+}
+// 演算子オーバーロード
+public func + ( _ left:Matrix3x3, _ right:Matrix3x3 ) -> Matrix3x3 {
+    return Matrix3x3( left.matv + right.matv )
+}
+
+public func - ( _ left:Matrix3x3, _ right:Matrix3x3 ) -> Matrix3x3 {
+    return Matrix3x3( left.matv - right.matv )
+}
+
+public func * ( _ left:Matrix3x3, _ right:Matrix3x3 ) -> Matrix3x3 {
+    return Matrix3x3( left.matv * right.matv )
 }
 
 // 4x4行列(64バイト)
-public typealias Matrix4x4 = matrix_float4x4
-extension Matrix4x4 : CAIMMetalBufferAllocatable {
-    // 単位行列
-    public static var identity:Matrix4x4 {
-        var mat = Matrix4x4()
-        mat.columns.0 = Float4(1, 0, 0, 0)
-        mat.columns.1 = Float4(0, 1, 0, 0)
-        mat.columns.2 = Float4(0, 0, 1, 0)
-        mat.columns.3 = Float4(0, 0, 0, 1)
-        return mat
+public struct Matrix4x4 : CAIMMetalBufferAllocatable {
+    public private(set) var matv:matrix_float4x4
+    
+    public var X:Float4 { get { return matv.columns.0.float4 } set { matv.columns.0 = newValue.simdv } }
+    public var Y:Float4 { get { return matv.columns.1.float4 } set { matv.columns.1 = newValue.simdv } }
+    public var Z:Float4 { get { return matv.columns.2.float4 } set { matv.columns.2 = newValue.simdv } }
+    public var W:Float4 { get { return matv.columns.3.float4 } set { matv.columns.3 = newValue.simdv } }
+
+    public init() {
+        matv = matrix_float4x4( 0.0 )
+    }
+    public init( _ columns:[float4] ) {
+        matv = matrix_float4x4( columns )
+    }
+    public init( _ simdv:matrix_float4x4 ) {
+        matv = simdv
     }
     
-    public var X:Float4 { get { return columns.0 } set { columns.0 = newValue } }
-    public var Y:Float4 { get { return columns.1 } set { columns.1 = newValue } }
-    public var Z:Float4 { get { return columns.2 } set { columns.2 = newValue } }
-    public var W:Float4 { get { return columns.3 } set { columns.3 = newValue } }
-    
+    // 単位行列
+    public static var identity:Matrix4x4 {
+        return Matrix4x4( [
+            [ 1.0, 0.0, 0.0, 0.0 ],
+            [ 0.0, 1.0, 0.0, 0.0 ],
+            [ 0.0, 0.0, 1.0, 0.0 ],
+            [ 0.0, 0.0, 0.0, 1.0 ]
+        ])
+    }
+
     // 平行移動
     public static func translate(_ x:Float, _ y:Float, _ z:Float) -> Matrix4x4 {
         var mat:Matrix4x4 = .identity
@@ -255,4 +406,16 @@ extension Matrix4x4 : CAIMMetalBufferAllocatable {
         
         return mat
     }
+}
+// 演算子オーバーロード
+public func + ( _ left:Matrix4x4, _ right:Matrix4x4 ) -> Matrix4x4 {
+    return Matrix4x4( left.matv + right.matv )
+}
+
+public func - ( _ left:Matrix4x4, _ right:Matrix4x4 ) -> Matrix4x4 {
+    return Matrix4x4( left.matv - right.matv )
+}
+
+public func * ( _ left:Matrix4x4, _ right:Matrix4x4 ) -> Matrix4x4 {
+    return Matrix4x4( left.matv * right.matv )
 }

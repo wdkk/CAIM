@@ -1,4 +1,4 @@
-﻿//
+//
 //  CAIMMetalShapes.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
@@ -22,9 +22,9 @@ public protocol CAIMMetalDrawable
 }
 
 // Metal向け形状メモリクラス
-public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
+public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable, CAIMMetalBufferAllocatable
 {
-    fileprivate var _buffer:CAIMMetalBufferBase?
+    fileprivate var _buffer:CAIMMetalBufferAllocatable?
     fileprivate var _type:CAIMMetalBufferType
     
     public init( unit:Int, count:Int, type:CAIMMetalBufferType = .alloc ) {
@@ -34,8 +34,8 @@ public class CAIMMetalShape<T> : LLAlignedMemory4K<T>, CAIMMetalDrawable
     }
     
     public var metalBuffer:MTLBuffer? {
-        if( _type == .alloc ) { ( _buffer as! CAIMMetalAllocatedBuffer).update( vertice: self ) }
-        else if( _type == .shared ) { ( _buffer as! CAIMMetalSharedBuffer).update( vertice: self ) }
+        if _type == .alloc { ( _buffer as! CAIMMetalAllocatedBuffer).update( vertice: self ) }
+        else if _type == .shared { ( _buffer as! CAIMMetalSharedBuffer).update( vertice: self ) }
         return _buffer?.metalBuffer
     }
     
