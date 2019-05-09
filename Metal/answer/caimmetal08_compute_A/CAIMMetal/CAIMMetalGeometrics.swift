@@ -140,12 +140,6 @@ public func * ( _ left:Float2, _ right:Float2 ) -> Float2 {
 public func / ( _ left:Float2, _ right:Float2 ) -> Float2 {
     return Float2( left.vectorFloat2 / right.vectorFloat2 )
 }
-public func + ( _ left:Float2, _ right:Float ) -> Float2 {
-    return Float2( left.vectorFloat2 + right )
-}
-public func - ( _ left:Float2, _ right:Float ) -> Float2 {
-    return Float2( left.vectorFloat2 - right )
-}
 public func * ( _ left:Float2, _ right:Float ) -> Float2 {
     return Float2( left.vectorFloat2 * right )
 }
@@ -180,12 +174,6 @@ public func * ( _ left:Float3, _ right:Float3 ) -> Float3 {
 }
 public func / ( _ left:Float3, _ right:Float3 ) -> Float3 {
     return Float3( left.vectorFloat3 / right.vectorFloat3 )
-}
-public func + ( _ left:Float3, _ right:Float ) -> Float3 {
-    return Float3( left.vectorFloat3 + right )
-}
-public func - ( _ left:Float3, _ right:Float ) -> Float3 {
-    return Float3( left.vectorFloat3 - right )
 }
 public func * ( _ left:Float3, _ right:Float ) -> Float3 {
     return Float3( left.vectorFloat3 * right )
@@ -222,12 +210,6 @@ public func * ( _ left:Float4, _ right:Float4 ) -> Float4 {
 }
 public func / ( _ left:Float4, _ right:Float4 ) -> Float4 {
     return Float4( left.vectorFloat4 / right.vectorFloat4 )
-}
-public func + ( _ left:Float4, _ right:Float ) -> Float4 {
-    return Float4( left.vectorFloat4 + right )
-}
-public func - ( _ left:Float4, _ right:Float ) -> Float4 {
-    return Float4( left.vectorFloat4 - right )
 }
 public func * ( _ left:Float4, _ right:Float ) -> Float4 {
     return Float4( left.vectorFloat4 * right )
