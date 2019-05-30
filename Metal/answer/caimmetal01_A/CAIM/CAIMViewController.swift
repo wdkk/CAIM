@@ -12,7 +12,7 @@
 
 import UIKit
 
-class CAIMViewController: UIViewController
+public class CAIMViewController: UIViewController
 {
     // ビューコントローラ設定用オーバーライド関数
     public func setup() {}
@@ -47,13 +47,13 @@ class CAIMViewController: UIViewController
     fileprivate var _display_link:CADisplayLink!    // ループ処理用ディスプレイリンク
     
     // ページがロード(生成)された時、処理される。主にUI部品などを作るときに利用
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         // 親のviewDidLoadを呼ぶ[必須]
         super.viewDidLoad()
         self.view.backgroundColor = .white
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         // 親のviewDidAppearを呼ぶ
         super.viewDidAppear(animated)
         
@@ -62,15 +62,15 @@ class CAIMViewController: UIViewController
         
         // updateのループ処理を開始
         _display_link = CADisplayLink(target: self, selector: #selector(CAIMViewController.polling(_:)))
-        _display_link.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
+        _display_link.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
+    public override func viewDidDisappear(_ animated: Bool) {
         // 親のviewDidAppearを呼ぶ
         super.viewDidDisappear(animated)
         
         // updateのループ処理を終了
-        _display_link.remove(from: RunLoop.current, forMode: RunLoop.Mode.common)
+        _display_link.remove(from: RunLoop.current, forMode: RunLoopMode.commonModes)
         
         teardown()
     }

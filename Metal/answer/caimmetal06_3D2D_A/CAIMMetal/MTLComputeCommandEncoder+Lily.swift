@@ -44,31 +44,17 @@ extension MTLComputeCommandEncoder
     }
 
     // 2次元実行
-    public func dispatch2d( threadSize:Size2 = Size2( 16, 16 ) ) {
-        let th_size = calcThreadCount( threadSize:threadSize )
+    public func dispatch2d( dataSize:Size2, threadSize th_size:Size2 = Size2( 16, 16 ) ) {
         // スレッド数
-        let thread_num:MTLSize = MTLSize(width: Int(th_size.width), height: Int(th_size.height), depth:1 )
+        let thread_num:MTLSize = MTLSize(width: Int(th_size.width),
+                                         height: Int(th_size.height),
+                                         depth: 1 )
         // スレッドグループ数
-        let thread_groups:MTLSize = MTLSize(width: Int(threadSize.width / th_size.width),
-                                            height: Int(threadSize.height / th_size.height), depth:1 )
+        let thread_groups:MTLSize = MTLSize(width: Int((dataSize.width + th_size.width-1) / th_size.width),
+                                            height: Int((dataSize.height + th_size.height-1) / th_size.height),
+                                            depth: 1 )
         
-        self.dispatchThreadgroups(thread_groups, threadsPerThreadgroup: thread_num)
-    }
-    
-    private func calcThreadCount( threadSize:Size2 ) -> Size2 {
-        // 適用可能のスレッド数の計算
-        let wid:Int32 = threadSize.width
-        let hgt:Int32 = threadSize.height
-        var th_wid:Int32 = 1
-        var th_hgt:Int32 = 1
-        for w:Int32 in 0 ..< 16 {
-            if wid % (16-w) == 0 { th_wid = 16 - w; break }
-        }
-        for h:Int32 in 0 ..< 16 {
-            if hgt % (16-h) == 0 { th_hgt = 16 - h; break }
-        }
-        
-        return Size2( th_wid, th_hgt )
+        self.dispatchThreadgroups( thread_groups, threadsPerThreadgroup: thread_num )
     }
 }
 

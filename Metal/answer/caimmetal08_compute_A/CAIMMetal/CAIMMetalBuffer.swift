@@ -126,6 +126,12 @@ public class CAIMMetalSharedBuffer : CAIMMetalBufferAllocatable
         else { _mtlbuf = self.nocopy( vertice.pointer!, length:_length ) }
     }
     
+    // 指定したバイト数で確保＆ポインタ先からコピーして初期化
+    public init( _ buf:UnsafeRawPointer, length:Int ) {
+        _length = length
+        _mtlbuf = self.nocopy( UnsafeMutableRawPointer(mutating: buf), length: _length )
+    }
+    
     public func update<T>( vertice:LLAlignedMemory4K<T> ) {
         _mtlbuf = self.nocopy( vertice.pointer!, length: vertice.allocatedLength )
     }

@@ -1,4 +1,4 @@
-﻿//
+//
 // CAIMMetalSampler.swift
 // CAIM Project
 //   https://kengolab.net/CreApp/wiki/
@@ -24,9 +24,9 @@ public class CAIMMetalSampler
         sampler.magFilter             = MTLSamplerMinMagFilter.nearest
         sampler.mipFilter             = MTLSamplerMipFilter.nearest
         sampler.maxAnisotropy         = 1
-        sampler.sAddressMode          = MTLSamplerAddressMode.clampToEdge
-        sampler.tAddressMode          = MTLSamplerAddressMode.clampToEdge
-        sampler.rAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.sAddressMode          = MTLSamplerAddressMode.clampToEdge   // width
+        sampler.tAddressMode          = MTLSamplerAddressMode.clampToEdge   // height
+        sampler.rAddressMode          = MTLSamplerAddressMode.clampToEdge   // depth
         sampler.normalizedCoordinates = true
         sampler.lodMinClamp           = 0
         sampler.lodMaxClamp           = Float.greatestFiniteMagnitude

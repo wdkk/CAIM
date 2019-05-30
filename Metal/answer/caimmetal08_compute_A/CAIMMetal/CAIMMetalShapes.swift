@@ -176,8 +176,8 @@ public struct CAIMPanelCubeParam
         case bottom
     }
     public var side:PanelSide = .front
-    var pos:Float4 = Float4()
-    var uv:Float2 = Float2()
+    public var pos:Float4 = Float4()
+    public var uv:Float2 = Float2()
 }
 
 public class CAIMCubes<T> : CAIMMetalShape<T>
@@ -202,7 +202,7 @@ public class CAIMCubes<T> : CAIMMetalShape<T>
         }
     }
     
-    func set(idx:Int, pos:Float3, size:Float, iterator f: (Int,CAIMPanelCubeParam)->T) {
+    public func set(idx:Int, pos:Float3, size:Float, iterator f: (Int,CAIMPanelCubeParam)->T) {
         let cube = self[idx]
         let sz = size / 2.0
         let x = pos.x
